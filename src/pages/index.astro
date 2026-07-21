@@ -1,11 +1,45 @@
 ---
-import Welcome from '../components/Welcome.astro';
+import CourseCard from '../components/CourseCard.astro';
+import { siteConfig } from '../config/site';
+import { demoCourses } from '../domain';
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 ---
 
-<Layout>
-	<Welcome />
+<Layout title={siteConfig.name}>
+	<section class="hero" aria-labelledby="home-title">
+		<div class="hero-copy">
+			<p class="kicker">{siteConfig.stage}</p>
+			<h1 id="home-title">FC Academic Hub</h1>
+			<p>
+				Base inicial para una plataforma comunitaria de cursos, examenes, apuntes, silabos y
+				recursos academicos de la Facultad de Ciencias.
+			</p>
+			<div class="actions" aria-label="Acciones principales">
+				<a class="button" href="/courses">Ver cursos demo</a>
+				<a class="text-link" href="/about">Leer alcance</a>
+			</div>
+		</div>
+		<aside class="hero-panel" aria-labelledby="stage-title">
+			<h2 id="stage-title">Alcance de etapa 1</h2>
+			<ul>
+				<li>Sin autenticacion ni roles en navegador.</li>
+				<li>Sin conexion a Supabase o Cloudflare R2.</li>
+				<li>Sin documentos reales ni datos personales.</li>
+			</ul>
+		</aside>
+	</section>
+
+	<section class="section" aria-labelledby="demo-courses-title">
+		<div class="page-heading">
+			<p class="kicker">Catalogo inicial</p>
+			<h1 id="demo-courses-title">Cursos de demostracion</h1>
+			<p>
+				Estos registros son ficticios y existen solo para validar estructura, navegacion y
+				presentacion antes de conectar servicios reales.
+			</p>
+		</div>
+		<div class="grid">
+			{demoCourses.map((course) => <CourseCard course={course} />)}
+		</div>
+	</section>
 </Layout>

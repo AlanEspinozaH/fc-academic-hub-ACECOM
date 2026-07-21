@@ -1,0 +1,37 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+	title="Acerca de"
+	description="Alcance, restricciones y decisiones iniciales de FC Academic Hub."
+>
+	<section class="page-heading" aria-labelledby="about-title">
+		<p class="kicker">Acerca de</p>
+		<h1 id="about-title">Plataforma academica comunitaria</h1>
+		<p>
+			FC Academic Hub se esta preparando para organizar recursos academicos con autorizacion en
+			servidor, bajo costo operativo y una separacion clara entre dominio, presentacion e
+			infraestructura.
+		</p>
+	</section>
+
+	<section class="section" aria-labelledby="principles-title">
+		<h2 id="principles-title">Principios de etapa 1</h2>
+		<ul class="info-list">
+			<li>
+				<strong>Fundacion sin servicios externos</strong>
+				La aplicacion no conecta Supabase, R2 ni proveedores de autenticacion.
+			</li>
+			<li>
+				<strong>Datos ficticios</strong>
+				Los cursos visibles son ejemplos marcados como demostracion y no representan registros academicos
+				reales.
+			</li>
+			<li>
+				<strong>Preparacion para autorizacion futura</strong>
+				La estructura evita confiar en roles del navegador y reserva la validacion para capas de servidor.
+			</li>
+		</ul>
+	</section>
+</Layout>

@@ -1,0 +1,9 @@
+dist
+.astro
+.wrangler
+node_modules
+worker-configuration.d.ts
+package-lock.json
+AGENTS.md
+CLAUDE.md
+.vscode

@@ -1,0 +1,94 @@
+---
+import type { Course } from '../domain';
+
+interface Props {
+	course: Course;
+}
+
+const { course } = Astro.props;
+const levelLabel = course.level === 'undergraduate' ? 'Pregrado' : 'Posgrado';
+const titleId = course.id + '-title';
+---
+
+<article class="course-card" aria-labelledby={titleId}>
+	<div class="course-card__meta">
+		<span>{course.code}</span>
+		<span>{levelLabel}</span>
+	</div>
+	<h2 id={titleId}>{course.title}</h2>
+	<p>{course.summary}</p>
+	<dl>
+		<div>
+			<dt>Departamento</dt>
+			<dd>{course.department}</dd>
+		</div>
+		<div>
+			<dt>Periodo</dt>
+			<dd>{course.term.label}</dd>
+		</div>
+	</dl>
+	{course.isDemo && <p class="course-card__notice">Dato ficticio de demostracion</p>}
+</article>
+
+<style>
+	.course-card {
+		display: grid;
+		gap: 0.9rem;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius);
+		background: var(--color-surface);
+		box-shadow: 0 10px 24px rgb(24 33 47 / 0.06);
+		padding: 1.1rem;
+	}
+
+	.course-card__meta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+
+	.course-card__meta span,
+	.course-card__notice {
+		border-radius: 999px;
+		background: var(--color-surface-muted);
+		color: var(--color-primary-strong);
+		font-size: 0.82rem;
+		font-weight: 750;
+		line-height: 1.2;
+		padding: 0.35rem 0.55rem;
+	}
+
+	h2 {
+		margin: 0;
+		font-size: 1.25rem;
+		line-height: 1.25;
+		letter-spacing: 0;
+	}
+
+	p {
+		margin: 0;
+		color: var(--color-muted);
+	}
+
+	dl {
+		display: grid;
+		gap: 0.75rem;
+		margin: 0;
+	}
+
+	dt {
+		color: var(--color-muted);
+		font-size: 0.85rem;
+	}
+
+	dd {
+		margin: 0;
+		font-weight: 700;
+	}
+
+	.course-card__notice {
+		width: fit-content;
+		background: #fff4df;
+		color: #7a4308;
+	}
+</style>

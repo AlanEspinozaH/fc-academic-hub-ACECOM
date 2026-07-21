@@ -1,0 +1,25 @@
+---
+import CourseCard from '../components/CourseCard.astro';
+import { demoCourses } from '../domain';
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+	title="Cursos"
+	description="Catalogo inicial de cursos ficticios de demostracion para FC Academic Hub."
+>
+	<section class="page-heading" aria-labelledby="courses-title">
+		<p class="kicker">Cursos</p>
+		<h1 id="courses-title">Catalogo academico</h1>
+		<p>
+			La etapa 1 muestra datos ficticios para probar el modelo de curso sin almacenar documentos,
+			silabos, examenes ni apuntes reales.
+		</p>
+	</section>
+
+	<section class="section" aria-label="Cursos ficticios de demostracion">
+		<div class="grid">
+			{demoCourses.map((course) => <CourseCard course={course} />)}
+		</div>
+	</section>
+</Layout>
