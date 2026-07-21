@@ -1,0 +1,86 @@
+[
+	{
+		"id": "curriculum-course-demo-math-calculus-1",
+		"curriculumId": "curriculum-demo-math-2026",
+		"courseId": "course-demo-calculus-1",
+		"recommendedCycle": 1,
+		"requirementType": "required",
+		"prerequisiteCourseIds": []
+	},
+	{
+		"id": "curriculum-course-demo-math-discrete-structures",
+		"curriculumId": "curriculum-demo-math-2026",
+		"courseId": "course-demo-discrete-structures",
+		"recommendedCycle": 1,
+		"requirementType": "required",
+		"prerequisiteCourseIds": []
+	},
+	{
+		"id": "curriculum-course-demo-math-linear-algebra",
+		"curriculumId": "curriculum-demo-math-2026",
+		"courseId": "course-demo-linear-algebra",
+		"recommendedCycle": 1,
+		"requirementType": "required",
+		"prerequisiteCourseIds": []
+	},
+	{
+		"id": "curriculum-course-demo-math-calculus-2",
+		"curriculumId": "curriculum-demo-math-2026",
+		"courseId": "course-demo-calculus-2",
+		"recommendedCycle": 2,
+		"requirementType": "required",
+		"prerequisiteCourseIds": ["course-demo-calculus-1"]
+	},
+	{
+		"id": "curriculum-course-demo-math-numerical-modeling",
+		"curriculumId": "curriculum-demo-math-2026",
+		"courseId": "course-demo-numerical-modeling",
+		"recommendedCycle": 3,
+		"requirementType": "elective",
+		"prerequisiteCourseIds": ["course-demo-calculus-2", "course-demo-linear-algebra"]
+	},
+	{
+		"id": "curriculum-course-demo-computing-calculus-1",
+		"curriculumId": "curriculum-demo-computing-2026",
+		"courseId": "course-demo-calculus-1",
+		"recommendedCycle": 1,
+		"requirementType": "required",
+		"prerequisiteCourseIds": []
+	},
+	{
+		"id": "curriculum-course-demo-computing-discrete-structures",
+		"curriculumId": "curriculum-demo-computing-2026",
+		"courseId": "course-demo-discrete-structures",
+		"recommendedCycle": 1,
+		"requirementType": "required",
+		"prerequisiteCourseIds": []
+	},
+	{
+		"id": "curriculum-course-demo-computing-scientific-programming",
+		"curriculumId": "curriculum-demo-computing-2026",
+		"courseId": "course-demo-scientific-programming",
+		"recommendedCycle": 2,
+		"requirementType": "required",
+		"prerequisiteCourseIds": ["course-demo-discrete-structures"]
+	},
+	{
+		"id": "curriculum-course-demo-computing-linear-algebra",
+		"curriculumId": "curriculum-demo-computing-2026",
+		"courseId": "course-demo-linear-algebra",
+		"recommendedCycle": 2,
+		"requirementType": "elective",
+		"prerequisiteCourseIds": []
+	},
+	{
+		"id": "curriculum-course-demo-computing-numerical-modeling",
+		"curriculumId": "curriculum-demo-computing-2026",
+		"courseId": "course-demo-numerical-modeling",
+		"recommendedCycle": 3,
+		"requirementType": "required",
+		"prerequisiteCourseIds": [
+			"course-demo-calculus-1",
+			"course-demo-linear-algebra",
+			"course-demo-scientific-programming"
+		]
+	}
+]

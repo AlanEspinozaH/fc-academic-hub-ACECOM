@@ -1,0 +1,62 @@
+[
+	{
+		"id": "course-demo-calculus-1",
+		"code": "FC-DEMO-MAT101",
+		"slug": "calculo-ficticio-1",
+		"name": "Calculo Ficticio I",
+		"summary": "Curso ficticio de fundamentos matematicos para validar catalogo, filtros y prerequisitos sin usar informacion academica real.",
+		"credits": 4,
+		"tags": ["matematica", "fundamentos", "demostracion"],
+		"status": "active"
+	},
+	{
+		"id": "course-demo-linear-algebra",
+		"code": "FC-DEMO-MAT102",
+		"slug": "algebra-lineal-ficticia",
+		"name": "Algebra Lineal Ficticia",
+		"summary": "Curso ficticio sobre estructuras vectoriales de demostracion, creado unicamente para probar relaciones curriculares.",
+		"credits": 4,
+		"tags": ["matematica", "algebra", "demostracion"],
+		"status": "active"
+	},
+	{
+		"id": "course-demo-discrete-structures",
+		"code": "FC-DEMO-CC101",
+		"slug": "estructuras-discretas-ficticias",
+		"name": "Estructuras Discretas Ficticias",
+		"summary": "Curso ficticio para representar contenidos introductorios de logica, conjuntos y grafos sin materiales reales.",
+		"credits": 3,
+		"tags": ["computacion", "logica", "demostracion"],
+		"status": "active"
+	},
+	{
+		"id": "course-demo-scientific-programming",
+		"code": "FC-DEMO-CC102",
+		"slug": "programacion-cientifica-ficticia",
+		"name": "Programacion Cientifica Ficticia",
+		"summary": "Curso ficticio para validar recursos de laboratorio y tareas sin subir codigo, datos personales ni archivos binarios.",
+		"credits": 4,
+		"tags": ["computacion", "programacion", "demostracion"],
+		"status": "active"
+	},
+	{
+		"id": "course-demo-calculus-2",
+		"code": "FC-DEMO-MAT201",
+		"slug": "calculo-ficticio-2",
+		"name": "Calculo Ficticio II",
+		"summary": "Curso ficticio de continuidad del calculo para probar prerequisitos directos dentro del catalogo estatico.",
+		"credits": 4,
+		"tags": ["matematica", "analisis", "demostracion"],
+		"status": "active"
+	},
+	{
+		"id": "course-demo-numerical-modeling",
+		"code": "FC-DEMO-CC201",
+		"slug": "modelamiento-numerico-ficticio",
+		"name": "Modelamiento Numerico Ficticio",
+		"summary": "Curso ficticio interdisciplinario para mostrar prerequisitos multiples y recursos de diferentes tipos sin documentos reales.",
+		"credits": 4,
+		"tags": ["modelamiento", "computacion", "matematica", "demostracion"],
+		"status": "active"
+	}
+]

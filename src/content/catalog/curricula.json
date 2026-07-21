@@ -1,0 +1,18 @@
+[
+	{
+		"id": "curriculum-demo-math-2026",
+		"code": "PCM-DEMO-2026",
+		"name": "Plan Ficticio 2026 de Ciencias Matematicas",
+		"academicUnitId": "program-demo-mathematical-sciences",
+		"effectivePeriod": "2026-2029",
+		"status": "active"
+	},
+	{
+		"id": "curriculum-demo-computing-2026",
+		"code": "PCC-DEMO-2026",
+		"name": "Plan Ficticio 2026 de Ciencias Computacionales",
+		"academicUnitId": "program-demo-computational-sciences",
+		"effectivePeriod": "2026-2029",
+		"status": "active"
+	}
+]

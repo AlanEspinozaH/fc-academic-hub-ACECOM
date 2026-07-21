@@ -1,14 +1,14 @@
-import type { AcademicTerm } from './academic-term';
+export const COURSE_STATUSES = ['active', 'historical'] as const;
 
-export type CourseLevel = 'undergraduate' | 'graduate';
+export type CourseStatus = (typeof COURSE_STATUSES)[number];
 
 export interface Course {
 	readonly code: string;
-	readonly department: string;
+	readonly credits: number;
 	readonly id: string;
-	readonly isDemo: boolean;
-	readonly level: CourseLevel;
+	readonly name: string;
+	readonly slug: string;
+	readonly status: CourseStatus;
 	readonly summary: string;
-	readonly term: AcademicTerm;
-	readonly title: string;
+	readonly tags: ReadonlyArray<string>;
 }

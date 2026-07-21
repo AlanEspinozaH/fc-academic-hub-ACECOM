@@ -1,0 +1,243 @@
+---
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import ResourceCard from '../../components/ResourceCard.astro';
+import { getAllCourses, getCatalogSnapshot } from '../../domain/catalog';
+import { CURRICULUM_COURSE_REQUIREMENT_TYPE_LABELS } from '../../domain/curriculum-course';
+import type { Course } from '../../domain/course';
+import Layout from '../../layouts/Layout.astro';
+
+export const prerender = true;
+
+export const getStaticPaths = async () => {
+	const courses = await getAllCourses();
+
+	return courses.map((course) => ({ params: { slug: course.slug } }));
+};
+
+const slug = Astro.params.slug;
+if (typeof slug !== 'string') {
+	throw new Error('Slug de curso ausente');
+}
+
+const catalog = await getCatalogSnapshot();
+const item = catalog.courseItems.find((candidate) => candidate.course.slug === slug);
+
+if (item === undefined) {
+	throw new Error('Curso no encontrado: ' + slug);
+}
+
+const course = item.course;
+const relatedResources = catalog.resources.filter(
+	(resource) => resource.courseId === course.id && resource.visibility === 'public',
+);
+const termLabelById = new Map(catalog.academicTerms.map((term) => [term.id, term.label]));
+const courseById = new Map(catalog.courses.map((candidate) => [candidate.id, candidate]));
+const programNames = [...new Set(item.offerings.map((offering) => offering.program.name))];
+const getPrerequisiteCourses = (courseIds: ReadonlyArray<string>): ReadonlyArray<Course> =>
+	courseIds
+		.map((courseId) => courseById.get(courseId))
+		.filter((candidate): candidate is Course => candidate !== undefined);
+---
+
+<Layout title={course.name} description={course.summary}>
+	<Breadcrumbs
+		items={[
+			{ href: '/', label: 'Inicio' },
+			{ href: '/courses', label: 'Cursos' },
+			{ label: course.code },
+		]}
+	/>
+
+	<section class="page-heading course-heading" aria-labelledby="course-title">
+		<p class="kicker">{course.code} · {course.status === 'active' ? 'Activo' : 'Historico'}</p>
+		<h1 id="course-title">{course.name}</h1>
+		<p>{course.summary}</p>
+	</section>
+
+	<section class="section" aria-labelledby="course-data-title">
+		<h2 id="course-data-title">Datos del curso</h2>
+		<dl class="metadata-grid">
+			<div>
+				<dt>Creditos</dt>
+				<dd>{course.credits}</dd>
+			</div>
+			<div>
+				<dt>Carreras</dt>
+				<dd>{programNames.join(', ')}</dd>
+			</div>
+			<div>
+				<dt>Etiquetas</dt>
+				<dd>{course.tags.join(', ')}</dd>
+			</div>
+		</dl>
+	</section>
+
+	<section class="section" aria-labelledby="curriculum-placement-title">
+		<h2 id="curriculum-placement-title">Ubicacion en planes</h2>
+		<div class="table-wrap">
+			<table>
+				<thead>
+					<tr>
+						<th scope="col">Plan</th>
+						<th scope="col">Carrera</th>
+						<th scope="col">Ciclo</th>
+						<th scope="col">Tipo</th>
+						<th scope="col">Prerrequisitos</th>
+					</tr>
+				</thead>
+				<tbody>
+					{
+						item.offerings.map((offering) => {
+							const prerequisites = getPrerequisiteCourses(
+								offering.curriculumCourse.prerequisiteCourseIds,
+							);
+							return (
+								<tr>
+									<td>{offering.curriculum.code}</td>
+									<td>{offering.program.name}</td>
+									<td>{offering.curriculumCourse.recommendedCycle}</td>
+									<td>
+										{
+											CURRICULUM_COURSE_REQUIREMENT_TYPE_LABELS[
+												offering.curriculumCourse.requirementType
+											]
+										}
+									</td>
+									<td>
+										{prerequisites.length > 0 ? (
+											<ul class="inline-list">
+												{prerequisites.map((prerequisite) => (
+													<li>
+														<a href={'/courses/' + prerequisite.slug}>{prerequisite.code}</a>
+													</li>
+												))}
+											</ul>
+										) : (
+											<span>Sin prerrequisitos</span>
+										)}
+									</td>
+								</tr>
+							);
+						})
+					}
+				</tbody>
+			</table>
+		</div>
+	</section>
+
+	<section class="section" aria-labelledby="course-resources-title">
+		<div class="section-heading">
+			<h2 id="course-resources-title">Recursos relacionados</h2>
+			<p>Registros ficticios sin archivos binarios ni URLs de descarga.</p>
+		</div>
+		{
+			relatedResources.length > 0 ? (
+				<div class="resource-grid">
+					{relatedResources.map((resource) => (
+						<ResourceCard
+							courseName={course.name}
+							resource={resource}
+							termLabel={
+								resource.academicTermId ? termLabelById.get(resource.academicTermId) : undefined
+							}
+						/>
+					))}
+				</div>
+			) : (
+				<p class="empty-state">Este curso no tiene recursos publicos registrados.</p>
+			)
+		}
+	</section>
+</Layout>
+
+<style>
+	.course-heading h1 {
+		max-width: 22ch;
+	}
+
+	h2 {
+		margin: 0 0 0.65rem;
+		font-size: 1.18rem;
+	}
+
+	.metadata-grid {
+		display: grid;
+		grid-template-columns: 0.35fr 1fr 1fr;
+		gap: 1rem;
+		margin: 0;
+	}
+
+	.metadata-grid div {
+		border-top: 1px solid var(--color-border);
+		padding-top: 0.6rem;
+	}
+
+	dt {
+		color: var(--color-muted);
+		font-size: 0.85rem;
+	}
+
+	dd {
+		margin: 0;
+		font-weight: 750;
+	}
+
+	.table-wrap {
+		overflow-x: auto;
+		border-top: 1px solid var(--color-border);
+	}
+
+	table {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: 0.93rem;
+	}
+
+	th,
+	td {
+		border-bottom: 1px solid var(--color-border);
+		padding: 0.6rem 0.5rem;
+		text-align: left;
+		vertical-align: top;
+	}
+
+	th {
+		color: var(--color-muted);
+		font-size: 0.82rem;
+		font-weight: 800;
+		text-transform: uppercase;
+	}
+
+	.inline-list {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.35rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.section-heading {
+		display: grid;
+		gap: 0.15rem;
+		margin-bottom: 0.75rem;
+	}
+
+	.section-heading p {
+		margin: 0;
+		color: var(--color-muted);
+	}
+
+	.resource-grid {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 0.75rem;
+	}
+
+	@media (max-width: 760px) {
+		.metadata-grid,
+		.resource-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

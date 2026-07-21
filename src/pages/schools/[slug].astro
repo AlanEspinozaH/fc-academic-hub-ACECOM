@@ -1,0 +1,143 @@
+---
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import CourseCard from '../../components/CourseCard.astro';
+import { getAllSchools, getCatalogSnapshot } from '../../domain/catalog';
+import Layout from '../../layouts/Layout.astro';
+
+export const prerender = true;
+
+export const getStaticPaths = async () => {
+	const schools = await getAllSchools();
+
+	return schools.map((school) => ({ params: { slug: school.slug } }));
+};
+
+const slug = Astro.params.slug;
+if (typeof slug !== 'string') {
+	throw new Error('Slug de escuela ausente');
+}
+
+const catalog = await getCatalogSnapshot();
+const school = catalog.schools.find((candidate) => candidate.slug === slug);
+
+if (school === undefined) {
+	throw new Error('Escuela no encontrada: ' + slug);
+}
+
+const programs = catalog.programs.filter((program) => program.parentUnitId === school.id);
+const programIds = new Set(programs.map((program) => program.id));
+const curricula = catalog.curricula.filter((curriculum) =>
+	programIds.has(curriculum.academicUnitId),
+);
+const courseItems = catalog.courseItems.filter((item) =>
+	item.offerings.some((offering) => offering.school?.id === school.id),
+);
+---
+
+<Layout title={school.name} description={school.description}>
+	<Breadcrumbs
+		items={[
+			{ href: '/', label: 'Inicio' },
+			{ href: '/schools', label: 'Escuelas' },
+			{ label: school.abbreviation },
+		]}
+	/>
+
+	<section class="page-heading school-heading" aria-labelledby="school-title">
+		<p class="kicker">
+			{school.abbreviation} · {school.status === 'active' ? 'Activa' : 'Inactiva'}
+		</p>
+		<h1 id="school-title">{school.name}</h1>
+		<p>{school.description}</p>
+	</section>
+
+	<section class="section detail-section" aria-labelledby="programs-title">
+		<h2 id="programs-title">Carreras y planes</h2>
+		<ul class="detail-list">
+			{
+				programs.map((program) => {
+					const programCurricula = curricula.filter(
+						(curriculum) => curriculum.academicUnitId === program.id,
+					);
+					return (
+						<li>
+							<strong>{program.name}</strong>
+							<span>{program.description}</span>
+							<small>{programCurricula.map((curriculum) => curriculum.code).join(', ')}</small>
+						</li>
+					);
+				})
+			}
+		</ul>
+	</section>
+
+	<section class="section" aria-labelledby="school-courses-title">
+		<div class="section-heading">
+			<h2 id="school-courses-title">Cursos</h2>
+			<p>{courseItems.length} cursos ficticios asociados a sus planes.</p>
+		</div>
+		<div class="grid">
+			{courseItems.slice(0, 4).map((item) => <CourseCard item={item} />)}
+		</div>
+		{
+			courseItems.length > 4 && (
+				<p class="more-link">
+					<a href="/courses">Ver lista completa</a>
+				</p>
+			)
+		}
+	</section>
+</Layout>
+
+<style>
+	.school-heading h1 {
+		max-width: 22ch;
+	}
+
+	.detail-section h2,
+	.section-heading h2 {
+		margin: 0 0 0.65rem;
+		font-size: 1.18rem;
+	}
+
+	.detail-list {
+		display: grid;
+		gap: 0.6rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.detail-list li {
+		display: grid;
+		gap: 0.15rem;
+		border-top: 1px solid var(--color-border);
+		padding-top: 0.65rem;
+	}
+
+	.detail-list strong {
+		color: var(--color-text);
+	}
+
+	.detail-list span,
+	.detail-list small,
+	.section-heading p {
+		color: var(--color-muted);
+	}
+
+	.section-heading {
+		display: grid;
+		gap: 0.15rem;
+		margin-bottom: 0.75rem;
+	}
+
+	.section-heading p,
+	.more-link {
+		margin: 0;
+	}
+
+	.more-link {
+		margin-top: 0.75rem;
+		font-weight: 750;
+	}
+</style>

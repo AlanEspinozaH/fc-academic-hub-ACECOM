@@ -6,6 +6,19 @@
 - Mantener cambios acotados y alineados con los limites de la etapa actual.
 - Preferir tipos de dominio y componentes pequenos sobre logica improvisada dentro de paginas.
 - No agregar dependencias sin documentar por que son necesarias.
+- No hacer commit, push ni despliegue sin que el flujo de trabajo lo solicite explicitamente.
+
+## Catalogo Academico
+
+El catalogo de etapa 2 se modifica editando `src/content/catalog/*.json`.
+
+- No modificar componentes para agregar una unidad academica, curso, plan, relacion curricular, periodo o recurso.
+- Mantener todos los registros claramente ficticios.
+- No agregar docentes reales, evaluaciones reales, datos personales, documentos, URLs de descarga ni binarios.
+- No agregar ciclo recomendado, plan, escuela ni prerrequisitos dentro de `Course`; usar `CurriculumCourse`.
+- Mantener `fileAvailable: false` mientras no exista storage configurado.
+- Usar `book-reference` solo como referencia bibliografica, nunca como archivo de libro.
+- Leer `docs/data/catalog-model.md` y `docs/data/adding-catalog-content.md` antes de cambiar datos.
 
 ## Controles Locales
 
@@ -21,10 +34,11 @@ Este comando ejecuta formato, lint, chequeo de Astro/TypeScript, pruebas unitari
 
 - No agregar secretos, tokens, passwords ni credenciales reales.
 - No agregar datos personales.
-- No agregar documentos academicos reales en etapa 1.
+- No agregar documentos academicos reales.
 - No confiar en roles enviados por el navegador en trabajos futuros de autorizacion.
-- Mantener archivos .env ignorados excepto .env.example.
+- Mantener archivos `.env*` ignorados excepto `.env.example`.
+- No crear recursos Cloudflare, Supabase ni R2 desde cambios de codigo.
 
 ## Documentacion
 
-Actualizar README o docs cuando cambien comportamiento, arquitectura o setup. Las decisiones arquitectonicas importantes deben registrarse en docs/adr/.
+Actualizar README o docs cuando cambien comportamiento, arquitectura o setup. Las decisiones arquitectonicas importantes deben registrarse en `docs/adr/`.

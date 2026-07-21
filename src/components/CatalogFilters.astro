@@ -1,0 +1,165 @@
+---
+interface FilterOption {
+	label: string;
+	value: string;
+}
+
+type CatalogFilterField =
+	| {
+			label: string;
+			name: string;
+			placeholder?: string;
+			type: 'search';
+			value: string;
+	  }
+	| {
+			label: string;
+			name: string;
+			options: ReadonlyArray<FilterOption>;
+			type: 'select';
+			value: string;
+	  };
+
+interface Props {
+	action: string;
+	fields: ReadonlyArray<CatalogFilterField>;
+	resetHref: string;
+	resultCount: number;
+	resultLabel: string;
+	submitLabel?: string;
+}
+
+const {
+	action,
+	fields,
+	resetHref,
+	resultCount,
+	resultLabel,
+	submitLabel = 'Filtrar',
+} = Astro.props;
+---
+
+<form class="catalog-filters" method="get" action={action} role="search">
+	<div class="catalog-filters__fields">
+		{
+			fields.map((field) => {
+				const inputId = 'filter-' + field.name;
+				return (
+					<div class="catalog-filters__field">
+						<label for={inputId}>{field.label}</label>
+						{field.type === 'search' ? (
+							<input
+								id={inputId}
+								name={field.name}
+								placeholder={field.placeholder}
+								type="search"
+								value={field.value}
+							/>
+						) : (
+							<select id={inputId} name={field.name}>
+								<option value="">Todos</option>
+								{field.options.map((option) => (
+									<option value={option.value} selected={field.value === option.value}>
+										{option.label}
+									</option>
+								))}
+							</select>
+						)}
+					</div>
+				);
+			})
+		}
+	</div>
+	<div class="catalog-filters__actions">
+		<button type="submit">{submitLabel}</button>
+		<a href={resetHref}>Limpiar</a>
+		<p aria-live="polite">{resultCount} {resultLabel}</p>
+	</div>
+</form>
+
+<style>
+	.catalog-filters {
+		display: grid;
+		gap: 0.75rem;
+		border-block: 1px solid var(--color-border);
+		padding: 0.75rem 0;
+	}
+
+	.catalog-filters__fields {
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 0.7rem;
+	}
+
+	.catalog-filters__field {
+		display: grid;
+		gap: 0.35rem;
+	}
+
+	label {
+		color: var(--color-text);
+		font-size: 0.9rem;
+		font-weight: 750;
+	}
+
+	input,
+	select {
+		width: 100%;
+		min-height: 2.45rem;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius);
+		background: var(--color-surface);
+		color: var(--color-text);
+		padding: 0.45rem 0.6rem;
+	}
+
+	.catalog-filters__actions {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.75rem;
+	}
+
+	button,
+	a {
+		display: inline-flex;
+		min-height: 2.35rem;
+		align-items: center;
+		justify-content: center;
+		border-radius: var(--radius);
+		font-weight: 750;
+	}
+
+	button {
+		border: 0;
+		background: var(--color-primary);
+		color: var(--color-bg);
+		padding: 0.45rem 0.75rem;
+		cursor: pointer;
+	}
+
+	button:hover {
+		background: var(--color-primary-strong);
+	}
+
+	a {
+		padding: 0.45rem 0.2rem;
+	}
+
+	p {
+		margin: 0 0 0 auto;
+		color: var(--color-muted);
+		font-weight: 700;
+	}
+
+	@media (max-width: 780px) {
+		.catalog-filters__fields {
+			grid-template-columns: 1fr;
+		}
+
+		p {
+			width: 100%;
+			margin-left: 0;
+		}
+	}
+</style>

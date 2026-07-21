@@ -1,25 +1,150 @@
 ---
-import CourseCard from '../components/CourseCard.astro';
-import { demoCourses } from '../domain';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import CatalogFilters from '../components/CatalogFilters.astro';
+import { filterCourses, parseRecommendedCycleFilter } from '../domain/catalog-filters';
+import { getCatalogSnapshot } from '../domain/catalog';
+import { CURRICULUM_COURSE_REQUIREMENT_TYPE_LABELS } from '../domain/curriculum-course';
 import Layout from '../layouts/Layout.astro';
+
+const catalog = await getCatalogSnapshot();
+const params = Astro.url.searchParams;
+const textFilter = params.get('q') ?? '';
+const programFilterValue = params.get('program') ?? '';
+const cycleFilterValue = params.get('cycle') ?? '';
+const selectedProgram = catalog.programs.find((program) => program.id === programFilterValue);
+const selectedCycle = parseRecommendedCycleFilter(params.get('cycle'));
+const filteredCourseItems = filterCourses(catalog.courseItems, {
+	programId: selectedProgram?.id,
+	recommendedCycle: selectedCycle,
+	text: textFilter,
+});
+const cycleOptions = [
+	...new Set(catalog.curriculumCourses.map((relation) => relation.recommendedCycle)),
+]
+	.sort((left, right) => left - right)
+	.map((cycle) => ({ label: 'Ciclo ' + cycle, value: String(cycle) }));
+const filterFields = [
+	{
+		label: 'Texto',
+		name: 'q',
+		placeholder: 'Codigo o nombre',
+		type: 'search' as const,
+		value: textFilter,
+	},
+	{
+		label: 'Carrera',
+		name: 'program',
+		options: catalog.programs.map((program) => ({ label: program.name, value: program.id })),
+		type: 'select' as const,
+		value: selectedProgram?.id ?? '',
+	},
+	{
+		label: 'Ciclo',
+		name: 'cycle',
+		options: cycleOptions,
+		type: 'select' as const,
+		value: selectedCycle === undefined ? '' : cycleFilterValue,
+	},
+];
+
+const describeOfferings = (item: (typeof filteredCourseItems)[number]): string =>
+	item.offerings
+		.map(
+			(offering) =>
+				offering.program.abbreviation +
+				': ciclo ' +
+				offering.curriculumCourse.recommendedCycle +
+				' · ' +
+				CURRICULUM_COURSE_REQUIREMENT_TYPE_LABELS[offering.curriculumCourse.requirementType],
+		)
+		.join(' / ');
 ---
 
-<Layout
-	title="Cursos"
-	description="Catalogo inicial de cursos ficticios de demostracion para FC Academic Hub."
->
+<Layout title="Cursos" description="Catalogo publico de cursos ficticios versionados en Git.">
+	<Breadcrumbs items={[{ href: '/', label: 'Inicio' }, { label: 'Cursos' }]} />
+
 	<section class="page-heading" aria-labelledby="courses-title">
-		<p class="kicker">Cursos</p>
-		<h1 id="courses-title">Catalogo academico</h1>
+		<p class="kicker">Catalogo publico</p>
+		<h1 id="courses-title">Cursos</h1>
 		<p>
-			La etapa 1 muestra datos ficticios para probar el modelo de curso sin almacenar documentos,
-			silabos, examenes ni apuntes reales.
+			Lista compacta de cursos ficticios. El ciclo y el tipo pertenecen a cada plan curricular, no
+			al curso como dato intrinseco.
 		</p>
 	</section>
 
-	<section class="section" aria-label="Cursos ficticios de demostracion">
-		<div class="grid">
-			{demoCourses.map((course) => <CourseCard course={course} />)}
-		</div>
+	<section class="section" aria-labelledby="course-filters-title">
+		<h2 id="course-filters-title" class="visually-hidden">Filtros de cursos</h2>
+		<CatalogFilters
+			action="/courses"
+			fields={filterFields}
+			resetHref="/courses"
+			resultCount={filteredCourseItems.length}
+			resultLabel={filteredCourseItems.length === 1 ? 'curso encontrado' : 'cursos encontrados'}
+		/>
+	</section>
+
+	<section class="section" aria-label="Resultados de cursos">
+		{
+			filteredCourseItems.length > 0 ? (
+				<ul class="course-list">
+					{filteredCourseItems.map((item) => (
+						<li>
+							<div>
+								<span class="course-code">{item.course.code}</span>
+								<a href={'/courses/' + item.course.slug}>{item.course.name}</a>
+							</div>
+							<p>
+								{item.course.credits} creditos · {describeOfferings(item)}
+							</p>
+						</li>
+					))}
+				</ul>
+			) : (
+				<p class="empty-state">No hay cursos que coincidan con los filtros seleccionados.</p>
+			)
+		}
 	</section>
 </Layout>
+
+<style>
+	.course-list {
+		display: grid;
+		gap: 0;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		border-top: 1px solid var(--color-border);
+	}
+
+	.course-list li {
+		display: grid;
+		gap: 0.25rem;
+		border-bottom: 1px solid var(--color-border);
+		padding: 0.75rem 0;
+	}
+
+	.course-list div {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		align-items: baseline;
+	}
+
+	.course-list a {
+		color: var(--color-text);
+		font-weight: 750;
+	}
+
+	.course-list p {
+		margin: 0;
+		color: var(--color-muted);
+		font-size: 0.92rem;
+	}
+
+	.course-code {
+		min-width: 8.5rem;
+		color: var(--color-primary-strong);
+		font-size: 0.88rem;
+		font-weight: 800;
+	}
+</style>

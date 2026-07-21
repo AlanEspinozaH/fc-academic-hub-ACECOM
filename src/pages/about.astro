@@ -4,33 +4,39 @@ import Layout from '../layouts/Layout.astro';
 
 <Layout
 	title="Acerca de"
-	description="Alcance, restricciones y decisiones iniciales de FC Academic Hub."
+	description="Alcance, restricciones y decisiones de FC Academic Hub en etapa 2."
 >
 	<section class="page-heading" aria-labelledby="about-title">
 		<p class="kicker">Acerca de</p>
 		<h1 id="about-title">Plataforma academica comunitaria</h1>
 		<p>
-			FC Academic Hub se esta preparando para organizar recursos academicos con autorizacion en
-			servidor, bajo costo operativo y una separacion clara entre dominio, presentacion e
-			infraestructura.
+			FC Academic Hub organiza un catalogo academico publico y ficticio con unidades academicas,
+			planes, cursos y relaciones curriculares mientras prepara una futura migracion a PostgreSQL,
+			autenticacion real y almacenamiento privado sin adelantar esas integraciones.
 		</p>
 	</section>
 
 	<section class="section" aria-labelledby="principles-title">
-		<h2 id="principles-title">Principios de etapa 1</h2>
+		<h2 id="principles-title">Principios de etapa 2</h2>
 		<ul class="info-list">
 			<li>
-				<strong>Fundacion sin servicios externos</strong>
-				La aplicacion no conecta Supabase, R2 ni proveedores de autenticacion.
+				<strong>Catalogo versionado</strong>
+				Unidades academicas, planes, cursos, relaciones curriculares, periodos y recursos demo viven en
+				archivos de contenido revisables en Git.
 			</li>
 			<li>
 				<strong>Datos ficticios</strong>
-				Los cursos visibles son ejemplos marcados como demostracion y no representan registros academicos
-				reales.
+				El catalogo no contiene docentes reales, evaluaciones reales, documentos, datos personales ni
+				URLs de descarga.
 			</li>
 			<li>
-				<strong>Preparacion para autorizacion futura</strong>
-				La estructura evita confiar en roles del navegador y reserva la validacion para capas de servidor.
+				<strong>Preparacion para servidor</strong>
+				Las paginas usan una capa de consulta para que PostgreSQL pueda reemplazar el almacenamiento estatico
+				sin reescribir componentes visuales.
+			</li>
+			<li>
+				<strong>Servicios externos postergados</strong>
+				No hay Supabase, R2, roles, login, formularios de subida ni buckets Cloudflare en esta etapa.
 			</li>
 		</ul>
 	</section>
