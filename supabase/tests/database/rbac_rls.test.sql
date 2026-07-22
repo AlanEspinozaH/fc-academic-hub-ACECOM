@@ -55,9 +55,10 @@ INSERT INTO auth.users (id, aud, role, email, email_confirmed_at, created_at, up
 SELECT id, 'authenticated', 'authenticated', email, now(), now(), now()
 FROM test_users;
 
-INSERT INTO public.profiles (user_id, email, display_name)
-SELECT id, email, kind
-FROM test_users;
+UPDATE public.profiles
+SET display_name = test_users.kind
+FROM test_users
+WHERE public.profiles.user_id = test_users.id;
 
 INSERT INTO public.user_roles (user_id, role, granted_by, granted_at, revoked_by, revoked_at, reason)
 VALUES
