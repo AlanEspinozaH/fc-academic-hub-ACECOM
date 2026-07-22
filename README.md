@@ -2,12 +2,12 @@
 
 FC Academic Hub es la base de una plataforma academica comunitaria de la Facultad de Ciencias. El objetivo es organizar cursos, examenes, apuntes, silabos y recursos relacionados con seguridad y bajo costo operativo.
 
-La etapa actual mantiene un catalogo academico publico y estatico con los cinco planes de estudios 2018 importados desde un paquete normalizado. La etapa 3A.1 agrega fundamentos locales de Supabase/PostgreSQL para identidad, roles, permisos, auditoria y RLS, sin conectar Supabase con paginas Astro. No contiene documentos academicos reales, datos personales de produccion, login, integracion con Cloudflare R2 ni URLs de descarga.
+La etapa actual mantiene un catalogo academico publico y estatico con los cinco planes de estudios 2018 importados desde un paquete normalizado. La etapa 3A.2A agrega configuracion de entorno y fabricas de clientes Supabase para Astro SSR, sin login visible, OAuth, middleware ni endpoints de autenticacion. No contiene documentos academicos reales, datos personales de produccion, integracion con Cloudflare R2 ni URLs de descarga.
 
 ## Alcance actual
 
 - Astro con TypeScript estricto.
-- Adaptador de Cloudflare configurado para un futuro despliegue en Pages/Workers.
+- Adaptador de Cloudflare configurado para un futuro despliegue en Pages/Workers, con `output: 'server'`.
 - Content Collections con datos JSON versionados en Git.
 - Catalogo activo con 386 cursos, 556 relaciones curso-plan, 5 planes curriculares y 11 unidades academicas.
 - Capa de consulta en `src/domain/catalog.ts` para aislar paginas y componentes del almacenamiento.
@@ -16,6 +16,8 @@ La etapa actual mantiene un catalogo academico publico y estatico con los cinco 
 - Endpoint JSON GET `/api/health` con version tomada de `package.json`.
 - Migraciones locales de Supabase/PostgreSQL para RBAC, dominios de correo, perfiles, auditoria y RLS.
 - Matriz TypeScript explicita de roles y permisos en `src/domain/auth/`.
+- Configuracion validada de `PUBLIC_SUPABASE_URL` y `PUBLIC_SUPABASE_PUBLISHABLE_KEY`.
+- Fabricas Supabase SSR en `src/infrastructure/supabase/` para navegador y servidor, sin ejecutar login ni consultas al importar.
 
 ## Requisitos
 
@@ -28,6 +30,14 @@ La etapa actual mantiene un catalogo academico publico y estatico con los cinco 
 npm ci
 npm run dev
 ```
+
+Variables locales para Supabase:
+
+```sh
+cp .env.example .env.local
+```
+
+Reemplazar solo `PUBLIC_SUPABASE_URL` y `PUBLIC_SUPABASE_PUBLISHABLE_KEY` en `.env.local`. La publishable key puede llegar al navegador; las llaves secretas, passwords de base de datos, JWT secrets y credenciales remotas no deben versionarse ni usarse en el runtime de Astro. La proteccion real de datos depende de RLS y de autorizacion validada en servidor.
 
 Supabase local para pruebas de base de datos:
 
@@ -69,7 +79,7 @@ src/
   config/           Configuracion general del sitio.
   content/          Datos activos del catalogo versionados en Git.
   domain/           Tipos, filtros, consultas y validaciones del catalogo; matriz auth local.
-  infrastructure/   Helpers de servidor, como el payload de health.
+  infrastructure/   Helpers de servidor, health y fabricas de clientes Supabase.
   layouts/          Shell compartido del documento y estilos globales.
   pages/            Rutas Astro y endpoints API.
 data/
@@ -90,13 +100,13 @@ Los registros activos se agregan editando JSON en `src/content/catalog/`, no com
 
 ## Limites vigentes
 
-- No conectar Supabase con paginas Astro todavia.
+- No usar los clientes Supabase desde paginas Astro para autenticar usuarios todavia.
 - No crear proyecto Supabase remoto ni ejecutar `supabase login` o `supabase link`.
 - No crear buckets, namespaces ni bindings Cloudflare nuevos.
-- No implementar login, OAuth, cookies, middleware ni autenticacion ficticia.
+- No implementar login, OAuth, middleware de renovacion, callbacks ni autenticacion ficticia.
 - No implementar formularios de subida.
 - No almacenar documentos, PDFs, TEX, binarios, libros comerciales ni registros reales de recursos.
-- No commitear secretos. Mantener archivos `.env*` ignorados excepto `.env.example`.
+- No commitear secretos. Mantener archivos `.env*` ignorados excepto `.env.example`; los valores reales van en `.env.local`.
 - No desplegar sin autorizacion explicita.
 
 ## Cloudflare SESSION/KV
