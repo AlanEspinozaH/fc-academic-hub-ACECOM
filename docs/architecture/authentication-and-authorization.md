@@ -36,7 +36,7 @@ Este contexto no autoriza rutas por si solo. Las decisiones de autorizacion futu
 
 `auth.users` es la identidad administrada por Supabase. `public.profiles` contiene datos de aplicacion: `user_id`, email normalizado, nombre visible y estado de cuenta. PostgreSQL valida el dominio completo del email contra `public.allowed_email_domains` antes de insertar o cambiar `auth.users.email`; un valor invalido hace rollback de la operacion.
 
-Despues de crear un usuario Auth valido, un trigger crea el perfil con `display_name = null` y `account_status = active`. Despues de cambiar el email, solo sincroniza `profiles.email` y `profiles.updated_at`; no toca nombre visible, estado, roles ni auditoria. La eliminacion del perfil sigue el `ON DELETE CASCADE` existente.
+Despues de crear un usuario Auth valido, un trigger crea el perfil con `display_name = null` y `account_status = active`. Despues de cambiar el email, solo sincroniza `profiles.email` y `profiles.updated_at`; no toca nombre visible, estado, roles ni auditoria. Una migracion correctiva agrega `private.reconcile_auth_user_profiles()` para perfiles preexistentes: recrea perfiles faltantes, corrige emails obsoletos, preserva `display_name`, `account_status` y `created_at`, y aborta sin cambios parciales si un email ya pertenece al perfil de otro `user_id`. La eliminacion del perfil sigue el `ON DELETE CASCADE` existente.
 
 No se copian automaticamente `raw_user_meta_data`, `app_metadata`, proveedor OAuth, avatar, tokens ni informacion de Google. No se asigna `student` ni ningun otro rol, y no existe administrador automatico. Google OAuth pertenece a 3B.2; un hook remoto Before User Created puede agregarse despues como validacion anticipada, pero no reemplaza los triggers PostgreSQL.
 
