@@ -84,6 +84,16 @@ const applyResponseHeaders = (response: Response, responseHeaders: Headers): Res
 };
 
 export const onRequest = defineMiddleware(async (context, next) => {
+	if (context.isPrerendered) {
+		context.locals.auth = {
+			status: 'anonymous',
+			user: null,
+			supabase: null,
+		};
+
+		return next();
+	}
+
 	const responseHeaders = new Headers();
 	let supabase: SupabaseServerClient | null = null;
 
