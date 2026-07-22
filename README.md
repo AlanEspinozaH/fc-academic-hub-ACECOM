@@ -2,7 +2,7 @@
 
 FC Academic Hub es la base de una plataforma academica comunitaria de la Facultad de Ciencias. El objetivo es organizar cursos, examenes, apuntes, silabos y recursos relacionados con seguridad y bajo costo operativo.
 
-La etapa actual mantiene un catalogo academico publico y estatico con los cinco planes de estudios 2018 importados desde un paquete normalizado. La etapa 3B.1 agrega el ciclo de vida PostgreSQL entre Supabase Auth y `public.profiles`, sin login visible, Google OAuth, callbacks, logout, proteccion de rutas ni consultas de roles desde Astro. No contiene documentos academicos reales, datos personales de produccion, integracion con Cloudflare R2 ni URLs de descarga.
+La etapa actual mantiene un catalogo academico publico y estatico con los cinco planes de estudios 2018 importados desde un paquete normalizado. La etapa 3B.2A agrega el flujo de aplicacion para Google OAuth con PKCE sobre Supabase SSR: pagina de acceso, inicio OAuth por POST, callback de aplicacion y logout por POST. No configura todavia credenciales reales de Google, proyecto Supabase remoto, rutas privadas, proteccion del catalogo, consultas de roles desde Astro, documentos reales, datos personales de produccion, integracion con Cloudflare R2 ni URLs de descarga.
 
 ## Alcance actual
 
@@ -20,6 +20,8 @@ La etapa actual mantiene un catalogo academico publico y estatico con los cinco 
 - Fabricas Supabase SSR en `src/infrastructure/supabase/` para navegador y servidor, sin ejecutar login ni consultas al importar.
 - Middleware SSR que valida identidad con `auth.getUser()` por request y expone `Astro.locals.auth` sin tokens ni roles.
 - Triggers PostgreSQL que validan dominios institucionales exactos en `auth.users` y crean/sincronizan `public.profiles` sin asignar roles.
+- Pagina GET `/auth/sign-in`, endpoint POST `/auth/google`, callback GET `/auth/callback` y endpoint POST `/auth/sign-out` para el flujo de aplicacion OAuth, sin credenciales reales configuradas.
+- Redaccion previa de `provider_token` y `provider_refresh_token` en respuestas del endpoint Supabase Auth de intercambio de token, antes de que `auth-js` procese y persista la sesion.
 
 ## Requisitos
 
@@ -102,11 +104,13 @@ Los registros activos se agregan editando JSON en `src/content/catalog/`, no com
 
 ## Limites vigentes
 
-- No crear paginas privadas ni usar `Astro.locals.auth` para bloquear rutas todavia.
+- No crear paginas privadas ni usar `Astro.locals.auth` para bloquear rutas del catalogo todavia.
 - No crear proyecto Supabase remoto ni ejecutar `supabase login` o `supabase link`.
+- No configurar credenciales reales de Google ni allow-lists remotas de callbacks hasta 3B.2B.
 - No crear buckets, namespaces ni bindings Cloudflare nuevos.
-- No implementar login, Google OAuth, callbacks, logout, proteccion de rutas, administracion de roles ni autenticacion ficticia.
+- No implementar proteccion de rutas, administracion de roles ni autenticacion ficticia.
 - No asignar roles ni crear administradores automaticamente al crear perfiles.
+- No solicitar scopes ni almacenar `provider_token` o `provider_refresh_token` de Google.
 - No implementar formularios de subida.
 - No almacenar documentos, PDFs, TEX, binarios, libros comerciales ni registros reales de recursos.
 - No commitear secretos. Mantener archivos `.env*` ignorados excepto `.env.example`; los valores reales van en `.env.local`.
@@ -114,4 +118,4 @@ Los registros activos se agregan editando JSON en `src/content/catalog/`, no com
 
 ## Cloudflare SESSION/KV
 
-Con `@astrojs/cloudflare@14.1.4`, Astro muestra que habilita sesiones con KV `SESSION` si no hay driver de sesion configurado. FC Academic Hub no usa sesiones en esta etapa y `wrangler.jsonc` no declara KV. La decision esta documentada en `docs/adr/0002-static-academic-catalog.md` y debe revisarse antes de desplegar una etapa futura.
+Con `@astrojs/cloudflare@14.1.4`, Astro muestra que habilita sesiones con KV `SESSION` si no hay driver de sesion configurado. FC Academic Hub no usa sesiones de Astro en esta etapa y `wrangler.jsonc` no declara KV. La decision esta documentada en `docs/adr/0002-static-academic-catalog.md` y debe revisarse antes de desplegar una etapa futura.
