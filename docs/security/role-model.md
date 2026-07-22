@@ -49,3 +49,11 @@ Ambas funciones usan `auth.uid()` para identificar al actor. Un cliente no puede
 ## Auditoria
 
 `public.role_audit_log` registra acciones `grant` y `revoke`. Los clientes no pueden insertar, actualizar ni borrar auditoria; las entradas de RPC se escriben dentro de la misma transaccion que el cambio de rol. La tabla tiene trigger de bloqueo para `UPDATE` y `DELETE`, por lo que es append-only.
+
+## Recursos academicos
+
+La etapa 4A aplica estos permisos a metadatos de recursos en PostgreSQL. `anon` solo lee recursos `approved` con visibilidad `public`. Usuarios autenticados con perfil `active` leen recursos `approved` con visibilidad `restricted`; cuentas `suspended` o `disabled` pierden acceso autenticado.
+
+`contributor` puede crear y editar recursos propios en `draft` o `rejected`, pero no revisar ni publicar. `reviewer` puede revisar y rechazar recursos `pending`, pero no aprobar. `moderator` y `administrator` pueden aprobar/publicar. `administrator` conserva lectura administrativa y gestion de roles.
+
+Las claves privadas de storage viven en `private.resource_storage_objects`; `public.resource_files` solo expone metadatos no sensibles. Las transiciones de estado de revision y storage se realizan mediante RPC transaccionales auditadas, no mediante `UPDATE` directo de clientes.

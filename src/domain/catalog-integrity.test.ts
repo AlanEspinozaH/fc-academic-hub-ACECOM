@@ -71,7 +71,7 @@ const makeResourceFixture = (courseId = 'course:bma01'): AcademicResource => ({
 	language: 'es',
 	resourceType: 'syllabus',
 	reviewStatus: 'approved',
-	rightsStatus: 'demo-only',
+	rightsStatus: 'bibliographic-reference-only',
 	slug: 'recurso-demo-integrity-fixture',
 	tags: ['demostracion'],
 	title: 'Recurso demostrativo de integridad',
