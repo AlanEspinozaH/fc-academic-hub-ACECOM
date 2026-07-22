@@ -1,4 +1,18 @@
 type Runtime = import('@astrojs/cloudflare').Runtime<Env>;
+type SupabaseServerClient = import('./infrastructure/supabase/server').SupabaseServerClient;
+
+type AuthStatus = 'unconfigured' | 'anonymous' | 'authenticated' | 'error';
+
+interface AuthenticatedUser {
+	readonly id: string;
+	readonly email: string | null;
+}
+
+interface AuthContext {
+	readonly status: AuthStatus;
+	readonly user: AuthenticatedUser | null;
+	readonly supabase: SupabaseServerClient | null;
+}
 
 interface ImportMetaEnv {
 	readonly PUBLIC_SUPABASE_URL: string;
@@ -10,5 +24,7 @@ interface ImportMeta {
 }
 
 declare namespace App {
-	interface Locals extends Runtime {}
+	interface Locals extends Runtime {
+		auth: AuthContext;
+	}
 }
