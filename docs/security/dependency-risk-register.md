@@ -24,7 +24,7 @@ Arbol reportado:
 
 Tooling afectado: adaptador Cloudflare, plugin Vite de Cloudflare, Wrangler y Miniflare usados para build, preview y tooling local. No pertenece al dominio academico ni a la matriz de permisos.
 
-Exposicion runtime: no demostrada. `npm run build` aprobo y la inspeccion de `dist` con `rg -n "miniflare|sharp" dist` no encontro coincidencias. El dry-run de `wrangler deploy` no aplica a este proyecto Pages porque Wrangler usa `dist/server/wrangler.json` y rechaza el binding reservado `ASSETS`; no se debe editar, eliminar ni renombrar `ASSETS` por ese resultado ni repetir ese dry-run.
+Exposicion runtime: no demostrada. `npm run build` aprobo y la inspeccion de `dist` con `rg -n "miniflare|sharp" dist` no encontro coincidencias. Tras migrar el proyecto SSR a Cloudflare Workers, `wrangler deploy --dry-run --outdir` es una validacion aplicable del bundle y de la configuracion sin desplegar ni modificar recursos remotos.
 
 Correccion disponible: no existe actualmente una actualizacion normal compatible que elimine `sharp@0.34.5`. `wrangler@4.113.0` depende de `miniflare@4.20260721.0`, y `miniflare@4.20260721.0` todavia declara `sharp@0.34.5`.
 
