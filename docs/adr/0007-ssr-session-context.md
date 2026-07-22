@@ -16,7 +16,11 @@ Crear `src/middleware.ts` con `defineMiddleware`. En cada request el middleware 
 
 Cuando Supabase no esta configurado, `Astro.locals.auth` queda en estado `unconfigured`, con `user: null` y `supabase: null`, y la request continua. Cuando el cliente existe, la identidad se valida con `supabase.auth.getUser()`. Una sesion ausente se interpreta como `anonymous`; un usuario validado queda como `authenticated`; un error inesperado de `getUser` queda como `error`.
 
-El middleware no usa `auth.getSession()` como autoridad, no llama `getClaims`, no consulta roles, no autoriza rutas y no dispara login, logout ni OAuth. Despues de `next()`, propaga a la respuesta final los `Set-Cookie` y headers de seguridad escritos por Supabase, incluyendo `Cache-Control` y `Pragma`.
+El middleware no usa `auth.getSession()` como autoridad, no llama `getClaims`, no consulta roles, no autoriza rutas y no dispara login, logout ni OAuth. Despues de `next()`, propaga a la respuesta final los `Set-Cookie` y headers de seguridad escritos por Supabase, incluyendo `Cache-Control`, `Expires` y `Pragma`.
+
+La propagacion de cookies depende explicitamente de `Headers.getSetCookie()`, disponible en el runtime objetivo de Cloudflare con `compatibility_date` 2026-07-21. No se usa `Headers.get('Set-Cookie')` porque puede mezclar multiples cookies en una sola cadena ambigua. Cada cookie obtenida por `getSetCookie()` se agrega individualmente a la respuesta final con `append('Set-Cookie', cookie)`.
+
+Para los demas headers escritos por Supabase se conserva la semantica de reemplazo con `headers.set()`. Esto permite que `Cache-Control`, `Expires` y `Pragma` de Supabase prevalezcan sobre headers previos de la respuesta Astro y evita cachear respuestas SSR que hayan transportado cookies de sesion.
 
 Los `locals` expuestos son:
 
