@@ -7,3 +7,5 @@ package-lock.json
 AGENTS.md
 CLAUDE.md
 .vscode
+supabase/.temp/
+supabase/.branches/
