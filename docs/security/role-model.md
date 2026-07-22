@@ -44,7 +44,7 @@ Los clientes no tienen `INSERT`, `UPDATE` ni `DELETE` directo sobre `public.user
 
 Ambas funciones usan `auth.uid()` para identificar al actor. Un cliente no puede proporcionar el UUID del actor. Solo usuarios con rol activo `administrator` pueden ejecutarlas con exito. `moderator`, `reviewer`, `contributor` y `student` no pueden gestionar roles. Ningun usuario puede autoasignarse ni autorrevocarse roles por RPC.
 
-`public.user_roles` conserva historial mediante `revoked_at` y `revoked_by`. Un indice unico parcial impide dos asignaciones activas del mismo rol para el mismo usuario.
+`public.user_roles` conserva historial mediante `revoked_at` y `revoked_by`. Un indice unico parcial impide dos asignaciones activas del mismo rol para el mismo usuario. La creacion automatica de `public.profiles` desde `auth.users` no asigna roles ni crea administradores; cualquier asignacion futura debe tener un actor real en `granted_by` y su auditoria correspondiente.
 
 ## Auditoria
 

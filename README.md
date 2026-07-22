@@ -2,7 +2,7 @@
 
 FC Academic Hub es la base de una plataforma academica comunitaria de la Facultad de Ciencias. El objetivo es organizar cursos, examenes, apuntes, silabos y recursos relacionados con seguridad y bajo costo operativo.
 
-La etapa actual mantiene un catalogo academico publico y estatico con los cinco planes de estudios 2018 importados desde un paquete normalizado. La etapa 3A.2B agrega middleware SSR para contexto de sesion en `Astro.locals` mediante Supabase Auth, sin login visible, OAuth, endpoints de autenticacion ni rutas privadas. No contiene documentos academicos reales, datos personales de produccion, integracion con Cloudflare R2 ni URLs de descarga.
+La etapa actual mantiene un catalogo academico publico y estatico con los cinco planes de estudios 2018 importados desde un paquete normalizado. La etapa 3B.1 agrega el ciclo de vida PostgreSQL entre Supabase Auth y `public.profiles`, sin login visible, Google OAuth, callbacks, logout, proteccion de rutas ni consultas de roles desde Astro. No contiene documentos academicos reales, datos personales de produccion, integracion con Cloudflare R2 ni URLs de descarga.
 
 ## Alcance actual
 
@@ -14,11 +14,12 @@ La etapa actual mantiene un catalogo academico publico y estatico con los cinco 
 - Validaciones de integridad para duplicados, relaciones cruzadas, prerrequisitos, ciclos, silabos, fuentes y restricciones de storage.
 - Paginas publicas para `/`, `/schools`, `/schools/[slug]`, `/courses`, `/courses/[slug]`, `/resources`, `/about` y 404.
 - Endpoint JSON GET `/api/health` con version tomada de `package.json`.
-- Migraciones locales de Supabase/PostgreSQL para RBAC, dominios de correo, perfiles, auditoria y RLS.
+- Migraciones locales de Supabase/PostgreSQL para RBAC, dominios de correo, perfiles, auditoria, RLS y sincronizacion Auth -> profiles.
 - Matriz TypeScript explicita de roles y permisos en `src/domain/auth/`.
 - Configuracion validada de `PUBLIC_SUPABASE_URL` y `PUBLIC_SUPABASE_PUBLISHABLE_KEY`.
 - Fabricas Supabase SSR en `src/infrastructure/supabase/` para navegador y servidor, sin ejecutar login ni consultas al importar.
 - Middleware SSR que valida identidad con `auth.getUser()` por request y expone `Astro.locals.auth` sin tokens ni roles.
+- Triggers PostgreSQL que validan dominios institucionales exactos en `auth.users` y crean/sincronizan `public.profiles` sin asignar roles.
 
 ## Requisitos
 
@@ -43,14 +44,14 @@ Reemplazar solo `PUBLIC_SUPABASE_URL` y `PUBLIC_SUPABASE_PUBLISHABLE_KEY` en `.e
 Supabase local para pruebas de base de datos:
 
 ```sh
-npx --yes supabase@latest start
-npx --yes supabase@latest db reset
-npx --yes supabase@latest test db
-npx --yes supabase@latest db lint --local
-npx --yes supabase@latest stop
+npx --yes supabase@2.109.1 start
+npx --yes supabase@2.109.1 db reset
+npx --yes supabase@2.109.1 test db
+npx --yes supabase@2.109.1 db lint --local
+npx --yes supabase@2.109.1 stop
 ```
 
-La CLI probada para 3A.1 fue Supabase CLI 2.109.1. No usar `supabase login`, `supabase link`, `db push` ni variantes `--linked` en esta etapa.
+La CLI probada para 3B.1 fue Supabase CLI 2.109.1. No usar `supabase login`, `supabase link`, `db push` ni variantes `--linked` en esta etapa.
 
 ## Controles de calidad
 
@@ -104,7 +105,8 @@ Los registros activos se agregan editando JSON en `src/content/catalog/`, no com
 - No crear paginas privadas ni usar `Astro.locals.auth` para bloquear rutas todavia.
 - No crear proyecto Supabase remoto ni ejecutar `supabase login` o `supabase link`.
 - No crear buckets, namespaces ni bindings Cloudflare nuevos.
-- No implementar login, OAuth, callbacks, administracion de roles ni autenticacion ficticia.
+- No implementar login, Google OAuth, callbacks, logout, proteccion de rutas, administracion de roles ni autenticacion ficticia.
+- No asignar roles ni crear administradores automaticamente al crear perfiles.
 - No implementar formularios de subida.
 - No almacenar documentos, PDFs, TEX, binarios, libros comerciales ni registros reales de recursos.
 - No commitear secretos. Mantener archivos `.env*` ignorados excepto `.env.example`; los valores reales van en `.env.local`.

@@ -1,10 +1,10 @@
 # Autenticacion y autorizacion
 
-La etapa 3A.2B agrega middleware SSR para contexto de sesion en `Astro.locals` sobre las fabricas Supabase de 3A.2A y los fundamentos locales de PostgreSQL de 3A.1. No implementa login visible, OAuth, endpoints de callback, rutas logout, paginas privadas ni administracion de roles. Tampoco mueve el catalogo academico fuera de `src/content/catalog/`.
+La etapa 3B.1 agrega el ciclo de vida PostgreSQL entre Supabase Auth y `public.profiles` sobre las fabricas Supabase de 3A.2A, el middleware SSR de 3A.2B y los fundamentos locales de PostgreSQL de 3A.1. No implementa login visible, Google OAuth, endpoints de callback, rutas logout, paginas privadas, proteccion de rutas ni administracion de roles. Tampoco mueve el catalogo academico fuera de `src/content/catalog/`.
 
 ## Separacion de responsabilidades
 
-Autenticacion responde quien es el usuario. El middleware SSR de 3A.2B valida la identidad con `supabase.auth.getUser()` por request y expone un contexto minimo en `Astro.locals.auth`. No hay pantallas de ingreso, OAuth, callback, logout ni creacion automatica de perfiles; eso queda para etapas posteriores.
+Autenticacion responde quien es el usuario. El middleware SSR de 3A.2B valida la identidad con `supabase.auth.getUser()` por request y expone un contexto minimo en `Astro.locals.auth`. La etapa 3B.1 sincroniza `auth.users` con `public.profiles` mediante triggers PostgreSQL. No hay pantallas de ingreso, Google OAuth, callback, logout ni proteccion de rutas; eso queda para etapas posteriores.
 
 Autorizacion responde que puede hacer ese usuario. PostgreSQL es la fuente autoritativa para roles: `public.user_roles` conserva asignaciones historicas, las funciones de autorizacion consultan asignaciones activas con `auth.uid()`, y las politicas RLS se evaluan en el servidor.
 
@@ -32,18 +32,26 @@ El adaptador continua siendo `@astrojs/cloudflare` con `output: 'server'`; no se
 
 Este contexto no autoriza rutas por si solo. Las decisiones de autorizacion futuras deben ejecutarse en servidor y mantener PostgreSQL como autoridad de roles mediante RLS y funciones controladas.
 
+## Ciclo de vida Auth/profiles
+
+`auth.users` es la identidad administrada por Supabase. `public.profiles` contiene datos de aplicacion: `user_id`, email normalizado, nombre visible y estado de cuenta. PostgreSQL valida el dominio completo del email contra `public.allowed_email_domains` antes de insertar o cambiar `auth.users.email`; un valor invalido hace rollback de la operacion.
+
+Despues de crear un usuario Auth valido, un trigger crea el perfil con `display_name = null` y `account_status = active`. Despues de cambiar el email, solo sincroniza `profiles.email` y `profiles.updated_at`; no toca nombre visible, estado, roles ni auditoria. La eliminacion del perfil sigue el `ON DELETE CASCADE` existente.
+
+No se copian automaticamente `raw_user_meta_data`, `app_metadata`, proveedor OAuth, avatar, tokens ni informacion de Google. No se asigna `student` ni ningun otro rol, y no existe administrador automatico. Google OAuth pertenece a 3B.2; un hook remoto Before User Created puede agregarse despues como validacion anticipada, pero no reemplaza los triggers PostgreSQL.
+
 ## Entorno local
 
-Supabase local se configura en `supabase/config.toml`. La CLI probada para esta etapa fue `supabase 2.109.1` via `npx --yes supabase@latest`. El entorno local no debe exponerse a Internet.
+Supabase local se configura en `supabase/config.toml`. La CLI probada para esta etapa fue `supabase 2.109.1` via `npx --yes supabase@2.109.1`. El entorno local no debe exponerse a Internet.
 
 Comandos locales:
 
 ```sh
-npx --yes supabase@latest start
-npx --yes supabase@latest db reset
-npx --yes supabase@latest test db
-npx --yes supabase@latest db lint --local
-npx --yes supabase@latest stop
+npx --yes supabase@2.109.1 start
+npx --yes supabase@2.109.1 db reset
+npx --yes supabase@2.109.1 test db
+npx --yes supabase@2.109.1 db lint --local
+npx --yes supabase@2.109.1 stop
 ```
 
 No usar `supabase login`, `supabase link`, `db push` ni variantes `--linked` para esta etapa.
