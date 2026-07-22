@@ -24,6 +24,7 @@ Al insertar un usuario Auth valido, PostgreSQL crea un perfil con `user_id`, ema
 La eliminacion de perfiles sigue dependiendo del `ON DELETE CASCADE` existente desde `public.profiles.user_id` hacia `auth.users(id)`.
 
 La migracion revisa usuarios Auth preexistentes antes del backfill. Si existe cualquier email no permitido, aborta sin crear perfiles parciales. Para usuarios validos existentes, inserta perfiles faltantes con `ON CONFLICT DO NOTHING` y no sobrescribe `display_name`, `account_status` ni `created_at` de perfiles existentes.
+Una migracion correctiva posterior agrega `private.reconcile_auth_user_profiles()` para reconciliar perfiles preexistentes que quedaron desincronizados durante ese backfill. La funcion valida todos los emails de `auth.users` antes de modificar perfiles, aborta con un mensaje controlado si detecta una colision donde el email normalizado ya pertenece al perfil de otro `user_id`, recrea perfiles faltantes y corrige emails obsoletos. Al corregir un perfil existente preserva `display_name`, `account_status` y `created_at`; `updated_at` solo cambia cuando el email cambia.
 
 Las funciones de trigger usan `SECURITY DEFINER`, fijan `search_path` vacio, referencian objetos con nombres totalmente calificados y no usan SQL dinamico. `EXECUTE` se revoca de `PUBLIC`, `anon` y `authenticated`; los triggers sobre `auth.users` son la unica ruta esperada de ejecucion.
 
@@ -33,7 +34,7 @@ Las funciones de trigger usan `SECURITY DEFINER`, fijan `search_path` vacio, ref
 
 La creacion de perfiles no asigna `student` ni ningun otro rol. `public.user_roles` conserva `granted_by` y auditoria, por lo que la asignacion requiere un actor real y auditable. Tampoco se crea un administrador automaticamente; el primer administrador sigue siendo un bootstrap manual y auditable.
 
-Google OAuth pertenece a 3B.2. Un Before User Created hook remoto puede agregarse despues como validacion anticipada de experiencia de usuario, pero no reemplaza los triggers PostgreSQL ni forma parte de esta implementacion.
+Google OAuth pertenece a 3B.2. La migracion correctiva de consistencia no cambia ese alcance. Un Before User Created hook remoto puede agregarse despues como validacion anticipada de experiencia de usuario, pero no reemplaza los triggers PostgreSQL ni forma parte de esta implementacion.
 
 ## Consecuencias
 

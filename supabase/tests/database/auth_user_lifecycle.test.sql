@@ -3,39 +3,7 @@ CREATE EXTENSION IF NOT EXISTS pgtap WITH SCHEMA extensions;
 
 BEGIN;
 
-SELECT plan(37);
-
-CREATE OR REPLACE FUNCTION pg_temp.try_insert_auth_user(target_user_id uuid, email_address text)
-RETURNS boolean
-LANGUAGE plpgsql
-AS $$
-BEGIN
-	INSERT INTO auth.users (id, aud, role, email, email_confirmed_at, created_at, updated_at)
-	VALUES (target_user_id, 'authenticated', 'authenticated', email_address, now(), now(), now());
-
-	RETURN true;
-EXCEPTION
-	WHEN OTHERS THEN
-		RETURN false;
-END;
-$$;
-
-CREATE OR REPLACE FUNCTION pg_temp.try_update_auth_user_email(target_user_id uuid, email_address text)
-RETURNS boolean
-LANGUAGE plpgsql
-AS $$
-BEGIN
-	UPDATE auth.users
-	SET email = email_address,
-		updated_at = now()
-	WHERE id = target_user_id;
-
-	RETURN true;
-EXCEPTION
-	WHEN OTHERS THEN
-		RETURN false;
-END;
-$$;
+SELECT plan(56);
 
 CREATE TEMP TABLE lifecycle_test_user_ids (id uuid PRIMARY KEY);
 
@@ -47,13 +15,20 @@ VALUES
 	('00000000-0000-0000-0000-000000000310'),
 	('00000000-0000-0000-0000-000000000320'),
 	('00000000-0000-0000-0000-000000000330'),
+	('00000000-0000-0000-0000-000000000331'),
+	('00000000-0000-0000-0000-000000000332'),
+	('00000000-0000-0000-0000-000000000333'),
+	('00000000-0000-0000-0000-000000000334'),
+	('00000000-0000-0000-0000-000000000335'),
+	('00000000-0000-0000-0000-000000000336'),
 	('00000000-0000-0000-0000-000000000391'),
 	('00000000-0000-0000-0000-000000000392'),
 	('00000000-0000-0000-0000-000000000393'),
 	('00000000-0000-0000-0000-000000000394'),
 	('00000000-0000-0000-0000-000000000395'),
 	('00000000-0000-0000-0000-000000000396'),
-	('00000000-0000-0000-0000-000000000397');
+	('00000000-0000-0000-0000-000000000397'),
+	('00000000-0000-0000-0000-000000000398');
 
 SELECT ok(
 	to_regprocedure('private.enforce_allowed_auth_user_email()') IS NOT NULL,
@@ -62,6 +37,10 @@ SELECT ok(
 SELECT ok(
 	to_regprocedure('private.sync_auth_user_profile()') IS NOT NULL,
 	'sync_auth_user_profile exists'
+);
+SELECT ok(
+	to_regprocedure('private.reconcile_auth_user_profiles()') IS NOT NULL,
+	'reconcile_auth_user_profiles exists'
 );
 SELECT ok(
 	EXISTS (
@@ -88,7 +67,8 @@ SELECT ok(
 		WITH expected(function_name) AS (
 			VALUES
 				('enforce_allowed_auth_user_email'),
-				('sync_auth_user_profile')
+				('sync_auth_user_profile'),
+				('reconcile_auth_user_profiles')
 		),
 		function_settings AS (
 			SELECT
@@ -105,12 +85,12 @@ SELECT ok(
 				ON pg_proc.pronamespace = pg_namespace.oid
 				AND pg_proc.proname = expected.function_name
 		)
-		SELECT count(*) = 2
+		SELECT count(*) = 3
 			AND bool_and(prosecdef)
 			AND bool_and(has_empty_search_path)
 		FROM function_settings
 	),
-	'lifecycle trigger functions are SECURITY DEFINER with empty search_path'
+	'private lifecycle functions are SECURITY DEFINER with empty search_path'
 );
 SELECT ok(
 	NOT EXISTS (
@@ -122,7 +102,8 @@ SELECT ok(
 			WHERE pg_namespace.nspname = 'private'
 				AND pg_proc.proname IN (
 					'enforce_allowed_auth_user_email',
-					'sync_auth_user_profile'
+					'sync_auth_user_profile',
+					'reconcile_auth_user_profiles'
 				)
 		)
 		SELECT 1
@@ -133,7 +114,7 @@ SELECT ok(
 		WHERE function_acl.grantee = 0::oid
 			AND function_acl.privilege_type = 'EXECUTE'
 	),
-	'PUBLIC cannot execute lifecycle trigger functions directly'
+	'PUBLIC cannot execute private lifecycle functions directly'
 );
 SELECT ok(
 	NOT EXISTS (
@@ -145,7 +126,8 @@ SELECT ok(
 			WHERE pg_namespace.nspname = 'private'
 				AND pg_proc.proname IN (
 					'enforce_allowed_auth_user_email',
-					'sync_auth_user_profile'
+					'sync_auth_user_profile',
+					'reconcile_auth_user_profiles'
 				)
 		)
 		SELECT 1
@@ -156,21 +138,37 @@ SELECT ok(
 		WHERE function_acl.grantee IN ('anon'::regrole::oid, 'authenticated'::regrole::oid)
 			AND function_acl.privilege_type = 'EXECUTE'
 	),
-	'anon and authenticated cannot execute lifecycle trigger functions directly'
+	'anon and authenticated cannot execute private lifecycle functions directly'
 );
 
-SELECT ok(
-	pg_temp.try_insert_auth_user(
-		'00000000-0000-0000-0000-000000000301',
-		'usuario@uni.pe'
-	),
+SELECT lives_ok(
+	$$
+		INSERT INTO auth.users (id, aud, role, email, email_confirmed_at, created_at, updated_at)
+		VALUES (
+			'00000000-0000-0000-0000-000000000301',
+			'authenticated',
+			'authenticated',
+			'usuario@uni.pe',
+			now(),
+			now(),
+			now()
+		)
+	$$,
 	'INSERT usuario@uni.pe works'
 );
-SELECT ok(
-	pg_temp.try_insert_auth_user(
-		'00000000-0000-0000-0000-000000000302',
-		'MAYUSCULA@UNI.PE'
-	),
+SELECT lives_ok(
+	$$
+		INSERT INTO auth.users (id, aud, role, email, email_confirmed_at, created_at, updated_at)
+		VALUES (
+			'00000000-0000-0000-0000-000000000302',
+			'authenticated',
+			'authenticated',
+			'MAYUSCULA@UNI.PE',
+			now(),
+			now(),
+			now()
+		)
+	$$,
 	'INSERT with uppercase institutional email works'
 );
 
@@ -256,54 +254,159 @@ SELECT is(
 	'no user_role is created automatically'
 );
 
-SELECT ok(
-	NOT pg_temp.try_insert_auth_user(
-		'00000000-0000-0000-0000-000000000391',
-		'usuario@falsauni.pe'
-	),
+SELECT throws_ok(
+	$$
+		INSERT INTO auth.users (id, aud, role, email, email_confirmed_at, created_at, updated_at)
+		VALUES (
+			'00000000-0000-0000-0000-000000000391',
+			'authenticated',
+			'authenticated',
+			'usuario@falsauni.pe',
+			now(),
+			now(),
+			now()
+		)
+	$$,
+	'23514',
+	'institutional email is required',
 	'falsauni.pe is rejected'
 );
-SELECT ok(
-	NOT pg_temp.try_insert_auth_user(
-		'00000000-0000-0000-0000-000000000392',
-		'usuario@uni.pe.example.com'
-	),
+SELECT throws_ok(
+	$$
+		INSERT INTO auth.users (id, aud, role, email, email_confirmed_at, created_at, updated_at)
+		VALUES (
+			'00000000-0000-0000-0000-000000000392',
+			'authenticated',
+			'authenticated',
+			'usuario@uni.pe.example.com',
+			now(),
+			now(),
+			now()
+		)
+	$$,
+	'23514',
+	'institutional email is required',
 	'uni.pe.example.com is rejected'
 );
-SELECT ok(
-	NOT pg_temp.try_insert_auth_user(
-		'00000000-0000-0000-0000-000000000393',
-		'usuario@exampleuni.pe'
-	),
+SELECT throws_ok(
+	$$
+		INSERT INTO auth.users (id, aud, role, email, email_confirmed_at, created_at, updated_at)
+		VALUES (
+			'00000000-0000-0000-0000-000000000393',
+			'authenticated',
+			'authenticated',
+			'usuario@exampleuni.pe',
+			now(),
+			now(),
+			now()
+		)
+	$$,
+	'23514',
+	'institutional email is required',
 	'exampleuni.pe is rejected'
 );
-SELECT ok(
-	NOT pg_temp.try_insert_auth_user(
-		'00000000-0000-0000-0000-000000000394',
-		'usuario@subdominio.uni.pe'
-	),
+SELECT throws_ok(
+	$$
+		INSERT INTO auth.users (id, aud, role, email, email_confirmed_at, created_at, updated_at)
+		VALUES (
+			'00000000-0000-0000-0000-000000000394',
+			'authenticated',
+			'authenticated',
+			'usuario@subdominio.uni.pe',
+			now(),
+			now(),
+			now()
+		)
+	$$,
+	'23514',
+	'institutional email is required',
 	'subdominio.uni.pe is rejected'
 );
-SELECT ok(
-	NOT pg_temp.try_insert_auth_user(
-		'00000000-0000-0000-0000-000000000395',
-		'usuario@'
-	),
+SELECT throws_ok(
+	$$
+		INSERT INTO auth.users (id, aud, role, email, email_confirmed_at, created_at, updated_at)
+		VALUES (
+			'00000000-0000-0000-0000-000000000395',
+			'authenticated',
+			'authenticated',
+			'usuario@',
+			now(),
+			now(),
+			now()
+		)
+	$$,
+	'23514',
+	'institutional email is required',
 	'empty email domain is rejected'
 );
-SELECT ok(
-	NOT pg_temp.try_insert_auth_user(
-		'00000000-0000-0000-0000-000000000396',
-		'texto-sin-arroba'
-	),
+SELECT throws_ok(
+	$$
+		INSERT INTO auth.users (id, aud, role, email, email_confirmed_at, created_at, updated_at)
+		VALUES (
+			'00000000-0000-0000-0000-000000000396',
+			'authenticated',
+			'authenticated',
+			'texto-sin-arroba',
+			now(),
+			now(),
+			now()
+		)
+	$$,
+	'23514',
+	'institutional email is required',
 	'email without at sign is rejected'
 );
-SELECT ok(
-	NOT pg_temp.try_insert_auth_user(
-		'00000000-0000-0000-0000-000000000397',
-		NULL::text
-	),
+SELECT throws_ok(
+	$$
+		INSERT INTO auth.users (id, aud, role, email, email_confirmed_at, created_at, updated_at)
+		VALUES (
+			'00000000-0000-0000-0000-000000000397',
+			'authenticated',
+			'authenticated',
+			NULL,
+			now(),
+			now(),
+			now()
+		)
+	$$,
+	'23514',
+	'institutional email is required',
 	'null email is rejected'
+);
+SELECT throws_ok(
+	$$
+		INSERT INTO auth.users (id, aud, role, email, email_confirmed_at, created_at, updated_at)
+		VALUES (
+			'00000000-0000-0000-0000-000000000398',
+			'authenticated',
+			'authenticated',
+			'',
+			now(),
+			now(),
+			now()
+		)
+	$$,
+	'23514',
+	'institutional email is required',
+	'empty literal email is rejected'
+);
+SELECT is(
+	(
+		SELECT count(*)::integer
+		FROM auth.users
+		WHERE id = '00000000-0000-0000-0000-000000000398'
+	),
+	0,
+	'failed empty literal insert leaves no auth.users row'
+);
+SELECT is(
+	(
+		SELECT count(*)::integer
+		FROM public.profiles
+		WHERE user_id = '00000000-0000-0000-0000-000000000398'
+	),
+	0,
+	'failed empty literal insert leaves no profile'
 );
 SELECT is(
 	(
@@ -356,11 +459,13 @@ SET display_name = 'Nombre preservado',
 	account_status = 'suspended'::public.account_status
 WHERE user_id = '00000000-0000-0000-0000-000000000310';
 
-SELECT ok(
-	pg_temp.try_update_auth_user_email(
-		'00000000-0000-0000-0000-000000000310',
-		'cambio-final@uni.pe'
-	),
+SELECT lives_ok(
+	$$
+		UPDATE auth.users
+		SET email = 'cambio-final@uni.pe',
+			updated_at = now()
+		WHERE id = '00000000-0000-0000-0000-000000000310'
+	$$,
 	'changing auth.users email to another uni.pe address works'
 );
 SELECT is(
@@ -372,11 +477,15 @@ SELECT is(
 	'cambio-final@uni.pe',
 	'profile email follows auth.users email changes'
 );
-SELECT ok(
-	NOT pg_temp.try_update_auth_user_email(
-		'00000000-0000-0000-0000-000000000310',
-		'cambio@falsauni.pe'
-	),
+SELECT throws_ok(
+	$$
+		UPDATE auth.users
+		SET email = 'cambio@falsauni.pe',
+			updated_at = now()
+		WHERE id = '00000000-0000-0000-0000-000000000310'
+	$$,
+	'23514',
+	'institutional email is required',
 	'changing auth.users email to an invalid domain is rejected'
 );
 SELECT is(
@@ -516,6 +625,274 @@ SELECT is(
 	),
 	'backfill preserves existing created_at'
 );
+
+INSERT INTO auth.users (id, aud, role, email, email_confirmed_at, created_at, updated_at)
+VALUES (
+	'00000000-0000-0000-0000-000000000331',
+	'authenticated',
+	'authenticated',
+	'reconcile-missing@uni.pe',
+	now(),
+	now(),
+	now()
+);
+
+DELETE FROM public.profiles
+WHERE user_id = '00000000-0000-0000-0000-000000000331';
+
+INSERT INTO auth.users (id, aud, role, email, email_confirmed_at, created_at, updated_at)
+VALUES (
+	'00000000-0000-0000-0000-000000000332',
+	'authenticated',
+	'authenticated',
+	'reconcile-current@uni.pe',
+	now(),
+	now(),
+	now()
+);
+
+DELETE FROM public.profiles
+WHERE user_id = '00000000-0000-0000-0000-000000000332';
+
+INSERT INTO public.profiles (
+	user_id,
+	email,
+	display_name,
+	account_status,
+	created_at,
+	updated_at
+)
+VALUES (
+	'00000000-0000-0000-0000-000000000332',
+	'reconcile-obsolete@uni.pe',
+	'Perfil reconciliado',
+	'suspended'::public.account_status,
+	'2026-01-01 00:00:00+00'::timestamptz,
+	'2026-01-02 00:00:00+00'::timestamptz
+);
+
+INSERT INTO auth.users (id, aud, role, email, email_confirmed_at, created_at, updated_at)
+VALUES (
+	'00000000-0000-0000-0000-000000000333',
+	'authenticated',
+	'authenticated',
+	'reconcile-stable@uni.pe',
+	now(),
+	now(),
+	now()
+);
+
+DELETE FROM public.profiles
+WHERE user_id = '00000000-0000-0000-0000-000000000333';
+
+INSERT INTO public.profiles (
+	user_id,
+	email,
+	display_name,
+	account_status,
+	created_at,
+	updated_at
+)
+VALUES (
+	'00000000-0000-0000-0000-000000000333',
+	'reconcile-stable@uni.pe',
+	'Perfil estable',
+	'disabled'::public.account_status,
+	'2026-02-01 00:00:00+00'::timestamptz,
+	'2026-02-02 00:00:00+00'::timestamptz
+);
+
+CREATE TEMP TABLE reconcile_profile_snapshot AS
+SELECT user_id, created_at, updated_at
+FROM public.profiles
+WHERE user_id IN (
+	'00000000-0000-0000-0000-000000000332',
+	'00000000-0000-0000-0000-000000000333'
+);
+
+SELECT is(
+	(
+		SELECT count(*)::integer
+		FROM public.profiles
+		WHERE user_id = '00000000-0000-0000-0000-000000000331'
+	),
+	0,
+	'reconciliation setup has a missing profile'
+);
+SELECT is(
+	(
+		SELECT email
+		FROM public.profiles
+		WHERE user_id = '00000000-0000-0000-0000-000000000332'
+	),
+	'reconcile-obsolete@uni.pe',
+	'reconciliation setup has an obsolete profile email'
+);
+SELECT is(
+	(
+		SELECT email
+		FROM public.profiles
+		WHERE user_id = '00000000-0000-0000-0000-000000000333'
+	),
+	'reconcile-stable@uni.pe',
+	'reconciliation setup has a matching profile email'
+);
+SELECT lives_ok(
+	$$ SELECT private.reconcile_auth_user_profiles() $$,
+	'reconcile_auth_user_profiles runs without collisions'
+);
+SELECT is(
+	(
+		SELECT count(*)::integer
+		FROM public.profiles
+		WHERE user_id = '00000000-0000-0000-0000-000000000331'
+			AND email = 'reconcile-missing@uni.pe'
+	),
+	1,
+	'reconcile_auth_user_profiles recreates a missing profile'
+);
+SELECT is(
+	(
+		SELECT email
+		FROM public.profiles
+		WHERE user_id = '00000000-0000-0000-0000-000000000332'
+	),
+	'reconcile-current@uni.pe',
+	'reconcile_auth_user_profiles corrects an obsolete profile email'
+);
+SELECT is(
+	(
+		SELECT display_name
+		FROM public.profiles
+		WHERE user_id = '00000000-0000-0000-0000-000000000332'
+	),
+	'Perfil reconciliado',
+	'reconciliation preserves display_name'
+);
+SELECT is(
+	(
+		SELECT account_status::text
+		FROM public.profiles
+		WHERE user_id = '00000000-0000-0000-0000-000000000332'
+	),
+	'suspended',
+	'reconciliation preserves account_status'
+);
+SELECT is(
+	(
+		SELECT created_at
+		FROM public.profiles
+		WHERE user_id = '00000000-0000-0000-0000-000000000332'
+	),
+	(
+		SELECT created_at
+		FROM reconcile_profile_snapshot
+		WHERE user_id = '00000000-0000-0000-0000-000000000332'
+	),
+	'reconciliation preserves created_at'
+);
+SELECT isnt(
+	(
+		SELECT updated_at
+		FROM public.profiles
+		WHERE user_id = '00000000-0000-0000-0000-000000000332'
+	),
+	(
+		SELECT updated_at
+		FROM reconcile_profile_snapshot
+		WHERE user_id = '00000000-0000-0000-0000-000000000332'
+	),
+	'reconciliation changes updated_at when email changes'
+);
+SELECT is(
+	(
+		SELECT updated_at
+		FROM public.profiles
+		WHERE user_id = '00000000-0000-0000-0000-000000000333'
+	),
+	(
+		SELECT updated_at
+		FROM reconcile_profile_snapshot
+		WHERE user_id = '00000000-0000-0000-0000-000000000333'
+	),
+	'reconciliation preserves updated_at when email already matches'
+);
+
+INSERT INTO auth.users (id, aud, role, email, email_confirmed_at, created_at, updated_at)
+VALUES
+	(
+		'00000000-0000-0000-0000-000000000334',
+		'authenticated',
+		'authenticated',
+		'reconcile-collision@uni.pe',
+		now(),
+		now(),
+		now()
+	),
+	(
+		'00000000-0000-0000-0000-000000000335',
+		'authenticated',
+		'authenticated',
+		'reconcile-holder@uni.pe',
+		now(),
+		now(),
+		now()
+	),
+	(
+		'00000000-0000-0000-0000-000000000336',
+		'authenticated',
+		'authenticated',
+		'reconcile-unrelated-missing@uni.pe',
+		now(),
+		now(),
+		now()
+	);
+
+DELETE FROM public.profiles
+WHERE user_id IN (
+	'00000000-0000-0000-0000-000000000334',
+	'00000000-0000-0000-0000-000000000336'
+);
+
+UPDATE public.profiles
+SET email = 'reconcile-collision@uni.pe'
+WHERE user_id = '00000000-0000-0000-0000-000000000335';
+
+SELECT is(
+	(
+		SELECT count(*)::integer
+		FROM public.profiles
+		WHERE user_id <> '00000000-0000-0000-0000-000000000334'
+			AND email = 'reconcile-collision@uni.pe'
+	),
+	1,
+	'reconciliation collision setup assigns the auth email to another profile'
+);
+SELECT throws_ok(
+	$$ SELECT private.reconcile_auth_user_profiles() $$,
+	'23505',
+	'auth user profile reconciliation conflict',
+	'email collision aborts profile reconciliation'
+);
+SELECT is(
+	(
+		SELECT count(*)::integer
+		FROM public.profiles
+		WHERE user_id = '00000000-0000-0000-0000-000000000334'
+	),
+	0,
+	'collision failure does not recreate the colliding missing profile'
+);
+SELECT is(
+	(
+		SELECT count(*)::integer
+		FROM public.profiles
+		WHERE user_id = '00000000-0000-0000-0000-000000000336'
+	),
+	0,
+	'collision failure leaves unrelated missing profiles unchanged'
+);
+
 SELECT is(
 	(
 		(
