@@ -2,12 +2,12 @@
 
 FC Academic Hub es la base de una plataforma academica comunitaria de la Facultad de Ciencias. El objetivo es organizar cursos, examenes, apuntes, silabos y recursos relacionados con seguridad y bajo costo operativo.
 
-La etapa actual mantiene un catalogo academico publico y estatico con los cinco planes de estudios 2018 importados desde un paquete normalizado. La etapa 3B.2B conecta Google OAuth con un proyecto Supabase remoto, valida el dominio institucional en PostgreSQL y mantiene sesiones SSR en desarrollo local. Las credenciales reales permanecen fuera de Git. Todavia no existen rutas privadas, proteccion del catalogo, subida de documentos, integracion con Cloudflare R2 ni despliegue publico.
+La etapa actual mantiene un catalogo academico publico y estatico con los cinco planes de estudios 2018 importados desde un paquete normalizado. La etapa 4B.0 alinea Astro SSR con Cloudflare Workers antes de incorporar R2; la etapa 3B.2B ya conecto Google OAuth con un proyecto Supabase remoto, valida el dominio institucional en PostgreSQL y mantiene sesiones SSR en desarrollo local. Las credenciales reales permanecen fuera de Git. Todavia no existen rutas privadas, proteccion del catalogo, subida de documentos, integracion con Cloudflare R2, descarga de archivos ni despliegue publico.
 
 ## Alcance actual
 
 - Astro con TypeScript estricto.
-- Adaptador de Cloudflare configurado para un futuro despliegue en Pages/Workers, con `output: 'server'`.
+- Adaptador de Cloudflare configurado para un futuro despliegue en Cloudflare Workers, con `output: 'server'`.
 - Content Collections con datos JSON versionados en Git.
 - Catalogo activo con 386 cursos, 556 relaciones curso-plan, 5 planes curriculares y 11 unidades academicas.
 - Capa de consulta en `src/domain/catalog.ts` para aislar paginas y componentes del almacenamiento.
@@ -73,7 +73,7 @@ npm run test
 npm run build
 ```
 
-El script `npm run deploy` queda reservado para un flujo futuro con autorizacion explicita. No desplegar sin aprobacion.
+El script `npm run preview` compila y ejecuta `astro preview` para validacion local del SSR. El script `npm run deploy` queda reservado para un flujo futuro de Cloudflare Workers con autorizacion explicita. No desplegar sin aprobacion.
 
 ## Estructura
 
