@@ -55,7 +55,7 @@ vi.mock('./infrastructure/supabase/server', () => ({
 const createServerClientMock =
 	middlewareMocks.createServerClient as Mock<CreateSupabaseServerClient>;
 
-const createContext = () => {
+const createContext = (isPrerendered = false) => {
 	const locals: Partial<App.Locals> = {};
 	const cookies = {
 		set: vi.fn<AstroCookies['set']>(),
@@ -63,6 +63,7 @@ const createContext = () => {
 	const context = {
 		request: new Request('https://fc-academic-hub.test/courses'),
 		cookies,
+		isPrerendered,
 		locals,
 	} as unknown as MiddlewareContext;
 
@@ -118,6 +119,32 @@ const readSetCookieHeaders = (headers: Headers): readonly string[] => {
 describe('session middleware', () => {
 	afterEach(() => {
 		createServerClientMock.mockReset();
+	});
+
+	it('sets static anonymous auth state for prerendered routes without creating Supabase', async () => {
+		const { context, locals } = createContext(true);
+		const next = createNext();
+		const { getUser } = createClient({
+			data: {
+				user: null,
+			},
+			error: null,
+		});
+
+		createServerClientMock.mockImplementation(() => {
+			throw new Error('Supabase client must not be created while prerendering.');
+		});
+
+		await runMiddleware(context, next);
+
+		expect(locals.auth).toEqual({
+			status: 'anonymous',
+			user: null,
+			supabase: null,
+		});
+		expect(createServerClientMock).not.toHaveBeenCalled();
+		expect(getUser).not.toHaveBeenCalled();
+		expect(next).toHaveBeenCalledOnce();
 	});
 
 	it('sets unconfigured auth state when Supabase environment is unavailable', async () => {

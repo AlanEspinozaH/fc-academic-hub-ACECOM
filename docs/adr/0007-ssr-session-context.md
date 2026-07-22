@@ -14,7 +14,9 @@ La aplicacion sigue ejecutandose con `@astrojs/cloudflare` y `output: 'server'`.
 
 Crear `src/middleware.ts` con `defineMiddleware`. En cada request el middleware crea un `Headers` nuevo para la respuesta, construye un cliente Supabase server mediante la fabrica existente y entrega explicitamente `Request`, `AstroCookies` y `Headers` como contexto obligatorio por request.
 
-Cuando Supabase no esta configurado, `Astro.locals.auth` queda en estado `unconfigured`, con `user: null` y `supabase: null`, y la request continua. Cuando el cliente existe, la identidad se valida con `supabase.auth.getUser()`. Una sesion ausente se interpreta como `anonymous`; un usuario validado queda como `authenticated`; un error inesperado de `getUser` queda como `error`.
+Cuando una ruta esta siendo prerenderizada durante el build, el middleware no crea el cliente Supabase, no lee cookies ni headers de request y no intenta resolver identidad. En ese caso `Astro.locals.auth` queda en una forma estatica segura: `anonymous`, `user: null` y `supabase: null`.
+
+Cuando Supabase no esta configurado en una request SSR real, `Astro.locals.auth` queda en estado `unconfigured`, con `user: null` y `supabase: null`, y la request continua. Cuando el cliente existe, la identidad se valida con `supabase.auth.getUser()`. Una sesion ausente se interpreta como `anonymous`; un usuario validado queda como `authenticated`; un error inesperado de `getUser` queda como `error`.
 
 El middleware no usa `auth.getSession()` como autoridad, no llama `getClaims`, no consulta roles, no autoriza rutas y no dispara login, logout ni OAuth. Despues de `next()`, propaga a la respuesta final los `Set-Cookie` y headers de seguridad escritos por Supabase, incluyendo `Cache-Control`, `Expires` y `Pragma`.
 
@@ -45,7 +47,8 @@ Los errores de configuracion o autenticacion no imprimen URL, claves ni valores 
 ## Consecuencias
 
 - Todas las requests SSR tienen un contexto de autenticacion tipado y minimo.
-- Un entorno Supabase ausente produce un estado explicito `unconfigured` sin romper build ni prerender.
+- Las rutas prerenderizadas no intentan resolver identidad durante el build y quedan como `anonymous` estatico.
+- Un entorno Supabase ausente en SSR real produce un estado explicito `unconfigured` sin romper rutas publicas.
 - Cada request obtiene su propio cliente server y su propio contenedor de headers; no hay singleton de servidor.
 - Las futuras etapas pueden leer `Astro.locals.auth`, pero deben seguir validando autorizacion en el servidor y en PostgreSQL.
 - Cloudflare continua como adaptador; no se agrega `@astrojs/node` ni otro runtime.
