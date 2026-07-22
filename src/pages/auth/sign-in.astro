@@ -44,6 +44,17 @@ if (model.authenticatedRedirect) {
 	</section>
 </Layout>
 
+<script>
+	import { clearInheritedUrlFragment } from '../../domain/auth/browser-url';
+
+	clearInheritedUrlFragment({
+		hash: window.location.hash,
+		pathname: window.location.pathname,
+		search: window.location.search,
+		replaceUrl: (url) => window.history.replaceState(null, '', url),
+	});
+</script>
+
 <style>
 	.sign-in {
 		display: grid;

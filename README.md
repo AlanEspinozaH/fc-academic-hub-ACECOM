@@ -2,7 +2,7 @@
 
 FC Academic Hub es la base de una plataforma academica comunitaria de la Facultad de Ciencias. El objetivo es organizar cursos, examenes, apuntes, silabos y recursos relacionados con seguridad y bajo costo operativo.
 
-La etapa actual mantiene un catalogo academico publico y estatico con los cinco planes de estudios 2018 importados desde un paquete normalizado. La etapa 3B.2A agrega el flujo de aplicacion para Google OAuth con PKCE sobre Supabase SSR: pagina de acceso, inicio OAuth por POST, callback de aplicacion y logout por POST. No configura todavia credenciales reales de Google, proyecto Supabase remoto, rutas privadas, proteccion del catalogo, consultas de roles desde Astro, documentos reales, datos personales de produccion, integracion con Cloudflare R2 ni URLs de descarga.
+La etapa actual mantiene un catalogo academico publico y estatico con los cinco planes de estudios 2018 importados desde un paquete normalizado. La etapa 3B.2B conecta Google OAuth con un proyecto Supabase remoto, valida el dominio institucional en PostgreSQL y mantiene sesiones SSR en desarrollo local. Las credenciales reales permanecen fuera de Git. Todavia no existen rutas privadas, proteccion del catalogo, subida de documentos, integracion con Cloudflare R2 ni despliegue publico.
 
 ## Alcance actual
 
@@ -20,7 +20,7 @@ La etapa actual mantiene un catalogo academico publico y estatico con los cinco 
 - Fabricas Supabase SSR en `src/infrastructure/supabase/` para navegador y servidor, sin ejecutar login ni consultas al importar.
 - Middleware SSR que valida identidad con `auth.getUser()` por request y expone `Astro.locals.auth` sin tokens ni roles.
 - Triggers PostgreSQL que validan dominios institucionales exactos en `auth.users` y crean/sincronizan `public.profiles` sin asignar roles.
-- Pagina GET `/auth/sign-in`, endpoint POST `/auth/google`, callback GET `/auth/callback` y endpoint POST `/auth/sign-out` para el flujo de aplicacion OAuth, sin credenciales reales configuradas.
+- Pagina GET `/auth/sign-in`, endpoint POST `/auth/google`, callback GET `/auth/callback` y endpoint POST `/auth/sign-out` conectados con Google OAuth y Supabase remoto mediante configuracion privada externa al repositorio.
 - Redaccion previa de `provider_token` y `provider_refresh_token` en respuestas del endpoint Supabase Auth de intercambio de token, antes de que `auth-js` procese y persista la sesion.
 
 ## Requisitos
@@ -53,7 +53,7 @@ npx --yes supabase@2.109.1 db lint --local
 npx --yes supabase@2.109.1 stop
 ```
 
-La CLI probada para 3B.1 fue Supabase CLI 2.109.1. No usar `supabase login`, `supabase link`, `db push` ni variantes `--linked` en esta etapa.
+La CLI validada para 3B.2B es Supabase CLI 2.109.1. Los comandos `login`, `link` y `db push` solo deben ejecutarse de forma intencional, verificando antes el proyecto remoto y revisando `db push --dry-run`.
 
 ## Controles de calidad
 
@@ -91,6 +91,7 @@ data/
 docs/
   adr/              Registros de decision arquitectonica.
   architecture/     Documentos de arquitectura.
+  operations/       Procedimientos operativos sin secretos.
   data/             Modelo y guias para contenido del catalogo.
   security/         Modelo de roles, bootstrap administrativo y riesgos aceptados.
 supabase/
@@ -105,8 +106,8 @@ Los registros activos se agregan editando JSON en `src/content/catalog/`, no com
 ## Limites vigentes
 
 - No crear paginas privadas ni usar `Astro.locals.auth` para bloquear rutas del catalogo todavia.
-- No crear proyecto Supabase remoto ni ejecutar `supabase login` o `supabase link`.
-- No configurar credenciales reales de Google ni allow-lists remotas de callbacks hasta 3B.2B.
+- No cambiar el proyecto Supabase remoto vinculado ni aplicar migraciones sin verificar `projects list`, `migration list` y `db push --dry-run`.
+- No almacenar Client Secret de Google, tokens CLI, contrasenas, cookies ni claves secretas en Git, `.env.local`, documentacion o capturas.
 - No crear buckets, namespaces ni bindings Cloudflare nuevos.
 - No implementar proteccion de rutas, administracion de roles ni autenticacion ficticia.
 - No asignar roles ni crear administradores automaticamente al crear perfiles.
