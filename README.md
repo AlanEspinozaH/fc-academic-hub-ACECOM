@@ -2,7 +2,7 @@
 
 FC Academic Hub es la base de una plataforma academica comunitaria de la Facultad de Ciencias. El objetivo es organizar cursos, examenes, apuntes, silabos y recursos relacionados con seguridad y bajo costo operativo.
 
-La etapa actual implementa un catalogo academico publico y estatico con los cinco planes de estudios 2018 importados desde un paquete normalizado. No contiene documentos academicos reales, datos personales, login, conexion a Supabase, PostgreSQL, integracion con Cloudflare R2 ni URLs de descarga.
+La etapa actual mantiene un catalogo academico publico y estatico con los cinco planes de estudios 2018 importados desde un paquete normalizado. La etapa 3A.1 agrega fundamentos locales de Supabase/PostgreSQL para identidad, roles, permisos, auditoria y RLS, sin conectar Supabase con paginas Astro. No contiene documentos academicos reales, datos personales de produccion, login, integracion con Cloudflare R2 ni URLs de descarga.
 
 ## Alcance actual
 
@@ -14,6 +14,8 @@ La etapa actual implementa un catalogo academico publico y estatico con los cinc
 - Validaciones de integridad para duplicados, relaciones cruzadas, prerrequisitos, ciclos, silabos, fuentes y restricciones de storage.
 - Paginas publicas para `/`, `/schools`, `/schools/[slug]`, `/courses`, `/courses/[slug]`, `/resources`, `/about` y 404.
 - Endpoint JSON GET `/api/health` con version tomada de `package.json`.
+- Migraciones locales de Supabase/PostgreSQL para RBAC, dominios de correo, perfiles, auditoria y RLS.
+- Matriz TypeScript explicita de roles y permisos en `src/domain/auth/`.
 
 ## Requisitos
 
@@ -26,6 +28,18 @@ La etapa actual implementa un catalogo academico publico y estatico con los cinc
 npm ci
 npm run dev
 ```
+
+Supabase local para pruebas de base de datos:
+
+```sh
+npx --yes supabase@latest start
+npx --yes supabase@latest db reset
+npx --yes supabase@latest test db
+npx --yes supabase@latest db lint --local
+npx --yes supabase@latest stop
+```
+
+La CLI probada para 3A.1 fue Supabase CLI 2.109.1. No usar `supabase login`, `supabase link`, `db push` ni variantes `--linked` en esta etapa.
 
 ## Controles de calidad
 
@@ -54,7 +68,7 @@ src/
   components/       Componentes Astro reutilizables.
   config/           Configuracion general del sitio.
   content/          Datos activos del catalogo versionados en Git.
-  domain/           Tipos, filtros, consultas y validaciones del catalogo.
+  domain/           Tipos, filtros, consultas y validaciones del catalogo; matriz auth local.
   infrastructure/   Helpers de servidor, como el payload de health.
   layouts/          Shell compartido del documento y estilos globales.
   pages/            Rutas Astro y endpoints API.
@@ -64,6 +78,10 @@ docs/
   adr/              Registros de decision arquitectonica.
   architecture/     Documentos de arquitectura.
   data/             Modelo y guias para contenido del catalogo.
+  security/         Modelo de roles, bootstrap administrativo y riesgos aceptados.
+supabase/
+  migrations/       Migraciones PostgreSQL reproducibles.
+  tests/database/   Pruebas pgTAP de RLS y autorizacion.
 ```
 
 ## Agregar contenido
@@ -72,10 +90,10 @@ Los registros activos se agregan editando JSON en `src/content/catalog/`, no com
 
 ## Limites vigentes
 
-- No instalar ni configurar Supabase todavia.
-- No usar PostgreSQL todavia.
+- No conectar Supabase con paginas Astro todavia.
+- No crear proyecto Supabase remoto ni ejecutar `supabase login` o `supabase link`.
 - No crear buckets, namespaces ni bindings Cloudflare nuevos.
-- No implementar autenticacion, roles ni login ficticio.
+- No implementar login, OAuth, cookies, middleware ni autenticacion ficticia.
 - No implementar formularios de subida.
 - No almacenar documentos, PDFs, TEX, binarios, libros comerciales ni registros reales de recursos.
 - No commitear secretos. Mantener archivos `.env*` ignorados excepto `.env.example`.

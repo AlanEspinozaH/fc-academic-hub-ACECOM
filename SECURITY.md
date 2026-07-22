@@ -2,7 +2,7 @@
 
 ## Etapa Soportada
 
-La etapa 1 es una base Astro renderizada en servidor con un endpoint de health y datos ficticios de demostracion. No conecta Supabase, Cloudflare R2 ni proveedores de autenticacion.
+La etapa 3A.1 mantiene la aplicacion Astro sin login ni clientes Supabase, y agrega fundamentos locales de PostgreSQL para roles, auditoria y RLS. No conecta Cloudflare R2 ni proveedores OAuth.
 
 ## Reporte
 
@@ -10,7 +10,11 @@ Reportar vulnerabilidades sospechadas por un canal privado de mantenedores o med
 
 ## Secretos
 
-Nunca commitear secretos, tokens, passwords ni credenciales reales. Los archivos .env permanecen ignorados excepto .env.example, que solo debe contener comentarios o placeholders.
+Nunca commitear secretos, tokens, passwords ni credenciales reales. Los archivos .env permanecen ignorados excepto .env.example, que solo debe contener comentarios o placeholders. La aplicacion no debe usar la llave `service_role`; cualquier mencion debe limitarse a documentar por que no se usa.
+
+## Riesgos Registrados
+
+- `docs/security/dependency-risk-register.md` contiene DR-001 para la cadena temporalmente aceptada `@astrojs/cloudflare -> @cloudflare/vite-plugin -> miniflare -> sharp@0.34.5`.
 
 ## Expectativas Futuras
 
