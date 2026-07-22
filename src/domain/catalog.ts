@@ -1,4 +1,5 @@
 import { getCollection } from 'astro:content';
+import resourceSource from '../content/catalog/resources.json';
 import type { AcademicTerm } from './academic-term';
 import type { AcademicUnit } from './academic-unit';
 import {
@@ -52,6 +53,8 @@ const sortResources = (
 
 const sortAcademicTerms = (terms: ReadonlyArray<AcademicTerm>): ReadonlyArray<AcademicTerm> =>
 	[...terms].sort((left, right) => left.id.localeCompare(right.id, 'es'));
+
+const hasResourceSourceRecords = resourceSource.length > 0;
 
 const getParentUnit = (
 	unit: AcademicUnit | undefined,
@@ -137,7 +140,7 @@ const buildCatalogSnapshot = async (): Promise<CatalogSnapshot> => {
 		getCollection('curriculumCourses'),
 		getCollection('academicTerms'),
 		getCollection('courses'),
-		getCollection('resources'),
+		hasResourceSourceRecords ? getCollection('resources') : Promise.resolve([]),
 	]);
 
 	const baseCatalog: CatalogCollections = {
