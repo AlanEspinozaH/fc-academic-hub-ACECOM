@@ -20,6 +20,20 @@ El catalogo de etapa 2 se modifica editando `src/content/catalog/*.json`.
 - Usar `book-reference` solo como referencia bibliografica, nunca como archivo de libro.
 - Leer `docs/data/catalog-model.md` y `docs/data/adding-catalog-content.md` antes de cambiar datos.
 
+## Supabase Local
+
+Las migraciones y pruebas de base de datos viven en `supabase/`. Usar solamente el flujo local:
+
+```sh
+npx --yes supabase@latest start
+npx --yes supabase@latest db reset
+npx --yes supabase@latest test db
+npx --yes supabase@latest db lint --local
+npx --yes supabase@latest stop
+```
+
+No usar `supabase login`, `supabase link`, `db push`, proyectos remotos ni variantes `--linked` para trabajos de etapa 3A.
+
 ## Controles Locales
 
 Antes de abrir un pull request, ejecutar:
@@ -37,7 +51,8 @@ Este comando ejecuta formato, lint, chequeo de Astro/TypeScript, pruebas unitari
 - No agregar documentos academicos reales.
 - No confiar en roles enviados por el navegador en trabajos futuros de autorizacion.
 - Mantener archivos `.env*` ignorados excepto `.env.example`.
-- No crear recursos Cloudflare, Supabase ni R2 desde cambios de codigo.
+- No crear recursos Cloudflare, proyectos Supabase remotos ni R2 desde cambios de codigo.
+- No conectar clientes Supabase a paginas Astro hasta una etapa aprobada para autenticacion.
 
 ## Documentacion
 
