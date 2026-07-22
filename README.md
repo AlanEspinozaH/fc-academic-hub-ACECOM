@@ -2,14 +2,14 @@
 
 FC Academic Hub es la base de una plataforma academica comunitaria de la Facultad de Ciencias. El objetivo es organizar cursos, examenes, apuntes, silabos y recursos relacionados con seguridad y bajo costo operativo.
 
-La etapa 2 implementa un catalogo academico publico, estatico y ficticio. No contiene documentos academicos reales, datos personales, login, conexion a Supabase, PostgreSQL, integracion con Cloudflare R2 ni URLs de descarga.
+La etapa actual implementa un catalogo academico publico y estatico con una primera muestra controlada de cursos reales migrados desde Drive FC. No contiene documentos academicos reales, datos personales, login, conexion a Supabase, PostgreSQL, integracion con Cloudflare R2 ni URLs de descarga.
 
 ## Alcance Actual
 
 - Astro con TypeScript estricto.
 - Adaptador de Cloudflare configurado para un futuro despliegue en Pages/Workers.
 - Content Collections con datos JSON versionados en Git.
-- Catalogo demo con unidades academicas, planes, cursos, relaciones curriculares, periodos y recursos.
+- Catalogo versionado con unidades academicas, planes, cursos, relaciones curriculares, periodos y recursos.
 - Capa de consulta en `src/domain/catalog.ts` para aislar paginas y componentes del almacenamiento.
 - Validaciones de integridad para duplicados, relaciones cruzadas, terminos, prerrequisitos y restricciones de storage.
 - Paginas publicas para `/`, `/schools`, `/schools/[slug]`, `/courses`, `/courses/[slug]`, `/resources`, `/about` y 404.
@@ -62,7 +62,7 @@ El script `npm run deploy` queda reservado para un flujo futuro con autorizacion
 src/
   components/       Componentes Astro reutilizables.
   config/           Configuracion general del sitio.
-  content/          Datos demo del catalogo versionados en Git.
+  content/          Datos del catalogo versionados en Git.
   domain/           Tipos, filtros, consultas y validaciones del catalogo.
   infrastructure/   Helpers de servidor, como el payload de health.
   layouts/          Shell compartido del documento y estilos globales.
@@ -73,7 +73,7 @@ docs/
   data/             Modelo y guias para contenido del catalogo.
 ```
 
-## Agregar Contenido Demo
+## Agregar Contenido
 
 Los registros se agregan editando JSON en `src/content/catalog/`, no componentes:
 

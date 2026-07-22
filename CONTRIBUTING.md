@@ -13,7 +13,7 @@
 El catalogo de etapa 2 se modifica editando `src/content/catalog/*.json`.
 
 - No modificar componentes para agregar una unidad academica, curso, plan, relacion curricular, periodo o recurso.
-- Mantener todos los registros claramente ficticios.
+- Registrar datos reales solo con fuente documentada; mantener placeholders claramente marcados como pendientes.
 - No agregar docentes reales, evaluaciones reales, datos personales, documentos, URLs de descarga ni binarios.
 - No agregar ciclo recomendado, plan, escuela ni prerrequisitos dentro de `Course`; usar `CurriculumCourse`.
 - Mantener `fileAvailable: false` mientras no exista storage configurado.

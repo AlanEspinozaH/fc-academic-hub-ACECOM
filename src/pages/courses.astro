@@ -3,6 +3,7 @@ import Breadcrumbs from '../components/Breadcrumbs.astro';
 import CatalogFilters from '../components/CatalogFilters.astro';
 import { filterCourses, parseRecommendedCycleFilter } from '../domain/catalog-filters';
 import { getCatalogSnapshot } from '../domain/catalog';
+import { formatCourseCreditsWithUnit } from '../domain/course';
 import { CURRICULUM_COURSE_REQUIREMENT_TYPE_LABELS } from '../domain/curriculum-course';
 import Layout from '../layouts/Layout.astro';
 
@@ -60,15 +61,15 @@ const describeOfferings = (item: (typeof filteredCourseItems)[number]): string =
 		.join(' / ');
 ---
 
-<Layout title="Cursos" description="Catalogo publico de cursos ficticios versionados en Git.">
+<Layout title="Cursos" description="Catalogo publico de cursos versionados en Git.">
 	<Breadcrumbs items={[{ href: '/', label: 'Inicio' }, { label: 'Cursos' }]} />
 
 	<section class="page-heading" aria-labelledby="courses-title">
 		<p class="kicker">Catalogo publico</p>
 		<h1 id="courses-title">Cursos</h1>
 		<p>
-			Lista compacta de cursos ficticios. El ciclo y el tipo pertenecen a cada plan curricular, no
-			al curso como dato intrinseco.
+			Lista compacta de cursos de la muestra inicial. El ciclo y el tipo pertenecen a cada plan
+			curricular, no al curso como dato intrinseco.
 		</p>
 	</section>
 
@@ -94,7 +95,7 @@ const describeOfferings = (item: (typeof filteredCourseItems)[number]): string =
 								<a href={'/courses/' + item.course.slug}>{item.course.name}</a>
 							</div>
 							<p>
-								{item.course.credits} creditos · {describeOfferings(item)}
+								{formatCourseCreditsWithUnit(item.course.credits)} · {describeOfferings(item)}
 							</p>
 						</li>
 					))}

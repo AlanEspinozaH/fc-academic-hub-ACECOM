@@ -37,6 +37,8 @@ interface NamedValue {
 
 const RESOURCE_FILE_REFERENCE_PATTERN =
 	/\b(?:https?:\/\/|r2:\/\/|s3:\/\/|[A-Za-z0-9_./-]+\.(?:pdf|tex|zip|docx?|pptx?))\b/i;
+const COURSE_ID_PATTERN = /^course:[a-z0-9]+$/;
+const COURSE_CODE_PATTERN = /^[A-Z0-9]+$/;
 
 const duplicateValues = (values: ReadonlyArray<NamedValue>): ReadonlyArray<string> => {
 	const seen = new Set<string>();
@@ -134,6 +136,27 @@ const validateAcademicUnits = (
 
 		if (unit.unitType === 'program' && parent.unitType !== 'school') {
 			issues.push('Programa con padre que no es escuela: ' + unit.id + ' -> ' + parent.id);
+		}
+	}
+};
+
+const validateCourses = (issues: Array<string>, courses: ReadonlyArray<Course>): void => {
+	for (const course of courses) {
+		if (!COURSE_ID_PATTERN.test(course.id)) {
+			issues.push('Identificador de curso invalido: ' + course.id);
+		}
+
+		if (!COURSE_CODE_PATTERN.test(course.code)) {
+			issues.push('Codigo de curso invalido: ' + course.code);
+		}
+
+		const expectedSlugPrefix = course.code.toLocaleLowerCase('es') + '-';
+		if (!course.slug.startsWith(expectedSlugPrefix)) {
+			issues.push('Slug de curso no inicia con codigo: ' + course.id + ' -> ' + course.slug);
+		}
+
+		if (course.credits === null && course.dataStatus !== 'pending-verification') {
+			issues.push('Curso con creditos pendientes sin estado de verificacion: ' + course.id);
 		}
 	}
 };
@@ -312,8 +335,14 @@ export const collectCatalogIntegrityIssues = (
 		slugValues('academicUnits', catalog.academicUnits),
 	);
 	addDuplicateIssues(issues, 'Slug de curso', slugValues('courses', catalog.courses));
+	addDuplicateIssues(
+		issues,
+		'Codigo de curso',
+		catalog.courses.map((course) => ({ label: 'courses', value: course.code })),
+	);
 	addDuplicateIssues(issues, 'Slug de recurso', slugValues('resources', catalog.resources));
 
+	validateCourses(issues, catalog.courses);
 	validateAcademicTerms(issues, catalog.academicTerms);
 	validateAcademicUnits(issues, catalog.academicUnits);
 	validateCurricula(issues, catalog, academicUnitIds);

@@ -2,17 +2,17 @@
 	{
 		"id": "curriculum-demo-math-2026",
 		"code": "PCM-DEMO-2026",
-		"name": "Plan Ficticio 2026 de Ciencias Matematicas",
+		"name": "Plan por verificar de Ciencias Matemáticas",
 		"academicUnitId": "program-demo-mathematical-sciences",
-		"effectivePeriod": "2026-2029",
+		"effectivePeriod": "pending-verification",
 		"status": "active"
 	},
 	{
 		"id": "curriculum-demo-computing-2026",
-		"code": "PCC-DEMO-2026",
-		"name": "Plan Ficticio 2026 de Ciencias Computacionales",
+		"code": "N6",
+		"name": "Plan N6 de Ciencia de la Computación",
 		"academicUnitId": "program-demo-computational-sciences",
-		"effectivePeriod": "2026-2029",
+		"effectivePeriod": "pending-verification",
 		"status": "active"
 	}
 ]

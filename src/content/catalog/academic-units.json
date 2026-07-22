@@ -2,18 +2,18 @@
 	{
 		"id": "faculty-demo-sciences",
 		"slug": "facultad-ciencias-demo",
-		"name": "Facultad Demostrativa de Ciencias",
-		"abbreviation": "FCD",
-		"description": "Facultad ficticia usada como raiz del catalogo academico demo.",
+		"name": "Facultad de Ciencias",
+		"abbreviation": "FC",
+		"description": "Facultad de Ciencias de la UNI registrada para organizar la primera muestra del catálogo académico.",
 		"unitType": "faculty",
 		"status": "active"
 	},
 	{
 		"id": "school-demo-mathematical-sciences",
 		"slug": "ciencias-matematicas-demo",
-		"name": "Escuela Demostrativa de Ciencias Matematicas",
-		"abbreviation": "ECDM",
-		"description": "Escuela ficticia para modelar catalogos academicos publicos sin representar unidades reales ni datos personales.",
+		"name": "Ciencias Matemáticas",
+		"abbreviation": "CM",
+		"description": "Unidad académica usada para conservar relaciones curriculares comunes pendientes de contraste oficial.",
 		"unitType": "school",
 		"parentUnitId": "faculty-demo-sciences",
 		"status": "active"
@@ -21,9 +21,9 @@
 	{
 		"id": "school-demo-computational-sciences",
 		"slug": "ciencias-computacionales-demo",
-		"name": "Escuela Demostrativa de Ciencias Computacionales",
-		"abbreviation": "ECDC",
-		"description": "Escuela ficticia usada para validar relaciones entre planes, cursos y recursos sin documentos reales.",
+		"name": "Ciencia de la Computación",
+		"abbreviation": "CC",
+		"description": "Unidad académica asociada al plan N6 en la muestra inicial del catálogo.",
 		"unitType": "school",
 		"parentUnitId": "faculty-demo-sciences",
 		"status": "active"
@@ -31,9 +31,9 @@
 	{
 		"id": "program-demo-mathematical-sciences",
 		"slug": "programa-matematicas-demo",
-		"name": "Programa Ficticio de Ciencias Matematicas",
-		"abbreviation": "PCM-D",
-		"description": "Carrera ficticia para mostrar planes curriculares y cursos comunes sin datos oficiales.",
+		"name": "Ciencias Matemáticas",
+		"abbreviation": "CM",
+		"description": "Programa conservado como relación curricular pendiente de contraste con el plan oficial vigente.",
 		"unitType": "program",
 		"parentUnitId": "school-demo-mathematical-sciences",
 		"status": "active"
@@ -41,9 +41,9 @@
 	{
 		"id": "program-demo-computational-sciences",
 		"slug": "programa-computacion-demo",
-		"name": "Programa Ficticio de Ciencias Computacionales",
-		"abbreviation": "PCC-D",
-		"description": "Carrera ficticia para validar diferencias curriculares desde segundo ciclo.",
+		"name": "Ciencia de la Computación",
+		"abbreviation": "CC",
+		"description": "Programa asociado al plan N6 para la muestra inicial de cursos de Ciencia de la Computación.",
 		"unitType": "program",
 		"parentUnitId": "school-demo-computational-sciences",
 		"status": "active"

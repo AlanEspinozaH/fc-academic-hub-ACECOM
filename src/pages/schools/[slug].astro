@@ -74,7 +74,7 @@ const courseItems = catalog.courseItems.filter((item) =>
 	<section class="section" aria-labelledby="school-courses-title">
 		<div class="section-heading">
 			<h2 id="school-courses-title">Cursos</h2>
-			<p>{courseItems.length} cursos ficticios asociados a sus planes.</p>
+			<p>{courseItems.length} cursos asociados a sus planes.</p>
 		</div>
 		<div class="grid">
 			{courseItems.slice(0, 4).map((item) => <CourseCard item={item} />)}

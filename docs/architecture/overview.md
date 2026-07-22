@@ -6,7 +6,7 @@ FC Academic Hub organizara cursos, examenes, apuntes, silabos y recursos para la
 
 ## Arquitectura De Etapa 2
 
-La implementacion actual es una aplicacion Astro con TypeScript estricto y adaptador de Cloudflare. El catalogo publico usa Content Collections con datos JSON ficticios versionados en Git.
+La implementacion actual es una aplicacion Astro con TypeScript estricto y adaptador de Cloudflare. El catalogo publico usa Content Collections con datos JSON versionados en Git.
 
 ```text
 Navegador
@@ -23,18 +23,18 @@ No hay integracion activa con Supabase, PostgreSQL, R2, autenticacion ni roles.
 
 El modelo separa identidad del curso y ubicacion curricular:
 
-- `AcademicUnit`: facultad, escuela o programa ficticio.
+- `AcademicUnit`: facultad, escuela o programa.
 - `Curriculum`: version concreta del plan de estudios de un programa.
 - `Course`: curso estable sin escuela, ciclo ni prerrequisitos intrinsecos.
-- `CurriculumCourse`: relacion entre plan y curso, con ciclo, tipo obligatorio/electivo y prerrequisitos del plan.
-- `AcademicResource`: metadatos ficticios asociados a un curso.
+- `CurriculumCourse`: relacion entre plan y curso, con ciclo, tipo obligatorio/electivo/pendiente y prerrequisitos del plan.
+- `AcademicResource`: metadatos de recursos asociados a un curso; sin archivos en esta etapa.
 
 `src/domain/catalog.ts` construye `CourseCatalogItem` para que la UI vea un curso con todas sus ofertas curriculares sin conocer el almacenamiento.
 
 ## Rutas Publicas
 
 - `/`: busqueda principal, accesos por ciclo, carrera y recursos recientes.
-- `/schools`: listado prerenderizado de escuelas ficticias.
+- `/schools`: listado prerenderizado de unidades academicas.
 - `/schools/[slug]`: detalle prerenderizado de escuela, carreras, planes y cursos destacados.
 - `/courses`: lista compacta filtrable por texto, carrera y ciclo.
 - `/courses/[slug]`: detalle prerenderizado de curso con ciclo por plan curricular.
@@ -50,7 +50,7 @@ El layout usa variables CSS para tema claro y oscuro, respeta `prefers-color-sch
 ## Limites De Codigo Fuente
 
 - `src/content.config.ts` define esquemas de colecciones y loaders `file()`.
-- `src/content/catalog/` contiene datos demo versionados.
+- `src/content/catalog/` contiene datos del catalogo versionados.
 - `src/domain/` contiene tipos, consultas, filtros y validaciones de integridad.
 - `src/components/` contiene presentacion reutilizable.
 - `src/pages/` contiene rutas Astro y endpoints API.

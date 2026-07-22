@@ -1,5 +1,6 @@
 ---
 import type { CourseCatalogItem } from '../domain/catalog-view';
+import { formatCourseCreditsWithUnit } from '../domain/course';
 
 interface Props {
 	href?: string;
@@ -14,15 +15,16 @@ const cycleLabels = [
 	),
 ];
 const programLabels = [...new Set(item.offerings.map((offering) => offering.program.abbreviation))];
+const courseSummary = item.course.summary ?? 'Descripción pendiente de fuente oficial';
 ---
 
 <article class="course-card" aria-labelledby={titleId}>
 	<p class="course-card__meta">
 		<span>{item.course.code}</span>
-		<span>{item.course.credits} creditos</span>
+		<span>{formatCourseCreditsWithUnit(item.course.credits)}</span>
 	</p>
 	<h2 id={titleId}><a href={href}>{item.course.name}</a></h2>
-	<p>{item.course.summary}</p>
+	<p>{courseSummary}</p>
 	<p class="course-card__line">
 		{programLabels.join(', ')}{cycleLabels.length > 0 ? ' · ' + cycleLabels.join(', ') : ''}
 	</p>

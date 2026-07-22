@@ -3,7 +3,11 @@ import { file } from 'astro/loaders';
 import { z } from 'astro/zod';
 import { ACADEMIC_TERM_ID_PATTERN } from './domain/academic-term';
 import { ACADEMIC_UNIT_STATUSES, ACADEMIC_UNIT_TYPES } from './domain/academic-unit';
-import { COURSE_STATUSES } from './domain/course';
+import {
+	COURSE_ADMIN_ASSIGNMENT_BASES,
+	COURSE_DATA_STATUSES,
+	COURSE_STATUSES,
+} from './domain/course';
 import { CURRICULUM_COURSE_REQUIREMENT_TYPES } from './domain/curriculum-course';
 import { CURRICULUM_STATUSES } from './domain/curriculum';
 import {
@@ -80,13 +84,16 @@ const courses = defineCollection({
 	loader: file('src/content/catalog/courses.json'),
 	schema: z
 		.object({
+			adminAcademicUnitId: z.string().min(1).nullable(),
+			adminAssignmentBasis: z.enum(COURSE_ADMIN_ASSIGNMENT_BASES),
 			code: z.string().min(1),
-			credits: z.number().int().positive(),
+			credits: z.number().int().positive().nullable(),
+			dataStatus: z.enum(COURSE_DATA_STATUSES).optional(),
 			id: z.string().min(1),
 			name: z.string().min(1),
 			slug: slugSchema,
 			status: z.enum(COURSE_STATUSES),
-			summary: z.string().min(1),
+			summary: z.string().min(1).nullable(),
 			tags: tagSchema,
 		})
 		.strict(),

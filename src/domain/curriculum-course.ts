@@ -1,4 +1,8 @@
-export const CURRICULUM_COURSE_REQUIREMENT_TYPES = ['required', 'elective'] as const;
+export const CURRICULUM_COURSE_REQUIREMENT_TYPES = [
+	'required',
+	'elective',
+	'pending-verification',
+] as const;
 
 export type CurriculumCourseRequirementType = (typeof CURRICULUM_COURSE_REQUIREMENT_TYPES)[number];
 
@@ -16,5 +20,6 @@ export const CURRICULUM_COURSE_REQUIREMENT_TYPE_LABELS: Record<
 	string
 > = {
 	elective: 'Electivo',
+	'pending-verification': 'Por verificar',
 	required: 'Obligatorio',
 };

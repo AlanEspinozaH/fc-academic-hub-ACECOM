@@ -3,7 +3,7 @@ import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import ResourceCard from '../../components/ResourceCard.astro';
 import { getAllCourses, getCatalogSnapshot } from '../../domain/catalog';
 import { CURRICULUM_COURSE_REQUIREMENT_TYPE_LABELS } from '../../domain/curriculum-course';
-import type { Course } from '../../domain/course';
+import { formatCourseCredits, type Course } from '../../domain/course';
 import Layout from '../../layouts/Layout.astro';
 
 export const prerender = true;
@@ -27,6 +27,7 @@ if (item === undefined) {
 }
 
 const course = item.course;
+const courseDescription = course.summary ?? 'Descripción pendiente de fuente oficial';
 const relatedResources = catalog.resources.filter(
 	(resource) => resource.courseId === course.id && resource.visibility === 'public',
 );
@@ -39,7 +40,7 @@ const getPrerequisiteCourses = (courseIds: ReadonlyArray<string>): ReadonlyArray
 		.filter((candidate): candidate is Course => candidate !== undefined);
 ---
 
-<Layout title={course.name} description={course.summary}>
+<Layout title={course.name} description={courseDescription}>
 	<Breadcrumbs
 		items={[
 			{ href: '/', label: 'Inicio' },
@@ -51,7 +52,7 @@ const getPrerequisiteCourses = (courseIds: ReadonlyArray<string>): ReadonlyArray
 	<section class="page-heading course-heading" aria-labelledby="course-title">
 		<p class="kicker">{course.code} · {course.status === 'active' ? 'Activo' : 'Historico'}</p>
 		<h1 id="course-title">{course.name}</h1>
-		<p>{course.summary}</p>
+		<p>{courseDescription}</p>
 	</section>
 
 	<section class="section" aria-labelledby="course-data-title">
@@ -59,7 +60,7 @@ const getPrerequisiteCourses = (courseIds: ReadonlyArray<string>): ReadonlyArray
 		<dl class="metadata-grid">
 			<div>
 				<dt>Creditos</dt>
-				<dd>{course.credits}</dd>
+				<dd>{formatCourseCredits(course.credits)}</dd>
 			</div>
 			<div>
 				<dt>Carreras</dt>
@@ -128,7 +129,7 @@ const getPrerequisiteCourses = (courseIds: ReadonlyArray<string>): ReadonlyArray
 	<section class="section" aria-labelledby="course-resources-title">
 		<div class="section-heading">
 			<h2 id="course-resources-title">Recursos relacionados</h2>
-			<p>Registros ficticios sin archivos binarios ni URLs de descarga.</p>
+			<p>Registros sin archivos binarios ni URLs de descarga.</p>
 		</div>
 		{
 			relatedResources.length > 0 ? (

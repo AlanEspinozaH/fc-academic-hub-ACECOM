@@ -1,86 +1,98 @@
 [
 	{
-		"id": "curriculum-course-demo-math-calculus-1",
+		"id": "curriculum-course:pcm-demo-2026:bfi01",
 		"curriculumId": "curriculum-demo-math-2026",
-		"courseId": "course-demo-calculus-1",
+		"courseId": "course:bfi01",
 		"recommendedCycle": 1,
 		"requirementType": "required",
 		"prerequisiteCourseIds": []
 	},
 	{
-		"id": "curriculum-course-demo-math-discrete-structures",
+		"id": "curriculum-course:pcm-demo-2026:bic01",
 		"curriculumId": "curriculum-demo-math-2026",
-		"courseId": "course-demo-discrete-structures",
+		"courseId": "course:bic01",
 		"recommendedCycle": 1,
 		"requirementType": "required",
 		"prerequisiteCourseIds": []
 	},
 	{
-		"id": "curriculum-course-demo-math-linear-algebra",
+		"id": "curriculum-course:pcm-demo-2026:bma01",
 		"curriculumId": "curriculum-demo-math-2026",
-		"courseId": "course-demo-linear-algebra",
+		"courseId": "course:bma01",
 		"recommendedCycle": 1,
 		"requirementType": "required",
 		"prerequisiteCourseIds": []
 	},
 	{
-		"id": "curriculum-course-demo-math-calculus-2",
+		"id": "curriculum-course:pcm-demo-2026:bma03",
 		"curriculumId": "curriculum-demo-math-2026",
-		"courseId": "course-demo-calculus-2",
-		"recommendedCycle": 2,
-		"requirementType": "required",
-		"prerequisiteCourseIds": ["course-demo-calculus-1"]
-	},
-	{
-		"id": "curriculum-course-demo-math-numerical-modeling",
-		"curriculumId": "curriculum-demo-math-2026",
-		"courseId": "course-demo-numerical-modeling",
-		"recommendedCycle": 3,
-		"requirementType": "elective",
-		"prerequisiteCourseIds": ["course-demo-calculus-2", "course-demo-linear-algebra"]
-	},
-	{
-		"id": "curriculum-course-demo-computing-calculus-1",
-		"curriculumId": "curriculum-demo-computing-2026",
-		"courseId": "course-demo-calculus-1",
+		"courseId": "course:bma03",
 		"recommendedCycle": 1,
 		"requirementType": "required",
 		"prerequisiteCourseIds": []
 	},
 	{
-		"id": "curriculum-course-demo-computing-discrete-structures",
-		"curriculumId": "curriculum-demo-computing-2026",
-		"courseId": "course-demo-discrete-structures",
+		"id": "curriculum-course:pcm-demo-2026:bqu01",
+		"curriculumId": "curriculum-demo-math-2026",
+		"courseId": "course:bqu01",
 		"recommendedCycle": 1,
 		"requirementType": "required",
 		"prerequisiteCourseIds": []
 	},
 	{
-		"id": "curriculum-course-demo-computing-scientific-programming",
+		"id": "curriculum-course:n6:bfi01",
 		"curriculumId": "curriculum-demo-computing-2026",
-		"courseId": "course-demo-scientific-programming",
-		"recommendedCycle": 2,
+		"courseId": "course:bfi01",
+		"recommendedCycle": 1,
 		"requirementType": "required",
-		"prerequisiteCourseIds": ["course-demo-discrete-structures"]
-	},
-	{
-		"id": "curriculum-course-demo-computing-linear-algebra",
-		"curriculumId": "curriculum-demo-computing-2026",
-		"courseId": "course-demo-linear-algebra",
-		"recommendedCycle": 2,
-		"requirementType": "elective",
 		"prerequisiteCourseIds": []
 	},
 	{
-		"id": "curriculum-course-demo-computing-numerical-modeling",
+		"id": "curriculum-course:n6:bic01",
 		"curriculumId": "curriculum-demo-computing-2026",
-		"courseId": "course-demo-numerical-modeling",
-		"recommendedCycle": 3,
+		"courseId": "course:bic01",
+		"recommendedCycle": 1,
 		"requirementType": "required",
-		"prerequisiteCourseIds": [
-			"course-demo-calculus-1",
-			"course-demo-linear-algebra",
-			"course-demo-scientific-programming"
-		]
+		"prerequisiteCourseIds": []
+	},
+	{
+		"id": "curriculum-course:n6:bma01",
+		"curriculumId": "curriculum-demo-computing-2026",
+		"courseId": "course:bma01",
+		"recommendedCycle": 1,
+		"requirementType": "required",
+		"prerequisiteCourseIds": []
+	},
+	{
+		"id": "curriculum-course:n6:bma03",
+		"curriculumId": "curriculum-demo-computing-2026",
+		"courseId": "course:bma03",
+		"recommendedCycle": 1,
+		"requirementType": "required",
+		"prerequisiteCourseIds": []
+	},
+	{
+		"id": "curriculum-course:n6:bqu01",
+		"curriculumId": "curriculum-demo-computing-2026",
+		"courseId": "course:bqu01",
+		"recommendedCycle": 1,
+		"requirementType": "required",
+		"prerequisiteCourseIds": []
+	},
+	{
+		"id": "curriculum-course:n6:cc421",
+		"curriculumId": "curriculum-demo-computing-2026",
+		"courseId": "course:cc421",
+		"recommendedCycle": 7,
+		"requirementType": "pending-verification",
+		"prerequisiteCourseIds": []
+	},
+	{
+		"id": "curriculum-course:n6:cc431",
+		"curriculumId": "curriculum-demo-computing-2026",
+		"courseId": "course:cc431",
+		"recommendedCycle": 7,
+		"requirementType": "pending-verification",
+		"prerequisiteCourseIds": []
 	}
 ]
