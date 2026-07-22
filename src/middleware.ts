@@ -7,7 +7,7 @@ import {
 type SupabaseGetUserResponse = Awaited<ReturnType<SupabaseServerClient['auth']['getUser']>>;
 type SupabaseUser = NonNullable<SupabaseGetUserResponse['data']['user']>;
 type HeadersWithSetCookie = Headers & {
-	readonly getSetCookie?: () => string[];
+	readonly getSetCookie: () => string[];
 };
 
 const isMissingSessionError = (error: unknown): boolean => {
@@ -62,7 +62,7 @@ const resolveAuthContext = async (supabase: SupabaseServerClient): Promise<App.L
 const applyResponseHeaders = (response: Response, responseHeaders: Headers): Response => {
 	const headers = new Headers(response.headers);
 	const headersWithSetCookie = responseHeaders as HeadersWithSetCookie;
-	const setCookieHeaders = headersWithSetCookie.getSetCookie?.() ?? [];
+	const setCookieHeaders = headersWithSetCookie.getSetCookie();
 
 	for (const [name, value] of responseHeaders) {
 		if (name.toLowerCase() === 'set-cookie') {
@@ -72,16 +72,8 @@ const applyResponseHeaders = (response: Response, responseHeaders: Headers): Res
 		headers.set(name, value);
 	}
 
-	if (setCookieHeaders.length > 0) {
-		for (const setCookieHeader of setCookieHeaders) {
-			headers.append('Set-Cookie', setCookieHeader);
-		}
-	} else {
-		const setCookieHeader = responseHeaders.get('Set-Cookie');
-
-		if (setCookieHeader) {
-			headers.append('Set-Cookie', setCookieHeader);
-		}
+	for (const setCookieHeader of setCookieHeaders) {
+		headers.append('Set-Cookie', setCookieHeader);
 	}
 
 	return new Response(response.body, {

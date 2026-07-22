@@ -109,10 +109,10 @@ const createClient = (getUserResponse: TestGetUserResponse, label = 'client') =>
 
 const readSetCookieHeaders = (headers: Headers): readonly string[] => {
 	const headersWithSetCookie = headers as Headers & {
-		readonly getSetCookie?: () => string[];
+		readonly getSetCookie: () => string[];
 	};
 
-	return headersWithSetCookie.getSetCookie?.() ?? [];
+	return headersWithSetCookie.getSetCookie();
 };
 
 describe('session middleware', () => {
@@ -214,6 +214,9 @@ describe('session middleware', () => {
 	it('propagates Set-Cookie headers written by Supabase', async () => {
 		const { context } = createContext();
 		const next = createNext();
+		const refreshCookie = 'sb-refresh-token=response-token; Path=/; HttpOnly; Secure';
+		const accessCookie = 'sb-access-token=access-token; Path=/; HttpOnly; Secure';
+		const combinedCookieHeader = `${refreshCookie}, ${accessCookie}`;
 		const { supabase } = createClient({
 			data: {
 				user: null,
@@ -222,19 +225,23 @@ describe('session middleware', () => {
 		});
 
 		createServerClientMock.mockImplementation((supabaseContext: SupabaseServerClientContext) => {
-			supabaseContext.responseHeaders.append(
-				'Set-Cookie',
-				'sb-refresh-token=response-token; Path=/; HttpOnly; Secure',
-			);
+			supabaseContext.responseHeaders.append('Set-Cookie', refreshCookie);
+			supabaseContext.responseHeaders.append('Set-Cookie', accessCookie);
 
 			return supabase;
 		});
 
 		const response = await runMiddleware(context, next);
+		const setCookieHeaders = readSetCookieHeaders(response.headers);
 
-		expect(readSetCookieHeaders(response.headers)).toContain(
-			'sb-refresh-token=response-token; Path=/; HttpOnly; Secure',
-		);
+		expect(setCookieHeaders).toEqual([refreshCookie, accessCookie]);
+		expect(setCookieHeaders).toHaveLength(2);
+		expect(setCookieHeaders).not.toContain(combinedCookieHeader);
+		expect(
+			setCookieHeaders.some(
+				(cookie) => cookie.includes('sb-refresh-token=') && cookie.includes('sb-access-token='),
+			),
+		).toBe(false);
 	});
 
 	it('propagates Cache-Control and Pragma headers written by Supabase', async () => {
@@ -254,6 +261,7 @@ describe('session middleware', () => {
 		});
 
 		createServerClientMock.mockImplementation((supabaseContext: SupabaseServerClientContext) => {
+			// Supabase anticache headers protect authenticated responses from public caching.
 			supabaseContext.responseHeaders.set('Cache-Control', 'private, no-store');
 			supabaseContext.responseHeaders.set('Pragma', 'no-cache');
 
