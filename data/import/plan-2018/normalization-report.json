@@ -1,0 +1,93 @@
+{
+	"source": "Five attached Plan de Estudios 2018 CSV exports",
+	"metrics": {
+		"uniqueCourses": 386,
+		"curriculumCourseRows": 556,
+		"curricula": 5,
+		"academicUnits": 11,
+		"nonEmptySyllabusLabels": 274,
+		"missingSyllabusLabels": 282,
+		"syllabusLabelsEndingInPdf": 85,
+		"courseCodesWithPrerequisiteVariants": 49,
+		"courseCodesWithTypeOrEvaluationVariants": 32,
+		"unresolvedPrerequisiteCodes": 0
+	},
+	"countsByProgram": {
+		"N1": {
+			"program": "Física",
+			"totalOfferings": 85,
+			"required": 42,
+			"specialtyElective": 27,
+			"complementaryElective": 16
+		},
+		"N2": {
+			"program": "Matemática",
+			"totalOfferings": 187,
+			"required": 48,
+			"specialtyElective": 120,
+			"complementaryElective": 19
+		},
+		"N3": {
+			"program": "Química",
+			"totalOfferings": 73,
+			"required": 47,
+			"specialtyElective": 21,
+			"complementaryElective": 5
+		},
+		"N5": {
+			"program": "Ingeniería Física",
+			"totalOfferings": 85,
+			"required": 49,
+			"specialtyElective": 19,
+			"complementaryElective": 17
+		},
+		"N6": {
+			"program": "Ciencia de la Computación",
+			"totalOfferings": 126,
+			"required": 50,
+			"specialtyElective": 33,
+			"complementaryElective": 43
+		}
+	},
+	"nameConflicts": [
+		{
+			"code": "BRN01",
+			"chosenName": "Realidad Nacional, Constitución y Derechos Humanos",
+			"variants": [
+				{
+					"name": "Realidad Nacional, Constitución y",
+					"occurrences": 1,
+					"programs": ["N2"]
+				},
+				{
+					"name": "Realidad Nacional, Constitución y Derechos Humanos",
+					"occurrences": 4,
+					"programs": ["N1", "N3", "N5", "N6"]
+				}
+			]
+		}
+	],
+	"missingPrerequisiteCodes": [],
+	"sourceNotes": [
+		{
+			"programCode": "N1",
+			"sourceFile": "PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv",
+			"sourceRow": 84,
+			"note": "*Por disposición en el artículo 9° de la Resolución Rectoral N° 3549-2024-UNI, del 16 de octubre de 2024, que aprueba el Reglamento RE-012/VRA-003 Otorgamiento del Grado Académico de Bachiller y Título Profesional la Universidad Nacional de Ingeniería, el código y nombre del curso CF5D2 PROYECTO DE TESIS III, ahora se denomina CF5T3 TALLER DE INVESTIGACIÓN, aplicado a partir del periodo académico 2025-1."
+		},
+		{
+			"programCode": "N1",
+			"sourceFile": "PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv",
+			"sourceRow": 118,
+			"note": "*Actualizado con Resolución Decanal N° 028-2023 del 01-03-2023"
+		}
+	],
+	"importantModelFindings": [
+		"recommendedCycle belongs to CurriculumCourse, not Course.",
+		"requirementType needs required, specialty-elective and complementary-elective.",
+		"prerequisites belong to CurriculumCourse because they differ by curriculum.",
+		"Tipo and S.E. must remain separate source fields; their formal semantics were not inferred.",
+		"The CSV exports contain syllabus labels but not the underlying hyperlink targets.",
+		"Administrative unit was inferred only for CM, CF, IF/IFE, CQ and CC prefixes; other codes remain pending verification."
+	]
+}

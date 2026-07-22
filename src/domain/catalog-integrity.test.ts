@@ -7,6 +7,8 @@ import curriculumCoursesJson from '../content/catalog/curriculum-courses.json';
 import resourcesJson from '../content/catalog/resources.json';
 import type { AcademicTerm } from './academic-term';
 import type { AcademicUnit } from './academic-unit';
+import { filterCourses } from './catalog-filters';
+import type { CourseCatalogItem, CourseOffering } from './catalog-view';
 import {
 	collectCatalogIntegrityIssues,
 	validateCatalogIntegrity,
@@ -18,29 +20,16 @@ import type { Curriculum } from './curriculum';
 import type { AcademicResource } from './resource';
 
 const storageOptions = { storageConfigured: false } as const;
-const requiredCourseCodes = [
-	'BFI01',
-	'BIC01',
-	'BMA01',
-	'BMA03',
-	'BQU01',
-	'BMA02',
-	'BEF01',
-	'BEG01',
-	'BRC01',
-	'BRN01',
-	'CC112',
-	'CC421',
-	'CC431',
-] as const;
-const legacyCalculusCourseId = ['course-demo', 'calculus-1'].join('-');
 
 const cloneAcademicTerm = (term: AcademicTerm): AcademicTerm => ({ ...term });
 const cloneAcademicUnit = (unit: AcademicUnit): AcademicUnit => ({ ...unit });
 const cloneCurriculum = (curriculum: Curriculum): Curriculum => ({ ...curriculum });
 const cloneCurriculumCourse = (curriculumCourse: CurriculumCourse): CurriculumCourse => ({
 	...curriculumCourse,
+	hours: { ...curriculumCourse.hours },
 	prerequisiteCourseIds: [...curriculumCourse.prerequisiteCourseIds],
+	source: { ...curriculumCourse.source },
+	syllabus: { ...curriculumCourse.syllabus },
 });
 const cloneCourse = (course: Course): Course => ({
 	...course,
@@ -104,13 +93,57 @@ const findCurriculumCourse = (
 	return relation;
 };
 
-const findCurriculumByCode = (catalog: CatalogCollections, code: string): Curriculum => {
-	const curriculum = catalog.curricula.find((candidate) => candidate.code === code);
+const findCurriculumByProgram = (catalog: CatalogCollections, programId: string): Curriculum => {
+	const curriculum = catalog.curricula.find((candidate) => candidate.academicUnitId === programId);
 	if (curriculum === undefined) {
-		throw new Error('Plan curricular no encontrado: ' + code);
+		throw new Error('Plan curricular no encontrado: ' + programId);
 	}
 
 	return curriculum;
+};
+
+const getParentUnit = (
+	unit: AcademicUnit | undefined,
+	unitsById: ReadonlyMap<string, AcademicUnit>,
+): AcademicUnit | undefined => {
+	if (unit?.parentUnitId === undefined) {
+		return undefined;
+	}
+
+	return unitsById.get(unit.parentUnitId);
+};
+
+const makeOffering = (
+	unitsById: ReadonlyMap<string, AcademicUnit>,
+	curriculaById: ReadonlyMap<string, Curriculum>,
+	relation: CurriculumCourse,
+): CourseOffering => {
+	const curriculum = curriculaById.get(relation.curriculumId);
+	if (curriculum === undefined) {
+		throw new Error('Plan inexistente en fixture');
+	}
+
+	const program = unitsById.get(curriculum.academicUnitId);
+	if (program === undefined) {
+		throw new Error('Programa inexistente en fixture');
+	}
+
+	const school = getParentUnit(program, unitsById);
+	const faculty = getParentUnit(school, unitsById);
+
+	return { curriculum, curriculumCourse: relation, faculty, program, school };
+};
+
+const makeCourseItems = (catalog: CatalogCollections): ReadonlyArray<CourseCatalogItem> => {
+	const unitsById = new Map(catalog.academicUnits.map((unit) => [unit.id, unit]));
+	const curriculaById = new Map(catalog.curricula.map((curriculum) => [curriculum.id, curriculum]));
+
+	return catalog.courses.map((course) => ({
+		course,
+		offerings: catalog.curriculumCourses
+			.filter((relation) => relation.courseId === course.id)
+			.map((relation) => makeOffering(unitsById, curriculaById, relation)),
+	}));
 };
 
 const countBy = <T>(items: ReadonlyArray<T>, value: (item: T) => string): Map<string, number> => {
@@ -127,25 +160,39 @@ const expectUnique = (values: ReadonlyArray<string>): void => {
 	expect(new Set(values).size).toBe(values.length);
 };
 
+const relationSummary = (catalog: CatalogCollections, courseCode: string) => {
+	const curriculaById = new Map(catalog.curricula.map((curriculum) => [curriculum.id, curriculum]));
+	return catalog.curriculumCourses
+		.filter((relation) => relation.courseId === 'course:' + courseCode.toLocaleLowerCase('es'))
+		.map((relation) => ({
+			cycle: relation.recommendedCycle,
+			programId: curriculaById.get(relation.curriculumId)?.academicUnitId,
+			requirementType: relation.requirementType,
+		}))
+		.sort((left, right) => (left.programId ?? '').localeCompare(right.programId ?? '', 'es'));
+};
+
 describe('catalog integrity', () => {
-	it('accepts the static catalog', () => {
+	it('accepts the imported Plan 2018 catalog', () => {
 		const catalog = makeCatalog();
 
 		expect(collectCatalogIntegrityIssues(catalog, storageOptions)).toEqual([]);
 		expect(() => validateCatalogIntegrity(catalog, storageOptions)).not.toThrow();
 	});
 
-	it('enforces course identifiers, codes, slugs, references and required initial sample', () => {
+	it('imports the expected normalized counts and stable course identity fields', () => {
 		const catalog = makeCatalog();
 		const courseIds = new Set(catalog.courses.map((course) => course.id));
+		const curriculumIds = new Set(catalog.curricula.map((curriculum) => curriculum.id));
 		const courseCodeCounts = countBy(catalog.courses, (course) => course.code);
-		const serializedCatalogData = JSON.stringify({
-			courses: catalog.courses,
-			curriculumCourses: catalog.curriculumCourses,
-			resources: catalog.resources,
-		});
 
-		expect(catalog.courses).toHaveLength(requiredCourseCodes.length);
+		expect(catalog.courses).toHaveLength(386);
+		expect(catalog.curriculumCourses).toHaveLength(556);
+		expect(catalog.curricula).toHaveLength(5);
+		expect(catalog.academicUnits).toHaveLength(11);
+		expect(
+			catalog.courses.every((course) => course.id === 'course:' + course.code.toLowerCase()),
+		).toBe(true);
 		expect(catalog.courses.every((course) => /^course:[a-z0-9]+$/.test(course.id))).toBe(true);
 		expect(catalog.courses.every((course) => /^[A-Z0-9]+$/.test(course.code))).toBe(true);
 		expect(
@@ -156,50 +203,111 @@ describe('catalog integrity', () => {
 		expectUnique(catalog.courses.map((course) => course.id));
 		expectUnique(catalog.courses.map((course) => course.code));
 		expectUnique(catalog.courses.map((course) => course.slug));
+		expectUnique(catalog.curriculumCourses.map((relation) => relation.id));
 		expect(catalog.curriculumCourses.every((relation) => courseIds.has(relation.courseId))).toBe(
 			true,
 		);
+		expect(
+			catalog.curriculumCourses.every((relation) => curriculumIds.has(relation.curriculumId)),
+		).toBe(true);
+		expect(catalog.resources.every((resource) => courseIds.has(resource.courseId))).toBe(true);
+
+		for (const [code, count] of courseCodeCounts) {
+			expect(count, code).toBe(1);
+		}
+	});
+
+	it('keeps curriculum-specific requirements, cycles, prerequisites, syllabus labels and source rows valid', () => {
+		const catalog = makeCatalog();
+		const courseIds = new Set(catalog.courses.map((course) => course.id));
+
 		expect(
 			catalog.curriculumCourses.every((relation) =>
 				relation.prerequisiteCourseIds.every((courseId) => courseIds.has(courseId)),
 			),
 		).toBe(true);
-		expect(catalog.resources.every((resource) => courseIds.has(resource.courseId))).toBe(true);
-
-		for (const code of requiredCourseCodes) {
-			expect(courseCodeCounts.get(code)).toBe(1);
-		}
-		expect(serializedCatalogData).not.toContain(legacyCalculusCourseId);
+		expect(
+			catalog.curriculumCourses
+				.filter((relation) => relation.requirementType === 'required')
+				.every(
+					(relation) =>
+						Number.isInteger(relation.recommendedCycle) &&
+						relation.recommendedCycle !== null &&
+						relation.recommendedCycle >= 1 &&
+						relation.recommendedCycle <= 10,
+				),
+		).toBe(true);
+		expect(
+			catalog.curriculumCourses
+				.filter((relation) => relation.requirementType !== 'required')
+				.every((relation) => relation.recommendedCycle === null),
+		).toBe(true);
+		expect(catalog.curriculumCourses.every((relation) => relation.syllabus.url === null)).toBe(
+			true,
+		);
+		expect(catalog.curriculumCourses.every((relation) => relation.source.file.length > 0)).toBe(
+			true,
+		);
+		expect(catalog.curriculumCourses.every((relation) => relation.source.row > 0)).toBe(true);
 	});
 
-	it('represents common BMA01 in more than one curriculum without duplicating Course', () => {
+	it('preserves BEF01, CC421 and CC431 curriculum placements', () => {
 		const catalog = makeCatalog();
-		const bma01CourseRecords = catalog.courses.filter((course) => course.id === 'course:bma01');
-		const bma01Relations = catalog.curriculumCourses.filter(
-			(relation) => relation.courseId === 'course:bma01',
-		);
-		const bma02ItemRelations = catalog.curriculumCourses.filter(
-			(relation) => relation.courseId === 'course:bma02',
-		);
 
-		expect(bma01CourseRecords).toHaveLength(1);
-		expect(new Set(bma01Relations.map((relation) => relation.curriculumId)).size).toBeGreaterThan(
-			1,
-		);
-		expect(bma01Relations.every((relation) => relation.recommendedCycle === 1)).toBe(true);
-		expect(bma02ItemRelations).toHaveLength(0);
+		expect(relationSummary(catalog, 'BEF01')).toEqual([
+			{ cycle: 3, programId: 'academic-unit:program:n1', requirementType: 'required' },
+			{ cycle: 5, programId: 'academic-unit:program:n2', requirementType: 'required' },
+			{ cycle: 2, programId: 'academic-unit:program:n3', requirementType: 'required' },
+			{ cycle: 2, programId: 'academic-unit:program:n5', requirementType: 'required' },
+			{ cycle: 6, programId: 'academic-unit:program:n6', requirementType: 'required' },
+		]);
+		expect(relationSummary(catalog, 'CC421')).toEqual([
+			{
+				cycle: null,
+				programId: 'academic-unit:program:n2',
+				requirementType: 'complementary-elective',
+			},
+			{ cycle: 7, programId: 'academic-unit:program:n6', requirementType: 'required' },
+		]);
+		expect(relationSummary(catalog, 'CC431')).toEqual([
+			{
+				cycle: null,
+				programId: 'academic-unit:program:n2',
+				requirementType: 'complementary-elective',
+			},
+			{ cycle: 7, programId: 'academic-unit:program:n6', requirementType: 'required' },
+		]);
 	});
 
-	it('places CC421 and CC431 in cycle 7 of plan N6 without inventing requirement type', () => {
+	it('ignores cycle filtering without program and applies it within the selected program', () => {
 		const catalog = makeCatalog();
-		const n6Curriculum = findCurriculumByCode(catalog, 'N6');
-		const artificialIntelligence = findCurriculumCourse(catalog, n6Curriculum.id, 'course:cc421');
-		const computerGraphics = findCurriculumCourse(catalog, n6Curriculum.id, 'course:cc431');
+		const items = makeCourseItems(catalog);
+		const cycleWithoutProgram = filterCourses(items, { recommendedCycle: 7 });
+		const n6CycleSeven = filterCourses(items, {
+			programId: 'academic-unit:program:n6',
+			recommendedCycle: 7,
+		});
+		const n2ComplementaryElectives = filterCourses(items, {
+			programId: 'academic-unit:program:n2',
+			requirementType: 'complementary-elective',
+		});
+		const n6CycleSevenCodes = new Set(n6CycleSeven.map((item) => item.course.code));
+		const n2ComplementaryCodes = new Set(n2ComplementaryElectives.map((item) => item.course.code));
 
-		expect(artificialIntelligence.recommendedCycle).toBe(7);
-		expect(computerGraphics.recommendedCycle).toBe(7);
-		expect(artificialIntelligence.requirementType).toBe('pending-verification');
-		expect(computerGraphics.requirementType).toBe('pending-verification');
+		expect(cycleWithoutProgram).toHaveLength(items.length);
+		expect(
+			n6CycleSeven.every((item) =>
+				item.offerings.some(
+					(offering) =>
+						offering.program.id === 'academic-unit:program:n6' &&
+						offering.curriculumCourse.recommendedCycle === 7,
+				),
+			),
+		).toBe(true);
+		expect(n6CycleSevenCodes.has('CC421')).toBe(true);
+		expect(n6CycleSevenCodes.has('CC431')).toBe(true);
+		expect(n2ComplementaryCodes.has('CC421')).toBe(true);
+		expect(n2ComplementaryCodes.has('CC431')).toBe(true);
 	});
 
 	it('detects duplicated identifiers, slugs and course codes', () => {
@@ -216,8 +324,8 @@ describe('catalog integrity', () => {
 		};
 		const duplicatedCodeCourse: Course = {
 			...course,
-			id: 'course:bfi01duplicate',
-			slug: 'bfi01-codigo-duplicado',
+			id: 'course:bae01duplicate',
+			slug: 'bae01-codigo-duplicado',
 		};
 
 		const issues = collectCatalogIntegrityIssues(
@@ -238,15 +346,16 @@ describe('catalog integrity', () => {
 		);
 	});
 
-	it('detects invalid course identity fields and pending credits without status', () => {
+	it('detects invalid course identity, credit status and administrative assignment', () => {
 		const catalog = makeCatalog();
-		const course =
-			catalog.courses.find((candidate) => candidate.id === 'course:bma01') ??
-			first(catalog.courses);
+		const course = first(catalog.courses);
 		const invalidCourse: Course = {
 			...course,
+			adminAcademicUnitId: 'academic-unit:school:n1',
+			adminAssignmentBasis: 'pending-verification',
 			code: 'bad-101',
 			credits: null,
+			dataStatus: undefined,
 			id: 'course-demo-invalid',
 			slug: 'bad-101',
 		};
@@ -260,8 +369,10 @@ describe('catalog integrity', () => {
 			expect.arrayContaining([
 				expect.stringContaining('Identificador de curso invalido'),
 				expect.stringContaining('Codigo de curso invalido'),
+				expect.stringContaining('Identificador de curso no coincide con codigo'),
 				expect.stringContaining('Slug de curso no inicia con codigo'),
 				expect.stringContaining('Curso con creditos pendientes sin estado de verificacion'),
+				expect.stringContaining('Curso pendiente con administrador asignado'),
 			]),
 		);
 	});
@@ -313,15 +424,77 @@ describe('catalog integrity', () => {
 		);
 	});
 
+	it('detects invalid requirement cycles, syllabus state and source URLs', () => {
+		const catalog = makeCatalog();
+		const requiredRelation = catalog.curriculumCourses.find(
+			(relation) => relation.requirementType === 'required',
+		);
+		const electiveRelation = catalog.curriculumCourses.find(
+			(relation) => relation.requirementType === 'specialty-elective',
+		);
+		if (requiredRelation === undefined || electiveRelation === undefined) {
+			throw new Error('Fixtures de relaciones requeridas ausentes');
+		}
+
+		const issues = collectCatalogIntegrityIssues(
+			{
+				...catalog,
+				curriculumCourses: [
+					...catalog.curriculumCourses,
+					{
+						...requiredRelation,
+						id: 'curriculum-course:broken-required-cycle',
+						recommendedCycle: null,
+					},
+					{
+						...electiveRelation,
+						id: 'curriculum-course:broken-elective-cycle',
+						recommendedCycle: 1,
+					},
+					{
+						...requiredRelation,
+						id: 'curriculum-course:broken-syllabus-state',
+						syllabus: {
+							...requiredRelation.syllabus,
+							linkStatus: 'label-only',
+							url: 'https://example.invalid/silabo.pdf',
+						},
+					},
+					{
+						...requiredRelation,
+						id: 'curriculum-course:broken-source-url',
+						source: {
+							...requiredRelation.source,
+							curriculumUrl: 'not-a-url',
+						},
+					},
+				],
+			},
+			storageOptions,
+		);
+
+		expect(issues).toEqual(
+			expect.arrayContaining([
+				expect.stringContaining('Curso obligatorio sin ciclo recomendado'),
+				expect.stringContaining('Curso electivo con ciclo recomendado fijo'),
+				expect.stringContaining('Silabo con URL sin estado verificado'),
+				expect.stringContaining('Relacion curriculum-curso con URL fuente invalida'),
+			]),
+		);
+	});
+
 	it('detects direct circular prerequisite references inside one curriculum', () => {
 		const catalog = makeCatalog();
+		const n6Curriculum = findCurriculumByProgram(catalog, 'academic-unit:program:n6');
+		const cc112 = findCurriculumCourse(catalog, n6Curriculum.id, 'course:cc112');
+		const cc211 = findCurriculumCourse(catalog, n6Curriculum.id, 'course:cc211');
 		const curriculumCourses = catalog.curriculumCourses.map((relation) => {
-			if (relation.id === 'curriculum-course:n6:bma01') {
-				return { ...relation, prerequisiteCourseIds: ['course:bma03'] };
+			if (relation.id === cc112.id) {
+				return { ...relation, prerequisiteCourseIds: ['course:cc211'] };
 			}
 
-			if (relation.id === 'curriculum-course:n6:bma03') {
-				return { ...relation, prerequisiteCourseIds: ['course:bma01'] };
+			if (relation.id === cc211.id) {
+				return { ...relation, prerequisiteCourseIds: ['course:cc112'] };
 			}
 
 			return relation;

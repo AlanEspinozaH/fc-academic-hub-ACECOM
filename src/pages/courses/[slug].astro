@@ -2,7 +2,11 @@
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import ResourceCard from '../../components/ResourceCard.astro';
 import { getAllCourses, getCatalogSnapshot } from '../../domain/catalog';
-import { CURRICULUM_COURSE_REQUIREMENT_TYPE_LABELS } from '../../domain/curriculum-course';
+import {
+	CURRICULUM_COURSE_REQUIREMENT_TYPE_LABELS,
+	formatRecommendedCycle,
+} from '../../domain/curriculum-course';
+import { CURRICULUM_STATUS_LABELS } from '../../domain/curriculum';
 import { formatCourseCredits, type Course } from '../../domain/course';
 import Layout from '../../layouts/Layout.astro';
 
@@ -38,6 +42,7 @@ const getPrerequisiteCourses = (courseIds: ReadonlyArray<string>): ReadonlyArray
 	courseIds
 		.map((courseId) => courseById.get(courseId))
 		.filter((candidate): candidate is Course => candidate !== undefined);
+const formatSourceCode = (code: string | null): string => code ?? 'No listado';
 ---
 
 <Layout title={course.name} description={courseDescription}>
@@ -50,7 +55,7 @@ const getPrerequisiteCourses = (courseIds: ReadonlyArray<string>): ReadonlyArray
 	/>
 
 	<section class="page-heading course-heading" aria-labelledby="course-title">
-		<p class="kicker">{course.code} · {course.status === 'active' ? 'Activo' : 'Historico'}</p>
+		<p class="kicker">{course.code} · {course.status === 'active' ? 'Activo' : 'Histórico'}</p>
 		<h1 id="course-title">{course.name}</h1>
 		<p>{courseDescription}</p>
 	</section>
@@ -59,7 +64,7 @@ const getPrerequisiteCourses = (courseIds: ReadonlyArray<string>): ReadonlyArray
 		<h2 id="course-data-title">Datos del curso</h2>
 		<dl class="metadata-grid">
 			<div>
-				<dt>Creditos</dt>
+				<dt>Créditos</dt>
 				<dd>{formatCourseCredits(course.credits)}</dd>
 			</div>
 			<div>
@@ -67,22 +72,26 @@ const getPrerequisiteCourses = (courseIds: ReadonlyArray<string>): ReadonlyArray
 				<dd>{programNames.join(', ')}</dd>
 			</div>
 			<div>
-				<dt>Etiquetas</dt>
-				<dd>{course.tags.join(', ')}</dd>
+				<dt>Escuela administradora</dt>
+				<dd>{course.adminAcademicUnitId ?? 'Pendiente de verificación'}</dd>
 			</div>
 		</dl>
 	</section>
 
 	<section class="section" aria-labelledby="curriculum-placement-title">
-		<h2 id="curriculum-placement-title">Ubicacion en planes</h2>
+		<h2 id="curriculum-placement-title">Ubicación en planes</h2>
 		<div class="table-wrap">
 			<table>
 				<thead>
 					<tr>
 						<th scope="col">Plan</th>
 						<th scope="col">Carrera</th>
+						<th scope="col">Estado</th>
 						<th scope="col">Ciclo</th>
+						<th scope="col">Categoría</th>
 						<th scope="col">Tipo</th>
+						<th scope="col">S.E.</th>
+						<th scope="col">Sílabo</th>
 						<th scope="col">Prerrequisitos</th>
 					</tr>
 				</thead>
@@ -94,15 +103,33 @@ const getPrerequisiteCourses = (courseIds: ReadonlyArray<string>): ReadonlyArray
 							);
 							return (
 								<tr>
-									<td>{offering.curriculum.code}</td>
+									<td>
+										<a href={offering.curriculum.sourceUrl}>{offering.curriculum.code}</a>
+									</td>
 									<td>{offering.program.name}</td>
-									<td>{offering.curriculumCourse.recommendedCycle}</td>
+									<td>{CURRICULUM_STATUS_LABELS[offering.curriculum.status]}</td>
+									<td>{formatRecommendedCycle(offering.curriculumCourse.recommendedCycle)}</td>
 									<td>
 										{
 											CURRICULUM_COURSE_REQUIREMENT_TYPE_LABELS[
 												offering.curriculumCourse.requirementType
 											]
 										}
+									</td>
+									<td>{formatSourceCode(offering.curriculumCourse.typeCode)}</td>
+									<td>{formatSourceCode(offering.curriculumCourse.evaluationSystemCode)}</td>
+									<td>
+										{offering.curriculumCourse.syllabus.label !== null ? (
+											offering.curriculumCourse.syllabus.url !== null ? (
+												<a href={offering.curriculumCourse.syllabus.url}>Ver sílabo</a>
+											) : (
+												<a href={offering.curriculum.sourceUrl}>
+													Sílabo referenciado en la fuente original
+												</a>
+											)
+										) : (
+											<span>No listado</span>
+										)}
 									</td>
 									<td>
 										{prerequisites.length > 0 ? (
@@ -145,7 +172,7 @@ const getPrerequisiteCourses = (courseIds: ReadonlyArray<string>): ReadonlyArray
 					))}
 				</div>
 			) : (
-				<p class="empty-state">Este curso no tiene recursos publicos registrados.</p>
+				<p class="empty-state">Este curso no tiene recursos públicos registrados.</p>
 			)
 		}
 	</section>
@@ -163,7 +190,7 @@ const getPrerequisiteCourses = (courseIds: ReadonlyArray<string>): ReadonlyArray
 
 	.metadata-grid {
 		display: grid;
-		grid-template-columns: 0.35fr 1fr 1fr;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
 		gap: 1rem;
 		margin: 0;
 	}

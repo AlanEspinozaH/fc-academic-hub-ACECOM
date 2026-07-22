@@ -6,7 +6,7 @@ export type AcademicUnitStatus = (typeof ACADEMIC_UNIT_STATUSES)[number];
 
 export interface AcademicUnit {
 	readonly abbreviation: string;
-	readonly description: string;
+	readonly description: string | null;
 	readonly id: string;
 	readonly name: string;
 	readonly parentUnitId?: string;
@@ -14,3 +14,6 @@ export interface AcademicUnit {
 	readonly status: AcademicUnitStatus;
 	readonly unitType: AcademicUnitType;
 }
+
+export const formatAcademicUnitDescription = (unit: AcademicUnit): string =>
+	unit.description ?? 'Descripción pendiente de fuente oficial';

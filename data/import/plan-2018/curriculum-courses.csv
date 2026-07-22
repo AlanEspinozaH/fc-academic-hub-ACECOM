@@ -1,0 +1,557 @@
+﻿id,curriculumId,courseId,requirementType,recommendedCycle,prerequisiteCourseIds,typeCode,evaluationSystemCode,syllabusLabel,sourceFile,sourceRow
+curriculum-course:n3:2018:bfi01,curriculum:n3:2018,course:bfi01,required,1,,G,F,BFI01 FISICA I,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,5
+curriculum-course:n3:2018:bic01,curriculum:n3:2018,course:bic01,required,1,,G,F,BIC01-INTRODUCCION A LA COMPUTACIÓN,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,6
+curriculum-course:n3:2018:bma01,curriculum:n3:2018,course:bma01,required,1,,G,G,BMA01 CALCULO DIFERENCIAL,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,7
+curriculum-course:n3:2018:bma03,curriculum:n3:2018,course:bma03,required,1,,G,G,BMA03 ALGEBRA LINEAL,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,8
+curriculum-course:n3:2018:bqu01,curriculum:n3:2018,course:bqu01,required,1,,G,F,BQU01 QUIMICA I,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,9
+curriculum-course:n3:2018:bef01,curriculum:n3:2018,course:bef01,required,2,,G,D,BEF01 ETICA Y FILOSOFIA POLITICA,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,14
+curriculum-course:n3:2018:beg01,curriculum:n3:2018,course:beg01,required,2,,G,F,BEG01 ECONOMIA GENERAL,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,15
+curriculum-course:n3:2018:bma02,curriculum:n3:2018,course:bma02,required,2,course:bma01,G,G,BMA02 CALCULO INTEGRAL,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,16
+curriculum-course:n3:2018:brc01,curriculum:n3:2018,course:brc01,required,2,,G,D,BRC01 REDACCION Y COMUNICACION,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,17
+curriculum-course:n3:2018:brn01,curriculum:n3:2018,course:brn01,required,2,,G,D,BRN01 REALIDAD NACIONAL,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,18
+curriculum-course:n3:2018:cq102,curriculum:n3:2018,course:cq102,required,2,,E,N,CQ102 QUIMICA EXPERIMENTAL,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,19
+curriculum-course:n3:2018:cq132,curriculum:n3:2018,course:cq132,required,2,,E,N,CQ132 QUIMICA CIENCIA Y TECNOLOGIA,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,20
+curriculum-course:n3:2018:cq221,curriculum:n3:2018,course:cq221,required,3,course:bfi01,E,G,CQ221- INTRODUCCIÓN A LA ELECTRICIDAD Y MAGNETISMO,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,26
+curriculum-course:n3:2018:cq241,curriculum:n3:2018,course:cq241,required,3,course:bqu01,E,N,CQ241 ELEMENTOS QUIMICOS-PROPIEDADES Y APLICACIONES,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,27
+curriculum-course:n3:2018:cq261,curriculum:n3:2018,course:cq261,required,3,course:bqu01,E,G,CQ261 HIDROCARBUROS ALIFATICOS -ALCOHOLES Y DERIVADOS,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,28
+curriculum-course:n3:2018:cq271,curriculum:n3:2018,course:cq271,required,3,course:bqu01,E,G,CQ271 PRINCIPIOS DE FISICOQUIMICA,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,29
+curriculum-course:n3:2018:cl002,curriculum:n3:2018,course:cl002,required,3,,E,G,CL002 INGLES I,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,30
+curriculum-course:n3:2018:cq242,curriculum:n3:2018,course:cq242,required,4,course:cq241,E,N,CQ242 ESTRUCTURA QUIMICA Y REACTIVIDAD,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,36
+curriculum-course:n3:2018:cq262,curriculum:n3:2018,course:cq262,required,4,course:cq261,E,G,CQ262 COMPUESTO CARBONILICOS Y AROMATICOS,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,37
+curriculum-course:n3:2018:cq272,curriculum:n3:2018,course:cq272,required,4,course:cq271,E,F,CQ272 FUNDAMENTOS DE ELECTROQUIMICA,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,38
+curriculum-course:n3:2018:cq2e2,curriculum:n3:2018,course:cq2e2,required,4,course:cq102,E,F,CQ2E2 QUÍMICA ANALITICA,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,39
+curriculum-course:n3:2018:bie01,curriculum:n3:2018,course:bie01,required,5,,G,D,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,45
+curriculum-course:n3:2018:cq301,curriculum:n3:2018,course:cq301,required,5,course:cq242,E,N,CQ301 QUIMICA DE COORDINACION,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,46
+curriculum-course:n3:2018:cq361,curriculum:n3:2018,course:cq361,required,5,course:cq262,E,G,CQ361 CARBOHIDRATOS AMINOACIDOS Y HETEROCICLICOS,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,47
+curriculum-course:n3:2018:cq371,curriculum:n3:2018,course:cq371,required,5,course:cq271,E,G,CQ371 CINETICA QUIMICA Y FENOMENOS DE SUPERFICIE,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,48
+curriculum-course:n3:2018:cq381,curriculum:n3:2018,course:cq381,required,5,course:cq2e2,E,G,CQ381 TRATAMIENTO ESTADISTICO EN QUIMICA ANALITICA,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,49
+curriculum-course:n3:2018:cq300,curriculum:n3:2018,course:cq300,required,6,course:bma02,E,G,CQ300 METODOS NUMERICOS APLICADOS A LA QUIMICA,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,54
+curriculum-course:n3:2018:cq302,curriculum:n3:2018,course:cq302,required,6,course:cq301,E,N,CQ302 QUIMICA INORGANICA APLICADA,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,55
+curriculum-course:n3:2018:cq372,curriculum:n3:2018,course:cq372,required,6,course:cq272 course:cq371,E,G,CQ372 QUIMICA DE COLOIDES Y NANOPARTICULAS,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,56
+curriculum-course:n3:2018:cq382,curriculum:n3:2018,course:cq382,required,6,course:cq381,E,C,CQ382 TECNICAS ESPECTROSCOPICAS EN QUIMICA ANALITICA,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,57
+curriculum-course:n3:2018:cq392,curriculum:n3:2018,course:cq392,required,6,course:cq361,E,G,CQ392 IDENTIFICACION ESPECTROSCOPICA DE COMPUESTOS ORGANICOS,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,58
+curriculum-course:n3:2018:cq401,curriculum:n3:2018,course:cq401,required,7,,E,F,CQ401 MICROBIOLOGIA,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,63
+curriculum-course:n3:2018:cq431,curriculum:n3:2018,course:cq431,required,7,course:cq381,E,F,CQ431 QUIMICA Y GESTION AMBIENTAL,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,64
+curriculum-course:n3:2018:cq461,curriculum:n3:2018,course:cq461,required,7,,E,N,CQ461 SEMINARIO DE ELABORACION DE TESIS PROFESIONAL,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,65
+curriculum-course:n3:2018:cq4e1,curriculum:n3:2018,course:cq4e1,required,7,course:cq300,E,F,CQ4E1 QUIMICA CUANTICA,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,66
+curriculum-course:n3:2018:cq491,curriculum:n3:2018,course:cq491,required,7,course:cq382,E,C,CQ491 TECNICAS ELECTROMETRICAS Y CROMATOGRAFICAS EN QUIMICA ANALITICA,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,67
+curriculum-course:n3:2018:cq402,curriculum:n3:2018,course:cq402,required,8,course:cq302 course:cq372,E,F,CQ402 TECNICAS DE CARACTERIZACION DE MATERIALES,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,72
+curriculum-course:n3:2018:cq4e2,curriculum:n3:2018,course:cq4e2,required,8,course:cq461,E,N,CQ422 PROYECTO DE TESIS DE QUIMICA I,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,73
+curriculum-course:n3:2018:cq472,curriculum:n3:2018,course:cq472,required,8,course:cq372 course:cq4e1,E,F,CQ472 QUIMICA DE MATERIALES.pdf,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,74
+curriculum-course:n3:2018:cq482,curriculum:n3:2018,course:cq482,required,8,course:cq382,E,N,CQ482 GESTION DE LA CALIDAD DE LABORATORIOS,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,75
+curriculum-course:n3:2018:cq501,curriculum:n3:2018,course:cq501,required,9,course:cq302 course:cq361 course:cq371,E,F,CQ501 PROCESOS QUIMICOS INDUSTRIALES.pdf,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,81
+curriculum-course:n3:2018:cq511,curriculum:n3:2018,course:cq511,required,9,course:cq381,E,N,CQ511 DISEÑO ORGANIZACIONAL Y SEGURIDAD EN EL LABORATORIO.pdf,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,82
+curriculum-course:n3:2018:cq541,curriculum:n3:2018,course:cq541,required,9,course:cq4e2,E,N,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,83
+curriculum-course:n3:2018:cq542,curriculum:n3:2018,course:cq542,required,10,course:cq541,E,N,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,89
+curriculum-course:n3:2018:bae01,curriculum:n3:2018,course:bae01,required,10,,G,D,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,90
+curriculum-course:n3:2018:xp200,curriculum:n3:2018,course:xp200,required,10,,E,D,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,91
+curriculum-course:n3:2018:ya100,curriculum:n3:2018,course:ya100,required,10,,E,D,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,92
+curriculum-course:n3:2018:cq001,curriculum:n3:2018,course:cq001,specialty-elective,,,S,F,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,97
+curriculum-course:n3:2018:cq002,curriculum:n3:2018,course:cq002,specialty-elective,,,S,F,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,98
+curriculum-course:n3:2018:cq003,curriculum:n3:2018,course:cq003,specialty-elective,,,S,F,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,99
+curriculum-course:n3:2018:cq004,curriculum:n3:2018,course:cq004,specialty-elective,,,S,F,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,100
+curriculum-course:n3:2018:cq007,curriculum:n3:2018,course:cq007,specialty-elective,,,S,B,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,101
+curriculum-course:n3:2018:cq011,curriculum:n3:2018,course:cq011,specialty-elective,,course:cq302,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,102
+curriculum-course:n3:2018:cq0l2,curriculum:n3:2018,course:cq0l2,specialty-elective,,course:cq301,S,N,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,103
+curriculum-course:n3:2018:cq013,curriculum:n3:2018,course:cq013,specialty-elective,,course:cq272,S,N,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,104
+curriculum-course:n3:2018:cq020,curriculum:n3:2018,course:cq020,specialty-elective,,course:cq272,S,F,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,105
+curriculum-course:n3:2018:cq0l1,curriculum:n3:2018,course:cq0l1,specialty-elective,,course:cq301,S,N,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,106
+curriculum-course:n3:2018:cq037,curriculum:n3:2018,course:cq037,specialty-elective,,course:cq301,S,N,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,107
+curriculum-course:n3:2018:cq046,curriculum:n3:2018,course:cq046,specialty-elective,,course:cq392,S,D,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,108
+curriculum-course:n3:2018:cq047,curriculum:n3:2018,course:cq047,specialty-elective,,course:cq392,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,109
+curriculum-course:n3:2018:cq053,curriculum:n3:2018,course:cq053,specialty-elective,,course:cq371,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,110
+curriculum-course:n3:2018:cq061,curriculum:n3:2018,course:cq061,specialty-elective,,course:cq372 course:cq491,S,F,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,111
+curriculum-course:n3:2018:cq063,curriculum:n3:2018,course:cq063,specialty-elective,,course:cq371,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,112
+curriculum-course:n3:2018:cq081,curriculum:n3:2018,course:cq081,specialty-elective,,course:cq491,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,113
+curriculum-course:n3:2018:cq085,curriculum:n3:2018,course:cq085,specialty-elective,,course:cq2e2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,114
+curriculum-course:n3:2018:cq093,curriculum:n3:2018,course:cq093,specialty-elective,,,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,115
+curriculum-course:n3:2018:cq094,curriculum:n3:2018,course:cq094,specialty-elective,,,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,116
+curriculum-course:n3:2018:cq099,curriculum:n3:2018,course:cq099,specialty-elective,,,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,117
+curriculum-course:n3:2018:cc112,curriculum:n3:2018,course:cc112,complementary-elective,,course:bic01,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,121
+curriculum-course:n3:2018:cf1b2,curriculum:n3:2018,course:cf1b2,complementary-elective,,course:bfi01,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,122
+curriculum-course:n3:2018:cm142,curriculum:n3:2018,course:cm142,complementary-elective,,,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,123
+curriculum-course:n3:2018:cm2a1,curriculum:n3:2018,course:cm2a1,complementary-elective,,course:bma02,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,124
+curriculum-course:n3:2018:cq212,curriculum:n3:2018,course:cq212,complementary-elective,,,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE QUÍMICA CON SILABOS(Hoja1).csv,125
+curriculum-course:n2:2018:bfi01,curriculum:n2:2018,course:bfi01,required,1,,G,F,BFI01 FISICA I,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,5
+curriculum-course:n2:2018:bic01,curriculum:n2:2018,course:bic01,required,1,,G,F,BIC01-INTRODUCCION A LA COMPUTACIÓN,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,6
+curriculum-course:n2:2018:bma01,curriculum:n2:2018,course:bma01,required,1,,G,G,BMA01 CALCULO DIFERENCIAL,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,7
+curriculum-course:n2:2018:bma03,curriculum:n2:2018,course:bma03,required,1,,G,G,BMA03 ALGEBRA LINEAL,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,8
+curriculum-course:n2:2018:bqu01,curriculum:n2:2018,course:bqu01,required,1,,G,F,BQU01 QUIMICA I,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,9
+curriculum-course:n2:2018:bma02,curriculum:n2:2018,course:bma02,required,2,course:bma01,G,G,BMA02 CALCULO INTEGRAL,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,14
+curriculum-course:n2:2018:cf1b2,curriculum:n2:2018,course:cf1b2,required,2,course:bfi01,E,G,CF1B2 Fisica II,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,15
+curriculum-course:n2:2018:cm1a2,curriculum:n2:2018,course:cm1a2,required,2,course:bma01 course:bma03,E,G,CM2H1 MATEMATICA DISCRETA,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,16
+curriculum-course:n2:2018:cm1b2,curriculum:n2:2018,course:cm1b2,required,2,course:bma03,E,G,CM1B2 ALGEBRA LINEAL I,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,17
+curriculum-course:n2:2018:cm1h2,curriculum:n2:2018,course:cm1h2,required,2,,E,G,CM1H2 CALCULO DE PROBABILIDADES,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,18
+curriculum-course:n2:2018:beg01,curriculum:n2:2018,course:beg01,required,3,,G,F,BEG01 ECONOMIA GENERAL,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,23
+curriculum-course:n2:2018:brc01,curriculum:n2:2018,course:brc01,required,3,,G,D,BRC01 REDACCION Y COMUNICACION,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,24
+curriculum-course:n2:2018:cm2a1,curriculum:n2:2018,course:cm2a1,required,3,course:bma02 course:cm1a2,E,G,CM2A1 CALCULO DIFERENCIAL E INTEGRAL AVANZADO,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,25
+curriculum-course:n2:2018:cm2b1,curriculum:n2:2018,course:cm2b1,required,3,course:cm1b2,E,G,CM2B1 ALGEBRA LINEAL II,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,26
+curriculum-course:n2:2018:cm2f1,curriculum:n2:2018,course:cm2f1,required,3,course:bic01,E,F,CM2F1 PROGRAMACION ESTRUCTURADA,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,27
+curriculum-course:n2:2018:cm2h1,curriculum:n2:2018,course:cm2h1,required,3,course:cm1a2,E,G,CM2H1 MATEMATICA DISCRETA,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,28
+curriculum-course:n2:2018:cm2a2,curriculum:n2:2018,course:cm2a2,required,4,course:cm2a1,E,G,CM2A2 ANALISIS REAL.pdf,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,33
+curriculum-course:n2:2018:cm2f2,curriculum:n2:2018,course:cm2f2,required,4,course:cm2f1,E,F,CM2F2 PROCESADOR DE TEXTO Y PROGRAMACION,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,34
+curriculum-course:n2:2018:cm2g2,curriculum:n2:2018,course:cm2g2,required,4,course:bma02 course:cm2b1,E,G,CM2G2 INTRODUCCION A LAS ECUACIONES DIFERENCIALES ORDINARIAS,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,35
+curriculum-course:n2:2018:cm2h2,curriculum:n2:2018,course:cm2h2,required,4,course:cm1h2,E,G,CM2H2 ESTADISTICA INFERENCIAL,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,36
+curriculum-course:n2:2018:cm2i2,curriculum:n2:2018,course:cm2i2,required,4,course:cm2b1,E,G,CM2I2 ESTRUCTURAS ALGEBRAICAS.pdf,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,37
+curriculum-course:n2:2018:bef01,curriculum:n2:2018,course:bef01,required,5,,G,D,BEF01 ETICA Y FILOSOFIA POLITICA,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,42
+curriculum-course:n2:2018:brn01,curriculum:n2:2018,course:brn01,required,5,,G,D,BRN01 REALIDAD NACIONAL,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,43
+curriculum-course:n2:2018:cl002,curriculum:n2:2018,course:cl002,required,5,,E,G,CL002 INGLES I,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,44
+curriculum-course:n2:2018:cm3a1,curriculum:n2:2018,course:cm3a1,required,5,course:cm2a2,E,G,CM3A1 ANALISIS COMPLEJO.pdf,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,45
+curriculum-course:n2:2018:cm3c1,curriculum:n2:2018,course:cm3c1,required,5,course:cm2a2,E,G,CM3C1 ANALISIS EN RN.pdf,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,46
+curriculum-course:n2:2018:cm3i1,curriculum:n2:2018,course:cm3i1,required,5,course:cm2a2,E,G,CM3I1 TEORIA LOCAL DE SUPERFICIES.pdf,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,47
+curriculum-course:n2:2018:bie01,curriculum:n2:2018,course:bie01,required,6,,G,D,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,52
+curriculum-course:n2:2018:cm3c2,curriculum:n2:2018,course:cm3c2,required,6,course:cm3c1,E,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,53
+curriculum-course:n2:2018:cm3e2,curriculum:n2:2018,course:cm3e2,required,6,course:cm2a2,E,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,54
+curriculum-course:n2:2018:cm3g2,curriculum:n2:2018,course:cm3g2,required,6,course:cm2g2,E,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,55
+curriculum-course:n2:2018:cm3i2,curriculum:n2:2018,course:cm3i2,required,6,course:cm2a2,E,G,CM3I2 TOPOLOGIA.pdf,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,56
+curriculum-course:n2:2018:ch033,curriculum:n2:2018,course:ch033,required,7,,E,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,61
+curriculum-course:n2:2018:cm4c1,curriculum:n2:2018,course:cm4c1,required,7,course:cm3c2,E,G,CM4C1 ANALISIS FUNCIONAL I,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,62
+curriculum-course:n2:2018:cm4e1,curriculum:n2:2018,course:cm4e1,required,7,course:cm3e2,E,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,63
+curriculum-course:n2:2018:cm4f1,curriculum:n2:2018,course:cm4f1,required,7,course:cm3c1,E,G,CM4F1 ANALISIS Y MODELAMIENTO NUMERICO I,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,64
+curriculum-course:n2:2018:cm4h1,curriculum:n2:2018,course:cm4h1,required,7,course:cm2h2 course:cm3c2,E,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,65
+curriculum-course:n2:2018:cm4c2,curriculum:n2:2018,course:cm4c2,required,8,course:cm4c1,E,G,CM4C2 ANALISIS FUNCIONAL II.pdf,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,70
+curriculum-course:n2:2018:cm4d2,curriculum:n2:2018,course:cm4d2,required,8,course:cm4c1,E,N,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,71
+curriculum-course:n2:2018:cm4e2,curriculum:n2:2018,course:cm4e2,required,8,course:cm4e1,E,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,72
+curriculum-course:n2:2018:cm4g2,curriculum:n2:2018,course:cm4g2,required,8,course:cm3g2,E,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,73
+curriculum-course:n2:2018:cm5d1,curriculum:n2:2018,course:cm5d1,required,9,course:cm4d2,E,N,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,78
+curriculum-course:n2:2018:cm5f1,curriculum:n2:2018,course:cm5f1,required,9,course:cm4f1,E,G,CM5F1 ANALISIS Y MODELAMIENTO NUMERICO II,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,79
+curriculum-course:n2:2018:cm5h1,curriculum:n2:2018,course:cm5h1,required,9,course:cm4h1,E,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,80
+curriculum-course:n2:2018:cm5d2,curriculum:n2:2018,course:cm5d2,required,10,course:cm5d1,E,N,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,85
+curriculum-course:n2:2018:bae01,curriculum:n2:2018,course:bae01,required,10,,G,D,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,86
+curriculum-course:n2:2018:xp200,curriculum:n2:2018,course:xp200,required,10,,E,D,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,87
+curriculum-course:n2:2018:ya100,curriculum:n2:2018,course:ya100,required,10,,E,D,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,88
+curriculum-course:n2:2018:cm0a0,curriculum:n2:2018,course:cm0a0,specialty-elective,,course:cm3a1 course:cm3g2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,93
+curriculum-course:n2:2018:cm0a1,curriculum:n2:2018,course:cm0a1,specialty-elective,,course:cm4c2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,94
+curriculum-course:n2:2018:cm0a2,curriculum:n2:2018,course:cm0a2,specialty-elective,,course:cm3g2 course:cm5h1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,95
+curriculum-course:n2:2018:cm0a3,curriculum:n2:2018,course:cm0a3,specialty-elective,,course:cm4c1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,96
+curriculum-course:n2:2018:cm0a4,curriculum:n2:2018,course:cm0a4,specialty-elective,,course:cm2i2 course:cm4f1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,97
+curriculum-course:n2:2018:cm0a5,curriculum:n2:2018,course:cm0a5,specialty-elective,,course:cm4f1 course:cm4g2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,98
+curriculum-course:n2:2018:cm0a6,curriculum:n2:2018,course:cm0a6,specialty-elective,,course:cm2f2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,99
+curriculum-course:n2:2018:cm0a7,curriculum:n2:2018,course:cm0a7,specialty-elective,,course:cm062,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,100
+curriculum-course:n2:2018:cm0a8,curriculum:n2:2018,course:cm0a8,specialty-elective,,course:cm018,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,101
+curriculum-course:n2:2018:cm0a9,curriculum:n2:2018,course:cm0a9,specialty-elective,,course:cm008,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,102
+curriculum-course:n2:2018:cm0b0,curriculum:n2:2018,course:cm0b0,specialty-elective,,course:cm2g2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,103
+curriculum-course:n2:2018:cm0b1,curriculum:n2:2018,course:cm0b1,specialty-elective,,course:cm2g2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,104
+curriculum-course:n2:2018:cm0b2,curriculum:n2:2018,course:cm0b2,specialty-elective,,course:cm3i1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,105
+curriculum-course:n2:2018:cm0b3,curriculum:n2:2018,course:cm0b3,specialty-elective,,course:cm2g2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,106
+curriculum-course:n2:2018:cm0b4,curriculum:n2:2018,course:cm0b4,specialty-elective,,course:cm020,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,107
+curriculum-course:n2:2018:cm0b5,curriculum:n2:2018,course:cm0b5,specialty-elective,,course:cm0a2 course:cm4f1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,108
+curriculum-course:n2:2018:cm0b6,curriculum:n2:2018,course:cm0b6,specialty-elective,,course:cm4c2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,109
+curriculum-course:n2:2018:cm0b7,curriculum:n2:2018,course:cm0b7,specialty-elective,,course:cm081,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,110
+curriculum-course:n2:2018:cm0b8,curriculum:n2:2018,course:cm0b8,specialty-elective,,course:cm057,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,111
+curriculum-course:n2:2018:cm0b9,curriculum:n2:2018,course:cm0b9,specialty-elective,,course:cm0a6,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,112
+curriculum-course:n2:2018:cm0c4,curriculum:n2:2018,course:cm0c4,specialty-elective,,course:cm008,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,113
+curriculum-course:n2:2018:cm0c5,curriculum:n2:2018,course:cm0c5,specialty-elective,,course:cm3i2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,114
+curriculum-course:n2:2018:cm0c6,curriculum:n2:2018,course:cm0c6,specialty-elective,,course:cm3c2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,115
+curriculum-course:n2:2018:cm0c7,curriculum:n2:2018,course:cm0c7,specialty-elective,,course:cm4g2 course:cm5h1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,116
+curriculum-course:n2:2018:cm0c8,curriculum:n2:2018,course:cm0c8,specialty-elective,,course:cm057,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,117
+curriculum-course:n2:2018:cm0c9,curriculum:n2:2018,course:cm0c9,specialty-elective,,course:cm038,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,118
+curriculum-course:n2:2018:cm0d0,curriculum:n2:2018,course:cm0d0,specialty-elective,,course:cm078,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,119
+curriculum-course:n2:2018:cm0d1,curriculum:n2:2018,course:cm0d1,specialty-elective,,course:cm011,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,120
+curriculum-course:n2:2018:cm0d2,curriculum:n2:2018,course:cm0d2,specialty-elective,,course:cm4e2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,121
+curriculum-course:n2:2018:cm0d3,curriculum:n2:2018,course:cm0d3,specialty-elective,,course:cm4e2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,122
+curriculum-course:n2:2018:cm0d4,curriculum:n2:2018,course:cm0d4,specialty-elective,,course:cm5h1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,123
+curriculum-course:n2:2018:cm0d5,curriculum:n2:2018,course:cm0d5,specialty-elective,,course:cm2h2 course:cm4f1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,124
+curriculum-course:n2:2018:cm0d6,curriculum:n2:2018,course:cm0d6,specialty-elective,,course:cm2i2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,125
+curriculum-course:n2:2018:cm0d7,curriculum:n2:2018,course:cm0d7,specialty-elective,,course:cm2f2 course:cm2i2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,126
+curriculum-course:n2:2018:cm0d8,curriculum:n2:2018,course:cm0d8,specialty-elective,,course:cm3a1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,127
+curriculum-course:n2:2018:cm0d9,curriculum:n2:2018,course:cm0d9,specialty-elective,,course:cm4e2 course:cm5h1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,128
+curriculum-course:n2:2018:cm0e0,curriculum:n2:2018,course:cm0e0,specialty-elective,,course:cm4f1 course:cm5h1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,129
+curriculum-course:n2:2018:cm0e1,curriculum:n2:2018,course:cm0e1,specialty-elective,,course:cm4e2 course:cm5h1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,130
+curriculum-course:n2:2018:cm0e2,curriculum:n2:2018,course:cm0e2,specialty-elective,,course:cm4e2 course:cm4f1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,131
+curriculum-course:n2:2018:cm0e3,curriculum:n2:2018,course:cm0e3,specialty-elective,,course:cm3i1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,132
+curriculum-course:n2:2018:cm0e4,curriculum:n2:2018,course:cm0e4,specialty-elective,,course:cm2i2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,133
+curriculum-course:n2:2018:cm0e5,curriculum:n2:2018,course:cm0e5,specialty-elective,,course:cm3i1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,134
+curriculum-course:n2:2018:cm0e6,curriculum:n2:2018,course:cm0e6,specialty-elective,,course:cm3i1 course:cm3i2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,135
+curriculum-course:n2:2018:cm0e8,curriculum:n2:2018,course:cm0e8,specialty-elective,,course:cm4e1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,136
+curriculum-course:n2:2018:cm0e9,curriculum:n2:2018,course:cm0e9,specialty-elective,,course:cm4h1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,137
+curriculum-course:n2:2018:cm001,curriculum:n2:2018,course:cm001,specialty-elective,,course:cm4c2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,138
+curriculum-course:n2:2018:cm002,curriculum:n2:2018,course:cm002,specialty-elective,,course:cm5f1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,139
+curriculum-course:n2:2018:cm003,curriculum:n2:2018,course:cm003,specialty-elective,,course:cm4e2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,140
+curriculum-course:n2:2018:cm004,curriculum:n2:2018,course:cm004,specialty-elective,,course:cm057,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,141
+curriculum-course:n2:2018:cm005,curriculum:n2:2018,course:cm005,specialty-elective,,course:cm060,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,142
+curriculum-course:n2:2018:cm006,curriculum:n2:2018,course:cm006,specialty-elective,,course:cm025,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,143
+curriculum-course:n2:2018:cm007,curriculum:n2:2018,course:cm007,specialty-elective,,course:cm022,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,144
+curriculum-course:n2:2018:cm008,curriculum:n2:2018,course:cm008,specialty-elective,,course:cm3i1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,145
+curriculum-course:n2:2018:cm009,curriculum:n2:2018,course:cm009,specialty-elective,,course:cm4c1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,146
+curriculum-course:n2:2018:cm010,curriculum:n2:2018,course:cm010,specialty-elective,,course:cm009,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,147
+curriculum-course:n2:2018:cm011,curriculum:n2:2018,course:cm011,specialty-elective,,course:cm3c1 course:cm3c2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,148
+curriculum-course:n2:2018:cm012,curriculum:n2:2018,course:cm012,specialty-elective,,course:cm3i2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,149
+curriculum-course:n2:2018:cm015,curriculum:n2:2018,course:cm015,specialty-elective,,course:cm4h1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,150
+curriculum-course:n2:2018:cm017,curriculum:n2:2018,course:cm017,specialty-elective,,course:cm4h1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,151
+curriculum-course:n2:2018:cm018,curriculum:n2:2018,course:cm018,specialty-elective,,course:cm5h1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,152
+curriculum-course:n2:2018:cm019,curriculum:n2:2018,course:cm019,specialty-elective,,course:cm5h1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,153
+curriculum-course:n2:2018:cm020,curriculum:n2:2018,course:cm020,specialty-elective,,course:cm012,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,154
+curriculum-course:n2:2018:cm022,curriculum:n2:2018,course:cm022,specialty-elective,,course:cm3g2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,155
+curriculum-course:n2:2018:cm424,curriculum:n2:2018,course:cm424,specialty-elective,,course:cm3g2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,156
+curriculum-course:n2:2018:cm025,curriculum:n2:2018,course:cm025,specialty-elective,,course:cm4g2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,157
+curriculum-course:n2:2018:cm026,curriculum:n2:2018,course:cm026,specialty-elective,,course:cm424,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,158
+curriculum-course:n2:2018:cm029,curriculum:n2:2018,course:cm029,specialty-elective,,course:cm3g2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,159
+curriculum-course:n2:2018:cm030,curriculum:n2:2018,course:cm030,specialty-elective,,course:cm3a1 course:cm3c2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,160
+curriculum-course:n2:2018:cm031,curriculum:n2:2018,course:cm031,specialty-elective,,course:cm3g2 course:cm5f1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,161
+curriculum-course:n2:2018:cm032,curriculum:n2:2018,course:cm032,specialty-elective,,course:cm4g2 course:cm5f1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,162
+curriculum-course:n2:2018:cm0f0,curriculum:n2:2018,course:cm0f0,specialty-elective,,course:cm5f1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,163
+curriculum-course:n2:2018:cm034,curriculum:n2:2018,course:cm034,specialty-elective,,course:cm4f1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,164
+curriculum-course:n2:2018:cm035,curriculum:n2:2018,course:cm035,specialty-elective,,course:cm3g2 course:cm4f1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,165
+curriculum-course:n2:2018:cm036,curriculum:n2:2018,course:cm036,specialty-elective,,course:cm4f1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,166
+curriculum-course:n2:2018:cm038,curriculum:n2:2018,course:cm038,specialty-elective,,course:cm2b1 course:cm4f1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,167
+curriculum-course:n2:2018:cm039,curriculum:n2:2018,course:cm039,specialty-elective,,course:cm2b1 course:cm4f1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,168
+curriculum-course:n2:2018:cm040,curriculum:n2:2018,course:cm040,specialty-elective,,course:cm3c2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,169
+curriculum-course:n2:2018:cm042,curriculum:n2:2018,course:cm042,specialty-elective,,course:cm2f1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,170
+curriculum-course:n2:2018:cm048,curriculum:n2:2018,course:cm048,specialty-elective,,course:cm2f1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,171
+curriculum-course:n2:2018:cm050,curriculum:n2:2018,course:cm050,specialty-elective,,course:cm3c2 course:cm4c2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,172
+curriculum-course:n2:2018:cm052,curriculum:n2:2018,course:cm052,specialty-elective,,course:cm4e2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,173
+curriculum-course:n2:2018:cm054,curriculum:n2:2018,course:cm054,specialty-elective,,course:cm4e2 course:cm5f1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,174
+curriculum-course:n2:2018:cm055,curriculum:n2:2018,course:cm055,specialty-elective,,course:cm054,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,175
+curriculum-course:n2:2018:cm056,curriculum:n2:2018,course:cm056,specialty-elective,,course:cm052,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,176
+curriculum-course:n2:2018:cm057,curriculum:n2:2018,course:cm057,specialty-elective,,course:cm3g2 course:cm3g2 course:cm4e2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,177
+curriculum-course:n2:2018:cm058,curriculum:n2:2018,course:cm058,specialty-elective,,course:cm4e2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,178
+curriculum-course:n2:2018:cm060,curriculum:n2:2018,course:cm060,specialty-elective,,course:cm2i2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,179
+curriculum-course:n2:2018:cm061,curriculum:n2:2018,course:cm061,specialty-elective,,course:cm060,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,180
+curriculum-course:n2:2018:cm062,curriculum:n2:2018,course:cm062,specialty-elective,,course:cm2i2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,181
+curriculum-course:n2:2018:cm065,curriculum:n2:2018,course:cm065,specialty-elective,,course:cm060,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,182
+curriculum-course:n2:2018:cm066,curriculum:n2:2018,course:cm066,specialty-elective,,course:cm062,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,183
+curriculum-course:n2:2018:cm067,curriculum:n2:2018,course:cm067,specialty-elective,,course:cm060,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,184
+curriculum-course:n2:2018:cm068,curriculum:n2:2018,course:cm068,specialty-elective,,course:cm2b1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,185
+curriculum-course:n2:2018:cm071,curriculum:n2:2018,course:cm071,specialty-elective,,course:cm3c2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,186
+curriculum-course:n2:2018:cm072,curriculum:n2:2018,course:cm072,specialty-elective,,,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,187
+curriculum-course:n2:2018:cm073,curriculum:n2:2018,course:cm073,specialty-elective,,,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,188
+curriculum-course:n2:2018:cm074,curriculum:n2:2018,course:cm074,specialty-elective,,,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,189
+curriculum-course:n2:2018:cm075,curriculum:n2:2018,course:cm075,specialty-elective,,,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,190
+curriculum-course:n2:2018:cm076,curriculum:n2:2018,course:cm076,specialty-elective,,,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,191
+curriculum-course:n2:2018:cm077,curriculum:n2:2018,course:cm077,specialty-elective,,course:cm3e2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,192
+curriculum-course:n2:2018:cm078,curriculum:n2:2018,course:cm078,specialty-elective,,course:cm4e2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,193
+curriculum-course:n2:2018:cm079,curriculum:n2:2018,course:cm079,specialty-elective,,course:cm2h2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,194
+curriculum-course:n2:2018:cm080,curriculum:n2:2018,course:cm080,specialty-elective,,course:cm2h2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,195
+curriculum-course:n2:2018:cm081,curriculum:n2:2018,course:cm081,specialty-elective,,course:cm3e2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,196
+curriculum-course:n2:2018:cm082,curriculum:n2:2018,course:cm082,specialty-elective,,course:cm081,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,197
+curriculum-course:n2:2018:cm083,curriculum:n2:2018,course:cm083,specialty-elective,,course:cm080 course:cm2b1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,198
+curriculum-course:n2:2018:cm084,curriculum:n2:2018,course:cm084,specialty-elective,,course:cm083,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,199
+curriculum-course:n2:2018:cm085,curriculum:n2:2018,course:cm085,specialty-elective,,course:cm2h1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,200
+curriculum-course:n2:2018:cm086,curriculum:n2:2018,course:cm086,specialty-elective,,course:cm085,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,201
+curriculum-course:n2:2018:cm090,curriculum:n2:2018,course:cm090,specialty-elective,,course:cm4c1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,202
+curriculum-course:n2:2018:cm091,curriculum:n2:2018,course:cm091,specialty-elective,,course:cm090,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,203
+curriculum-course:n2:2018:cm092,curriculum:n2:2018,course:cm092,specialty-elective,,course:cf1b2 course:cm3g2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,204
+curriculum-course:n2:2018:cm093,curriculum:n2:2018,course:cm093,specialty-elective,,course:cf1b2 course:cm3g2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,205
+curriculum-course:n2:2018:cm094,curriculum:n2:2018,course:cm094,specialty-elective,,course:cm2f1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,206
+curriculum-course:n2:2018:cm095,curriculum:n2:2018,course:cm095,specialty-elective,,course:cm094,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,207
+curriculum-course:n2:2018:cm096,curriculum:n2:2018,course:cm096,specialty-elective,,course:cm095,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,208
+curriculum-course:n2:2018:cm097,curriculum:n2:2018,course:cm097,specialty-elective,,course:cm3e2 course:cm3g2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,209
+curriculum-course:n2:2018:cm098,curriculum:n2:2018,course:cm098,specialty-elective,,course:cm3e2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,210
+curriculum-course:n2:2018:cm099,curriculum:n2:2018,course:cm099,specialty-elective,,course:cm092 course:cm3a1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,211
+curriculum-course:n2:2018:cm0e7,curriculum:n2:2018,course:cm0e7,specialty-elective,,course:cm3c1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,212
+curriculum-course:n2:2018:cc421,curriculum:n2:2018,course:cc421,complementary-elective,,course:cc332,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,216
+curriculum-course:n2:2018:cc431,curriculum:n2:2018,course:cc431,complementary-elective,,course:cm4f1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,217
+curriculum-course:n2:2018:cc332,curriculum:n2:2018,course:cc332,complementary-elective,,course:cm4f1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,218
+curriculum-course:n2:2018:cf2b1,curriculum:n2:2018,course:cf2b1,complementary-elective,,course:cf1b2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,219
+curriculum-course:n2:2018:cf2b2,curriculum:n2:2018,course:cf2b2,complementary-elective,,course:cf2b1,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,220
+curriculum-course:n2:2018:cf3f1,curriculum:n2:2018,course:cf3f1,complementary-elective,,course:cf2b1 course:cm3g2,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,221
+curriculum-course:n2:2018:ch007,curriculum:n2:2018,course:ch007,complementary-elective,,,S,D,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,222
+curriculum-course:n2:2018:ch020,curriculum:n2:2018,course:ch020,complementary-elective,,,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,223
+curriculum-course:n2:2018:ch022,curriculum:n2:2018,course:ch022,complementary-elective,,,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,224
+curriculum-course:n2:2018:ch044,curriculum:n2:2018,course:ch044,complementary-elective,,,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,225
+curriculum-course:n2:2018:ch046,curriculum:n2:2018,course:ch046,complementary-elective,,course:ch033,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,226
+curriculum-course:n2:2018:ch050,curriculum:n2:2018,course:ch050,complementary-elective,,,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,227
+curriculum-course:n2:2018:ch051,curriculum:n2:2018,course:ch051,complementary-elective,,course:ch050,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,228
+curriculum-course:n2:2018:ch061,curriculum:n2:2018,course:ch061,complementary-elective,,,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,229
+curriculum-course:n2:2018:cl003,curriculum:n2:2018,course:cl003,complementary-elective,,course:cl002,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,230
+curriculum-course:n2:2018:cl004,curriculum:n2:2018,course:cl004,complementary-elective,,course:cl003,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,231
+curriculum-course:n2:2018:cm0h1,curriculum:n2:2018,course:cm0h1,complementary-elective,,,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,232
+curriculum-course:n2:2018:cm142,curriculum:n2:2018,course:cm142,complementary-elective,,,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,233
+curriculum-course:n2:2018:cq112,curriculum:n2:2018,course:cq112,complementary-elective,,,S,F,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE MATEMÁTICA CON SILABOS(Hoja1).csv,234
+curriculum-course:n5:2018:bfi01,curriculum:n5:2018,course:bfi01,required,1,,G,F,BFI01 FISICA I,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,5
+curriculum-course:n5:2018:bic01,curriculum:n5:2018,course:bic01,required,1,,G,F,BIC01-INTRODUCCION A LA COMPUTACIÓN,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,6
+curriculum-course:n5:2018:bma01,curriculum:n5:2018,course:bma01,required,1,,G,G,BMA01 CALCULO DIFERENCIAL,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,7
+curriculum-course:n5:2018:bma03,curriculum:n5:2018,course:bma03,required,1,,G,G,BMA03 ALGEBRA LINEAL,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,8
+curriculum-course:n5:2018:bqu01,curriculum:n5:2018,course:bqu01,required,1,,G,F,BQU01 QUIMICA I,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,9
+curriculum-course:n5:2018:bef01,curriculum:n5:2018,course:bef01,required,2,,G,D,BEF01 ETICA Y FILOSOFIA POLITICA,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,14
+curriculum-course:n5:2018:bma02,curriculum:n5:2018,course:bma02,required,2,course:bma01,G,G,BMA02 CALCULO INTEGRAL,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,15
+curriculum-course:n5:2018:brc01,curriculum:n5:2018,course:brc01,required,2,,G,D,BRC01 REDACCION Y COMUNICACION,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,16
+curriculum-course:n5:2018:cc112,curriculum:n5:2018,course:cc112,required,2,course:bic01,E,G,CC112 FUNDAMENTOS DE PROGRAMACION,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,17
+curriculum-course:n5:2018:cf1b2,curriculum:n5:2018,course:cf1b2,required,2,course:bfi01,E,G,CF1B2 FISICA II,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,18
+curriculum-course:n5:2018:cf1c2,curriculum:n5:2018,course:cf1c2,required,2,course:bma03,E,G,CF1C2 ALGEBRA LINEAL PARA FISICOS I,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,19
+curriculum-course:n5:2018:beg01,curriculum:n5:2018,course:beg01,required,3,,G,F,BEG01 ECONOMIA GENERAL,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,24
+curriculum-course:n5:2018:cf2b1,curriculum:n5:2018,course:cf2b1,required,3,course:bma02 course:cf1b2,E,G,CF2B1 Fisica III,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,25
+curriculum-course:n5:2018:cm2a1,curriculum:n5:2018,course:cm2a1,required,3,course:bma02,E,G,CM2A1 CALCULO DIFERENCIAL INTEGRAL AVANZADO,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,26
+curriculum-course:n5:2018:if281,curriculum:n5:2018,course:if281,required,3,,E,G,IF281 DIBUO Y DISEÑO PARA INGENIERIA,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,27
+curriculum-course:n5:2018:cf2b2,curriculum:n5:2018,course:cf2b2,required,4,course:cf2b1,E,G,CF2B2 OPTICA CLASICA,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,32
+curriculum-course:n5:2018:cf3e1,curriculum:n5:2018,course:cf3e1,required,4,course:cf2b1,S,A,CF3E1 CIRCUITOS ELECTRONICOS ANALOGICOS,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,33
+curriculum-course:n5:2018:if252,curriculum:n5:2018,course:if252,required,4,course:cf2b1 course:cm2a1,E,G,IF252 METODOS MATEMATICOS PARA INGENIERIA,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,34
+curriculum-course:n5:2018:if292,curriculum:n5:2018,course:if292,required,4,course:if281,S,G,IF292 INGENIERIA DE PROCESOS MECANICOS,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,35
+curriculum-course:n5:2018:if294,curriculum:n5:2018,course:if294,required,4,course:if281,S,G,IF294 INGENIERIA DE INSTALACIONES INDUSTRIALES,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,36
+curriculum-course:n5:2018:brn01,curriculum:n5:2018,course:brn01,required,5,,G,D,BRN01 REALIDAD NACIONAL CONSTITUCION Y DERECHOS HUMANOS,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,41
+curriculum-course:n5:2018:cf3f1,curriculum:n5:2018,course:cf3f1,required,5,course:if252,S,G,CF3F1 MECANICA CLASICA,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,42
+curriculum-course:n5:2018:if242,curriculum:n5:2018,course:if242,required,5,course:if252,S,G,IF242 INTRODUCCION A LA METROLOGIA,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,43
+curriculum-course:n5:2018:if321,curriculum:n5:2018,course:if321,required,5,course:cc112 course:if252,S,G,IF321 CALCULO NUMÉRICO I.pdf,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,44
+curriculum-course:n5:2018:if3a2,curriculum:n5:2018,course:if3a2,required,5,course:beg01,E,G,IF3A2 INGENIERIA ECONOMICA,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,45
+curriculum-course:n5:2018:bie01,curriculum:n5:2018,course:bie01,required,6,,G,D,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,50
+curriculum-course:n5:2018:ch061,curriculum:n5:2018,course:ch061,required,6,,S,G,CH061 BIOLOGÍA,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,51
+curriculum-course:n5:2018:if3b2,curriculum:n5:2018,course:if3b2,required,6,course:if321,S,D,IF3B2 PROCESAMIENTO DE SEÑALES Y DATOS,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,52
+curriculum-course:n5:2018:if352,curriculum:n5:2018,course:if352,required,6,course:bqu01 course:if321,S,G,IF352 FISICA TERMICA I,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,53
+curriculum-course:n5:2018:if372,curriculum:n5:2018,course:if372,required,6,course:if252,S,G,IF372 ELECTROMAGNETISMO PARA INGENIERIA,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,54
+curriculum-course:n5:2018:if392,curriculum:n5:2018,course:if392,required,6,course:if321,S,G,IF392 CALCULO NUMERICO II,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,55
+curriculum-course:n5:2018:cf4e1,curriculum:n5:2018,course:cf4e1,required,7,course:if294 course:if372,S,A,CF4E1 LABORATORIO DE FISICA INTERMEDIA,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,60
+curriculum-course:n5:2018:if325,curriculum:n5:2018,course:if325,required,7,course:if352,S,G,IF325 FISICA TERMICA II,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,61
+curriculum-course:n5:2018:if411,curriculum:n5:2018,course:if411,required,7,course:if392,S,G,IF411 MECANICA CUANTICA,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,62
+curriculum-course:n5:2018:if4b1,curriculum:n5:2018,course:if4b1,required,7,,S,N,IF4B1 -METODOS DE LA INVESTIGACION CIENTIFICA Y TECNOLOGICA,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,63
+curriculum-course:n5:2018:if4a1,curriculum:n5:2018,course:if4a1,required,7,course:if352,S,G,IF4A1 MECANICA DE FLUIDOS,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,64
+curriculum-course:n5:2018:if471,curriculum:n5:2018,course:if471,required,7,course:cf3e1 course:if3b2,S,A,IF471 SISTEMAS DIGITALES.pdf,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,65
+curriculum-course:n5:2018:if4a2,curriculum:n5:2018,course:if4a2,required,8,course:if4b1,S,N,IF4A2 PROYECTO DE TESIS PROFESIONAL I,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,70
+curriculum-course:n5:2018:if462,curriculum:n5:2018,course:if462,required,8,course:if471,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,71
+curriculum-course:n5:2018:if482,curriculum:n5:2018,course:if482,required,8,course:cf4e1,S,G,IF482 INTRODUCCION A LA CIENCIA DE INGENIERIA DE MATERIALES,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,72
+curriculum-course:n5:2018:if492,curriculum:n5:2018,course:if492,required,8,course:if4a1,S,A,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,73
+curriculum-course:n5:2018:cf5f1,curriculum:n5:2018,course:cf5f1,required,9,course:if482,S,G,CF5F1 -FISICA DEL ESTADO SOLIDO,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,78
+curriculum-course:n5:2018:if511,curriculum:n5:2018,course:if511,required,9,course:if462,S,N,IF511 PROYECTO DE INSTRUMENTACION ELECTRONICA,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,79
+curriculum-course:n5:2018:if543,curriculum:n5:2018,course:if543,required,9,course:if4a2,S,N,IF543 PROYECTO DE TESIS PROFESIONAL II,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,80
+curriculum-course:n5:2018:if554,curriculum:n5:2018,course:if554,required,10,course:if543,S,N,IF554 PROYECTO DE TESIS PROFESIONAL III,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,85
+curriculum-course:n5:2018:if562,curriculum:n5:2018,course:if562,required,10,course:cf5f1,S,N,IF562 TECNICAS PARA LA INDUSTRIA,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,86
+curriculum-course:n5:2018:bae01,curriculum:n5:2018,course:bae01,required,10,,G,D,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,87
+curriculum-course:n5:2018:xp200,curriculum:n5:2018,course:xp200,required,10,,S,D,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,88
+curriculum-course:n5:2018:ya100,curriculum:n5:2018,course:ya100,required,10,,E,D,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,89
+curriculum-course:n5:2018:ife14,curriculum:n5:2018,course:ife14,specialty-elective,,course:cf5f1 course:if482,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,94
+curriculum-course:n5:2018:ife15,curriculum:n5:2018,course:ife15,specialty-elective,,course:if482,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,95
+curriculum-course:n5:2018:ife16,curriculum:n5:2018,course:ife16,specialty-elective,,course:if242,S,D,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,96
+curriculum-course:n5:2018:ife17,curriculum:n5:2018,course:ife17,specialty-elective,,course:if462,S,D,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,97
+curriculum-course:n5:2018:ife18,curriculum:n5:2018,course:ife18,specialty-elective,,course:if492,S,D,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,98
+curriculum-course:n5:2018:ife19,curriculum:n5:2018,course:ife19,specialty-elective,,course:cf4e1 course:if411,S,D,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,99
+curriculum-course:n5:2018:ife20,curriculum:n5:2018,course:ife20,specialty-elective,,course:cf4e1 course:if411,S,D,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,100
+curriculum-course:n5:2018:ife21,curriculum:n5:2018,course:ife21,specialty-elective,,course:cf4e1,S,D,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,101
+curriculum-course:n5:2018:ife22,curriculum:n5:2018,course:ife22,specialty-elective,,,S,D,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,102
+curriculum-course:n5:2018:ife23,curriculum:n5:2018,course:ife23,specialty-elective,,,S,D,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,103
+curriculum-course:n5:2018:ife24,curriculum:n5:2018,course:ife24,specialty-elective,,,S,D,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,104
+curriculum-course:n5:2018:ife25,curriculum:n5:2018,course:ife25,specialty-elective,,,S,D,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,105
+curriculum-course:n5:2018:ife26,curriculum:n5:2018,course:ife26,specialty-elective,,course:cf4e1 course:if482,S,D,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,106
+curriculum-course:n5:2018:ife27,curriculum:n5:2018,course:ife27,specialty-elective,,course:if482,S,D,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,107
+curriculum-course:n5:2018:ife28,curriculum:n5:2018,course:ife28,specialty-elective,,,S,N,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,108
+curriculum-course:n5:2018:ife29,curriculum:n5:2018,course:ife29,specialty-elective,,,S,D,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,109
+curriculum-course:n5:2018:ife30,curriculum:n5:2018,course:ife30,specialty-elective,,,S,D,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,110
+curriculum-course:n5:2018:ife31,curriculum:n5:2018,course:ife31,specialty-elective,,course:cf5f1 course:if482,S,D,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,111
+curriculum-course:n5:2018:ife32,curriculum:n5:2018,course:ife32,specialty-elective,,course:cf5f1 course:if482,S,D,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,112
+curriculum-course:n5:2018:cf4f2,curriculum:n5:2018,course:cf4f2,complementary-elective,,course:if411,S,G,CF4F2 FISICA ATOMICA Y MOLECULAR,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,116
+curriculum-course:n5:2018:cf4f1,curriculum:n5:2018,course:cf4f1,complementary-elective,,course:if352 course:if411,S,G,CF4F1 TERMODINAMICA Y MECANICA ESTADISTICA,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,117
+curriculum-course:n5:2018:cf5f3,curriculum:n5:2018,course:cf5f3,complementary-elective,,course:if411,S,G,CF5F3 -FISICA NUCLEAR Y DE PARTICULAS,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,118
+curriculum-course:n5:2018:cf3c1,curriculum:n5:2018,course:cf3c1,complementary-elective,,course:if252,S,G,CF3C1 METODOS MATEMATICOS PARA FISICOS II,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,119
+curriculum-course:n5:2018:cf4e2,curriculum:n5:2018,course:cf4e2,complementary-elective,,course:cf4e1,S,A,CF4E2 LABORATORIO DE FISICA AVANZADA,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,120
+curriculum-course:n5:2018:cq241,curriculum:n5:2018,course:cq241,complementary-elective,,course:bqu01,S,N,CQ241 ELEMENTOS QUIMICOS-PROPIEDADES Y APLICACIONES,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,121
+curriculum-course:n5:2018:cq271,curriculum:n5:2018,course:cq271,complementary-elective,,course:bqu01,S,G,CQ271 PRINCIPIOS DE FISICOQUIMICA,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,122
+curriculum-course:n5:2018:cq4e1,curriculum:n5:2018,course:cq4e1,complementary-elective,,course:if411,S,F,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,123
+curriculum-course:n5:2018:cc211,curriculum:n5:2018,course:cc211,complementary-elective,,course:cc112,S,G,CC211 PROGRAMACIÓN ORIENTADA A OBJETOS,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,124
+curriculum-course:n5:2018:cc221,curriculum:n5:2018,course:cc221,complementary-elective,,course:if471,S,G,CC221 ARQUITECTURA DE COMPUTADORES,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,125
+curriculum-course:n5:2018:cc0f2,curriculum:n5:2018,course:cc0f2,complementary-elective,,course:if411 course:if4a1,S,G,CC0F2 FISICA COMPUTACIONAL,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,126
+curriculum-course:n5:2018:cc0a7,curriculum:n5:2018,course:cc0a7,complementary-elective,,course:bic01 course:if471,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,127
+curriculum-course:n5:2018:cl002,curriculum:n5:2018,course:cl002,complementary-elective,,,S,G,CL002 INGLES I,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,128
+curriculum-course:n5:2018:cl003,curriculum:n5:2018,course:cl003,complementary-elective,,course:cl002,S,G,CL003 INGLES II,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,129
+curriculum-course:n5:2018:cl004,curriculum:n5:2018,course:cl004,complementary-elective,,course:cl003,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,130
+curriculum-course:n5:2018:cm142,curriculum:n5:2018,course:cm142,complementary-elective,,,S,G,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,131
+curriculum-course:n5:2018:cq112,curriculum:n5:2018,course:cq112,complementary-elective,,,S,F,,PLAN DE ESTUDIOS 2018 DE LA ESCUELA PROFESIONAL DE INGENIERÍA FÍSICA CON SILABOS(Hoja1).csv,132
+curriculum-course:n6:2018:bfi01,curriculum:n6:2018,course:bfi01,required,1,,G,F,BFI01 FISICA I,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,7
+curriculum-course:n6:2018:bic01,curriculum:n6:2018,course:bic01,required,1,,G,F,BIC01 INTRODUCCION A LA COMPUTACIÓN.pdf,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,8
+curriculum-course:n6:2018:bma01,curriculum:n6:2018,course:bma01,required,1,,G,G,BMA01 CALCULO DIFERENCIAL,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,9
+curriculum-course:n6:2018:bma03,curriculum:n6:2018,course:bma03,required,1,,G,G,BMA03 ALGEBRA LINEAL,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,10
+curriculum-course:n6:2018:bqu01,curriculum:n6:2018,course:bqu01,required,1,,G,F,BQU01 QUIMICA I.pdf,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,11
+curriculum-course:n6:2018:bma02,curriculum:n6:2018,course:bma02,required,2,course:bma01,G,G,BMA02 CALCULO INTEGRAL,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,16
+curriculum-course:n6:2018:brc01,curriculum:n6:2018,course:brc01,required,2,,G,D,BRC01 REDACCION Y COMUNICACION,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,17
+curriculum-course:n6:2018:cl002,curriculum:n6:2018,course:cl002,required,2,,E,G,CL002 INGLES I,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,18
+curriculum-course:n6:2018:cm1b2,curriculum:n6:2018,course:cm1b2,required,2,course:bma03,E,,CM1B2 ALGEBRA LINEAL I,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,19
+curriculum-course:n6:2018:cc112,curriculum:n6:2018,course:cc112,required,2,course:bic01,E,G,CC112 FUNDAMENTOS DE PROGRAMACION,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,20
+curriculum-course:n6:2018:cm1h2,curriculum:n6:2018,course:cm1h2,required,2,,E,G,CM1H2 CALCULO DE PROBABILIDADES,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,21
+curriculum-course:n6:2018:cm2a1,curriculum:n6:2018,course:cm2a1,required,3,course:bma02,E,G,CM2A1 CALCULO DIFERENCIAL E INTEGRAL AVANZADO,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,26
+curriculum-course:n6:2018:cm2h1,curriculum:n6:2018,course:cm2h1,required,3,course:bma03,E,G,CM2H1 MATEMATICA DISCRETA,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,27
+curriculum-course:n6:2018:cc211,curriculum:n6:2018,course:cc211,required,3,course:cc112,E,G,CC211 PROGRAMACIÓN ORIENTADA A OBJETOS,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,28
+curriculum-course:n6:2018:cc221,curriculum:n6:2018,course:cc221,required,3,course:cc112,E,G,CC221 ARQUITECTURA DE COMPUTADORES,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,29
+curriculum-course:n6:2018:cm2h2,curriculum:n6:2018,course:cm2h2,required,3,course:cm1h2,E,G,CM2H2 ESTADISTICA INFERENCIAL,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,30
+curriculum-course:n6:2018:beg01,curriculum:n6:2018,course:beg01,required,4,,G,F,BEG01 ECONOMIA GENERAL,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,35
+curriculum-course:n6:2018:cc202,curriculum:n6:2018,course:cc202,required,4,course:cc211,E,G,CC202 BASE DE DATOS,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,36
+curriculum-course:n6:2018:cc222,curriculum:n6:2018,course:cc222,required,4,course:cc221,E,G,CC222 SISTEMAS OPERATIVOS,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,37
+curriculum-course:n6:2018:cc232,curriculum:n6:2018,course:cc232,required,4,course:cc211 course:cm2h1,E,G,CC232 ALGORITMO Y ESTRUCTURA DE DATOS,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,38
+curriculum-course:n6:2018:cq221,curriculum:n6:2018,course:cq221,required,4,course:bfi01 course:bma02,E,G,CQ221- INTRODUCCIÓN A LA ELECTRICIDAD Y MAGNETISMO,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,39
+curriculum-course:n6:2018:bie01,curriculum:n6:2018,course:bie01,required,4,,G,D,DEBEN DAR EL EXAMEN EN EL CEPS,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,40
+curriculum-course:n6:2018:cc371,curriculum:n6:2018,course:cc371,required,5,course:cc232,E,G,CC371 ANALISIS Y DISEÑO DE ALGORITMO,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,45
+curriculum-course:n6:2018:cc311,curriculum:n6:2018,course:cc311,required,5,course:cc222,E,G,CC311 COMPUTACIÓN CETRADA EN REDES,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,46
+curriculum-course:n6:2018:cc321,curriculum:n6:2018,course:cc321,required,5,course:cc232,E,G,CC321 TEORIA DE AUTOMATAS LENGUAJE Y COMPUTACION,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,47
+curriculum-course:n6:2018:cc341,curriculum:n6:2018,course:cc341,required,5,course:cc202,E,G,CC341 INGENIERIA DE SOFTWARE,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,48
+curriculum-course:n6:2018:cm4f1,curriculum:n6:2018,course:cm4f1,required,5,course:cm2a1,E,G,CM4F1- ANALISIS Y MODELAMIENTO NUMERICO I,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,49
+curriculum-course:n6:2018:brn01,curriculum:n6:2018,course:brn01,required,6,,G,D,BRN01 REALIDAD NACIONAL,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,54
+curriculum-course:n6:2018:bef01,curriculum:n6:2018,course:bef01,required,6,,G,D,BEF01 ETICA Y FILOSOFIA POLITICA,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,55
+curriculum-course:n6:2018:cc312,curriculum:n6:2018,course:cc312,required,6,course:cc311,E,G,CC312 ADMINISTRACION DE REDES,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,56
+curriculum-course:n6:2018:cc3m2,curriculum:n6:2018,course:cc3m2,required,6,course:cc371 course:cm4f1,E,G,CC3M2 MATEMATICA COMPUTACIONAL,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,57
+curriculum-course:n6:2018:cc332,curriculum:n6:2018,course:cc332,required,6,course:cc371,E,G,CC332 PROGRAMACION PARALELA,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,58
+curriculum-course:n6:2018:cc3s2,curriculum:n6:2018,course:cc3s2,required,6,course:cc341,E,G,CC3S2-DESARROLLO DE SOFTWARE,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,59
+curriculum-course:n6:2018:cc411,curriculum:n6:2018,course:cc411,required,7,course:cc312,E,G,CC411-SEGURIDAD EN SISTEMAS INFORMATICOS,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,64
+curriculum-course:n6:2018:cc421,curriculum:n6:2018,course:cc421,required,7,course:cc332,E,G,CC421 INTELIGENCIA ARTIFICIAL,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,65
+curriculum-course:n6:2018:cc431,curriculum:n6:2018,course:cc431,required,7,course:cc3m2,E,G,CC431 COMPUTACION GRAFICA,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,66
+curriculum-course:n6:2018:cc4p1,curriculum:n6:2018,course:cc4p1,required,7,course:cc332,E,G,CC4P1 PROGRAMACION CONCURRENTE Y DISTRIBUIDA,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,67
+curriculum-course:n6:2018:cc451,curriculum:n6:2018,course:cc451,required,7,course:cc3s2,E,G,CC451 INTERACCION HUMANO COMPUTADOR,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,68
+curriculum-course:n6:2018:cc4h1,curriculum:n6:2018,course:cc4h1,required,7,,E,G,CC4H1-METODOLOGÍA DE LA INVESTIGACIÓN,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,69
+curriculum-course:n6:2018:cc412,curriculum:n6:2018,course:cc412,required,8,course:cc4h1,E,N,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,74
+curriculum-course:n6:2018:cc422,curriculum:n6:2018,course:cc422,required,8,course:cc4p1,E,G,CC422 INFRAESTRUCTURA DE COMPUTACION,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,75
+curriculum-course:n6:2018:cc432,curriculum:n6:2018,course:cc432,required,8,course:cc421,E,G,CC432 ROBÓTICA,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,76
+curriculum-course:n6:2018:cc442,curriculum:n6:2018,course:cc442,required,8,course:cc421,E,G,CC442 MINERIA DE DATOS,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,77
+curriculum-course:n6:2018:cc511,curriculum:n6:2018,course:cc511,required,9,course:cc412,E,N,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,82
+curriculum-course:n6:2018:cc521,curriculum:n6:2018,course:cc521,required,9,course:cc432,E,G,CC521 PROGRAMACION EVOLUTIVA,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,83
+curriculum-course:n6:2018:cc531,curriculum:n6:2018,course:cc531,required,9,course:cc422 course:cc442,E,G,CC531 ANALISIS EN MACRODATOS,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,84
+curriculum-course:n6:2018:cc5t3,curriculum:n6:2018,course:cc5t3,required,10,course:cc511,E,N,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,89
+curriculum-course:n6:2018:bae01,curriculum:n6:2018,course:bae01,required,10,,G,D,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,90
+curriculum-course:n6:2018:xp200,curriculum:n6:2018,course:xp200,required,10,,E,D,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,91
+curriculum-course:n6:2018:ya100,curriculum:n6:2018,course:ya100,required,10,,E,D,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,92
+curriculum-course:n6:2018:cc0a1,curriculum:n6:2018,course:cc0a1,specialty-elective,,course:cc202,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,99
+curriculum-course:n6:2018:cc0c1,curriculum:n6:2018,course:cc0c1,specialty-elective,,course:cc421,S,G,CC0C1 SISTEMAS COGNITIVOS,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,100
+curriculum-course:n6:2018:cc0d1,curriculum:n6:2018,course:cc0d1,specialty-elective,,course:cc431 course:cc442,S,G,CC0D1 DEEP LEARNING EN VISION ARTIFICIAL,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,101
+curriculum-course:n6:2018:cc0e1,curriculum:n6:2018,course:cc0e1,specialty-elective,,course:cc332,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,102
+curriculum-course:n6:2018:cc0f2,curriculum:n6:2018,course:cc0f2,specialty-elective,,course:cc3m2,S,G,CC0F2 FISICA COMPUTACIONAL,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,103
+curriculum-course:n6:2018:cc0f3,curriculum:n6:2018,course:cc0f3,specialty-elective,,course:cc3m2,S,G,CC0F3 BIOLOGIA COMPUTACIONAL,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,104
+curriculum-course:n6:2018:cc0a2,curriculum:n6:2018,course:cc0a2,specialty-elective,,course:cc371,S,G,CC0A2 PROGRAMACION EN DISPOSITIVOS MOVILES,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,105
+curriculum-course:n6:2018:cc0a3,curriculum:n6:2018,course:cc0a3,specialty-elective,,course:cc312,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,106
+curriculum-course:n6:2018:cc0a4,curriculum:n6:2018,course:cc0a4,specialty-elective,,course:cc222,S,G,CC0A4 SISTEMAS EMPOTRADOS,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,107
+curriculum-course:n6:2018:cc0a5,curriculum:n6:2018,course:cc0a5,specialty-elective,,course:cc3s2,S,G,CC0A5 CALIDAD DE SOFWARE,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,108
+curriculum-course:n6:2018:cc0a6,curriculum:n6:2018,course:cc0a6,specialty-elective,,course:cc411,S,G,CC0A6-AUDITORIAS DE SISTEMAS,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,109
+curriculum-course:n6:2018:cc0a7,curriculum:n6:2018,course:cc0a7,specialty-elective,,course:cc4p1,S,G,CC0A7 SISTEMAS EMBEBIDOS EN TIEMPO REAL,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,110
+curriculum-course:n6:2018:cc0b1,curriculum:n6:2018,course:cc0b1,specialty-elective,,course:cc3m2,S,G,CC0B1 SISTEMAS OPERATIVOS AVANZADOS,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,111
+curriculum-course:n6:2018:cc0b2,curriculum:n6:2018,course:cc0b2,specialty-elective,,course:cc4p1,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,112
+curriculum-course:n6:2018:cc0b3,curriculum:n6:2018,course:cc0b3,specialty-elective,,course:cc411,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,113
+curriculum-course:n6:2018:cc0b4,curriculum:n6:2018,course:cc0b4,specialty-elective,,course:cc332,S,G,CC0B4 NUCLEO Y REDES PARA COMPUTACION PARALELA,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,114
+curriculum-course:n6:2018:cc0c2,curriculum:n6:2018,course:cc0c2,specialty-elective,,course:cc421,S,G,CC0C2-PROCESAMIENTO DEL LENGUAJE NATURAL,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,115
+curriculum-course:n6:2018:cc0c3,curriculum:n6:2018,course:cc0c3,specialty-elective,,course:cc521,S,G,CC0C3-ALGORITMOS BIO INSPIRADORES,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,116
+curriculum-course:n6:2018:cc0c4,curriculum:n6:2018,course:cc0c4,specialty-elective,,course:cc332,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,117
+curriculum-course:n6:2018:cc0d2,curriculum:n6:2018,course:cc0d2,specialty-elective,,course:cc311,S,G,CC0D2 MULTIMEDIA,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,118
+curriculum-course:n6:2018:cc0d3,curriculum:n6:2018,course:cc0d3,specialty-elective,,course:cc431,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,119
+curriculum-course:n6:2018:cc0d4,curriculum:n6:2018,course:cc0d4,specialty-elective,,course:cc431,S,G,CC0D4 DISEÑO GEOMETRICO ASISTIDO POR COMPUTADOR,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,120
+curriculum-course:n6:2018:cc0e2,curriculum:n6:2018,course:cc0e2,specialty-elective,,course:cc371,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,121
+curriculum-course:n6:2018:cc0e3,curriculum:n6:2018,course:cc0e3,specialty-elective,,course:cc311,S,G,CC003 COMPILADORES,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,122
+curriculum-course:n6:2018:cc0e4,curriculum:n6:2018,course:cc0e4,specialty-elective,,course:cc371,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,123
+curriculum-course:n6:2018:cc0e5,curriculum:n6:2018,course:cc0e5,specialty-elective,,course:cc371,S,G,CC0E5 ALGORITMO Y ESTRUCTURA DE DATOS AVANZADO,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,124
+curriculum-course:n6:2018:cc0f1,curriculum:n6:2018,course:cc0f1,specialty-elective,,course:cc3m2,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,125
+curriculum-course:n6:2018:cc0f4,curriculum:n6:2018,course:cc0f4,specialty-elective,,,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,126
+curriculum-course:n6:2018:cc0f5,curriculum:n6:2018,course:cc0f5,specialty-elective,,,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,127
+curriculum-course:n6:2018:cc0f6,curriculum:n6:2018,course:cc0f6,specialty-elective,,,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,128
+curriculum-course:n6:2018:cc0f7,curriculum:n6:2018,course:cc0f7,specialty-elective,,,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,129
+curriculum-course:n6:2018:cc0f8,curriculum:n6:2018,course:cc0f8,specialty-elective,,course:cc3m2 course:cq221,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,130
+curriculum-course:n6:2018:cc0s2,curriculum:n6:2018,course:cc0s2,specialty-elective,,course:cc211 course:cc421 course:cm4f1,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,131
+curriculum-course:n6:2018:cm5f1,curriculum:n6:2018,course:cm5f1,complementary-elective,,course:cm4f1,S,G,CM5F1 ANALISIS Y MODELAMIENTO NUMERICO II,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,136
+curriculum-course:n6:2018:cm2g2,curriculum:n6:2018,course:cm2g2,complementary-elective,,course:cm2a1,S,G,CM2G2 INTRODUCCION A LAS ECUACIONES DIFERENCIALES ORDINARIAS,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,137
+curriculum-course:n6:2018:cm1a2,curriculum:n6:2018,course:cm1a2,complementary-elective,,course:bma01 course:bma03,S,G,CM1A2 LOGICA Y TEORIA DE CONJUNTOS,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,138
+curriculum-course:n6:2018:cm3e2,curriculum:n6:2018,course:cm3e2,complementary-elective,,course:cm2a1,S,G,CM3E2 ANALISIS CONVEXO,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,139
+curriculum-course:n6:2018:cm4e1,curriculum:n6:2018,course:cm4e1,complementary-elective,,course:cm3e2,S,G,CM4E1 PROGRAMACION LINEAL Y FLUJO EN REDES,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,140
+curriculum-course:n6:2018:cm4e2,curriculum:n6:2018,course:cm4e2,complementary-elective,,course:cm4e1,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,141
+curriculum-course:n6:2018:cm5h1,curriculum:n6:2018,course:cm5h1,complementary-elective,,course:cm2h2,S,G,CM5H1 INTRODUCCION A LOS PROCESOS ESTOCASTICOS,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,142
+curriculum-course:n6:2018:cm096,curriculum:n6:2018,course:cm096,complementary-elective,,course:cc371,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,143
+curriculum-course:n6:2018:cm056,curriculum:n6:2018,course:cm056,complementary-elective,,course:cm5f1,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,144
+curriculum-course:n6:2018:cm0e0,curriculum:n6:2018,course:cm0e0,complementary-elective,,course:cm4e2,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,145
+curriculum-course:n6:2018:cm2b1,curriculum:n6:2018,course:cm2b1,complementary-elective,,course:cm1b2,S,G,CM2B1 ALGEBRA LINEAL II,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,146
+curriculum-course:n6:2018:cm4h1,curriculum:n6:2018,course:cm4h1,complementary-elective,,course:cm2h2,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,147
+curriculum-course:n6:2018:cm078,curriculum:n6:2018,course:cm078,complementary-elective,,course:cm4e2,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,148
+curriculum-course:n6:2018:cm0d0,curriculum:n6:2018,course:cm0d0,complementary-elective,,course:cm078,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,149
+curriculum-course:n6:2018:cm0d9,curriculum:n6:2018,course:cm0d9,complementary-elective,,course:cm4e2,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,150
+curriculum-course:n6:2018:cm0e2,curriculum:n6:2018,course:cm0e2,complementary-elective,,course:cm4e2,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,151
+curriculum-course:n6:2018:cm0d4,curriculum:n6:2018,course:cm0d4,complementary-elective,,course:cm4h1,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,152
+curriculum-course:n6:2018:cm015,curriculum:n6:2018,course:cm015,complementary-elective,,course:cm2h2,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,153
+curriculum-course:n6:2018:cm019,curriculum:n6:2018,course:cm019,complementary-elective,,course:cm5h1,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,154
+curriculum-course:n6:2018:cm079,curriculum:n6:2018,course:cm079,complementary-elective,,course:cm2h2,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,155
+curriculum-course:n6:2018:cm080,curriculum:n6:2018,course:cm080,complementary-elective,,course:cm2h2,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,156
+curriculum-course:n6:2018:cm085,curriculum:n6:2018,course:cm085,complementary-elective,,course:cm2h1,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,157
+curriculum-course:n6:2018:cm017,curriculum:n6:2018,course:cm017,complementary-elective,,course:cm4h1,S,G,CM017 ESTADISTICA MATEMATICA,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,158
+curriculum-course:n6:2018:cm0a4,curriculum:n6:2018,course:cm0a4,complementary-elective,,course:cm4f1,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,159
+curriculum-course:n6:2018:cm031,curriculum:n6:2018,course:cm031,complementary-elective,,course:cm2g2 course:cm4f1,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,160
+curriculum-course:n6:2018:cm035,curriculum:n6:2018,course:cm035,complementary-elective,,course:cc431,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,161
+curriculum-course:n6:2018:cm038,curriculum:n6:2018,course:cm038,complementary-elective,,course:cm2b1 course:cm4f1,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,162
+curriculum-course:n6:2018:cm039,curriculum:n6:2018,course:cm039,complementary-elective,,course:cm2b1 course:cm4f1,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,163
+curriculum-course:n6:2018:cm048,curriculum:n6:2018,course:cm048,complementary-elective,,course:cc531,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,164
+curriculum-course:n6:2018:cm054,curriculum:n6:2018,course:cm054,complementary-elective,,course:cm4f1,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,165
+curriculum-course:n6:2018:cm055,curriculum:n6:2018,course:cm055,complementary-elective,,course:cm054,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,166
+curriculum-course:n6:2018:cm0f0,curriculum:n6:2018,course:cm0f0,complementary-elective,,course:cm5f1,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,167
+curriculum-course:n6:2018:cm0d5,curriculum:n6:2018,course:cm0d5,complementary-elective,,course:cc442,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,168
+curriculum-course:n6:2018:cm0d7,curriculum:n6:2018,course:cm0d7,complementary-elective,,course:cc371,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,169
+curriculum-course:n6:2018:cm026,curriculum:n6:2018,course:cm026,complementary-elective,,course:cm2g2,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,170
+curriculum-course:n6:2018:cl003,curriculum:n6:2018,course:cl003,complementary-elective,,course:cl002,S,G,CL003 INGLES II,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,171
+curriculum-course:n6:2018:cl004,curriculum:n6:2018,course:cl004,complementary-elective,,course:cl003,S,G,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,172
+curriculum-course:n6:2018:cf1b2,curriculum:n6:2018,course:cf1b2,complementary-elective,,course:bfi01,S,G,CF1B2 Fisica II,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,173
+curriculum-course:n6:2018:cq112,curriculum:n6:2018,course:cq112,complementary-elective,,,S,F,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,174
+curriculum-course:n6:2018:ch061,curriculum:n6:2018,course:ch061,complementary-elective,,,S,G,CH061 BIOLOGÍA,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,175
+curriculum-course:n6:2018:cf3e1,curriculum:n6:2018,course:cf3e1,complementary-elective,,course:cq221,S,A,CF3E1 CIRCUITOS ELECTRONICOS Y ANALOGICOS,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,176
+curriculum-course:n6:2018:if471,curriculum:n6:2018,course:if471,complementary-elective,,course:cf3e1,S,A,IF471 SISTEMAS DIGITALES,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,177
+curriculum-course:n6:2018:ch007,curriculum:n6:2018,course:ch007,complementary-elective,,,S,D,,PLAN DE ESTUDIOS-2018-N6-CON SILABOS(Hoja1).csv,178
+curriculum-course:n1:2018:bfi01,curriculum:n1:2018,course:bfi01,required,1,,G,F,BFI01 Física I.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,5
+curriculum-course:n1:2018:bic01,curriculum:n1:2018,course:bic01,required,1,,G,F,BIC01-INTRODUCCION A LA COMPUTACIÓN.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,6
+curriculum-course:n1:2018:bma01,curriculum:n1:2018,course:bma01,required,1,,G,G,BMA01 CALCULO DIFERENCIAL.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,7
+curriculum-course:n1:2018:bma03,curriculum:n1:2018,course:bma03,required,1,,G,G,BMA03 ALGEBRA LINEAL.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,8
+curriculum-course:n1:2018:bqu01,curriculum:n1:2018,course:bqu01,required,1,,G,F,BQU01 QUIMICA I.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,9
+curriculum-course:n1:2018:bma02,curriculum:n1:2018,course:bma02,required,2,course:bma01,G,G,BMA02 CALCULO INTEGRAL.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,14
+curriculum-course:n1:2018:brc01,curriculum:n1:2018,course:brc01,required,2,,G,D,BRC01 REDACCION Y COMUNICACION.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,15
+curriculum-course:n1:2018:cc112,curriculum:n1:2018,course:cc112,required,2,course:bic01,E,G,CC112 FUNDAMENTOS DE PROGRAMACION.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,16
+curriculum-course:n1:2018:cf1b2,curriculum:n1:2018,course:cf1b2,required,2,course:bfi01,E,G,CF1B2 FISICA II.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,17
+curriculum-course:n1:2018:cf1c2,curriculum:n1:2018,course:cf1c2,required,2,course:bma03,E,G,CF1C2 ALGEBRA LINEAL PARA FISICOS I.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,18
+curriculum-course:n1:2018:cl002,curriculum:n1:2018,course:cl002,required,2,,E,G,CL002 INGLES I.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,19
+curriculum-course:n1:2018:bef01,curriculum:n1:2018,course:bef01,required,3,,G,D,BEF01 ETICA Y FILOSOFIA POLITICA.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,24
+curriculum-course:n1:2018:brn01,curriculum:n1:2018,course:brn01,required,3,,G,D,BRN01 REALIDAD NACIONAL.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,25
+curriculum-course:n1:2018:cf2b1,curriculum:n1:2018,course:cf2b1,required,3,course:bma02 course:cf1b2 course:cf1c2,E,G,CF2B1 Fisica III.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,26
+curriculum-course:n1:2018:cf2c1,curriculum:n1:2018,course:cf2c1,required,3,course:cf1c2,E,G,CF2C1 Álgebra Lineal para Físicos II.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,27
+curriculum-course:n1:2018:cm2a1,curriculum:n1:2018,course:cm2a1,required,3,course:bma02 course:cf1c2,E,G,CM2A1 CALCULO DIFERENCIAL E INTEGRAL AVANZADO.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,28
+curriculum-course:n1:2018:beg01,curriculum:n1:2018,course:beg01,required,4,,G,F,BEG01 ECONOMIA GENERAL.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,33
+curriculum-course:n1:2018:cf2b2,curriculum:n1:2018,course:cf2b2,required,4,course:cf2b1 course:cm2a1,E,G,CF2B2 OPTICA CLASICA.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,34
+curriculum-course:n1:2018:cf2c2,curriculum:n1:2018,course:cf2c2,required,4,course:cc112 course:cf2b1 course:cf2c1 course:cm2a1,E,G,CF2C2 METODOS MATEMATICOS PARA FISICOS I.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,35
+curriculum-course:n1:2018:cm2a2,curriculum:n1:2018,course:cm2a2,required,4,course:cm2a1,E,G,CM2A2 ANALISIS REAL-FINAL.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,36
+curriculum-course:n1:2018:cf3c1,curriculum:n1:2018,course:cf3c1,required,5,course:cf2b2 course:cf2c2 course:cm2a2,E,G,CF3C1 METODOS MATEMATICOS PARA FISICOS II.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,41
+curriculum-course:n1:2018:cf3e1,curriculum:n1:2018,course:cf3e1,required,5,course:cf2b1 course:cf2c2,E,A,CF3E1 CIRCUITOS ELECTRONICOS Y ANALOGICOS.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,42
+curriculum-course:n1:2018:cf3f1,curriculum:n1:2018,course:cf3f1,required,5,course:cf2c2,S,G,CF3F1 Mecanica Clasica.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,43
+curriculum-course:n1:2018:cf3f3,curriculum:n1:2018,course:cf3f3,required,5,course:cf2b2 course:cf2c1,E,G,CF3F3 Fisica Moderna.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,44
+curriculum-course:n1:2018:bie01,curriculum:n1:2018,course:bie01,required,6,,G,D,DEBEN DAR EL EXAMEN EN EL CEPS,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,49
+curriculum-course:n1:2018:cf3f2,curriculum:n1:2018,course:cf3f2,required,6,course:cf3c1 course:cf3f1 course:cf3f3,S,G,CF3F2 MECANICA CUANTICA I.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,50
+curriculum-course:n1:2018:cf3f4,curriculum:n1:2018,course:cf3f4,required,6,course:cf3c1,S,G,CF3F4 Electromagnetismo I.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,51
+curriculum-course:n1:2018:if471,curriculum:n1:2018,course:if471,required,6,course:cf3e1,E,A,IF471 SISTEMAS DIGITALES.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,52
+curriculum-course:n1:2018:cf4e1,curriculum:n1:2018,course:cf4e1,required,7,course:cf3f2 course:cf3f4 course:if471,S,A,CF4E1 LABORATORIO DE FISICA INTERMEDIA.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,57
+curriculum-course:n1:2018:cf4f1,curriculum:n1:2018,course:cf4f1,required,7,course:cf3f2,S,G,CF4F1 TERMODINAMICA Y MECANICA ESTADISTICA.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,58
+curriculum-course:n1:2018:cf4f3,curriculum:n1:2018,course:cf4f3,required,7,course:cf3f2,E,G,CF4F3 MECANICA CUANTICA II.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,59
+curriculum-course:n1:2018:if4b1,curriculum:n1:2018,course:if4b1,required,7,,E,N,IF4B1 -METODOS DE LA INVESTIGACION CIENTIFICA Y TECNOLOGICA.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,60
+curriculum-course:n1:2018:cf4d2,curriculum:n1:2018,course:cf4d2,required,8,course:cf4e1 course:cf4f3,S,N,PROYECTO DE TESIS I.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,65
+curriculum-course:n1:2018:cf4e2,curriculum:n1:2018,course:cf4e2,required,8,course:cf4e1 course:cf4f3,S,A,CF4E2 LABORATORIO DE FISICA AVANZADA.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,66
+curriculum-course:n1:2018:cf4f2,curriculum:n1:2018,course:cf4f2,required,8,course:cf4f3,S,G,CF4F2 FISICA ATOMICA Y MOLECULAR.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,67
+curriculum-course:n1:2018:cf5d1,curriculum:n1:2018,course:cf5d1,required,9,course:cf4d2 course:cf4e2 course:cf4f2,S,N,CF5D1- PROYECTO DE TESIS II.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,72
+curriculum-course:n1:2018:cf5f1,curriculum:n1:2018,course:cf5f1,required,9,course:cf4f1 course:cf4f2,S,G,CF5F1 -FISICA DEL ESTADO SOLIDO.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,73
+curriculum-course:n1:2018:cf5f3,curriculum:n1:2018,course:cf5f3,required,9,course:cf4f2,S,G,CF5F3 -FISICA NUCLEAR Y DE PARTICULAS.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,74
+curriculum-course:n1:2018:cf5t3,curriculum:n1:2018,course:cf5t3,required,10,course:cf5d1 course:cf5f1 course:cf5f3,S,N,CF5D2 -PROYECTO DE TESIS III.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,79
+curriculum-course:n1:2018:bae01,curriculum:n1:2018,course:bae01,required,10,,G,D,,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,80
+curriculum-course:n1:2018:xp200,curriculum:n1:2018,course:xp200,required,10,,S,D,,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,81
+curriculum-course:n1:2018:ya100,curriculum:n1:2018,course:ya100,required,10,,E,D,,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,82
+curriculum-course:n1:2018:cf001,curriculum:n1:2018,course:cf001,specialty-elective,,,S,G,CF001 Topicos Especiales I.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,91
+curriculum-course:n1:2018:cf002,curriculum:n1:2018,course:cf002,specialty-elective,,,S,G,CF002 Topicos Especiales II.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,92
+curriculum-course:n1:2018:cf003,curriculum:n1:2018,course:cf003,specialty-elective,,,S,G,CF003 Topicos Especiales III.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,93
+curriculum-course:n1:2018:cf004,curriculum:n1:2018,course:cf004,specialty-elective,,,S,D,CF004 Topicos Especiales IV.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,94
+curriculum-course:n1:2018:cf005,curriculum:n1:2018,course:cf005,specialty-elective,,,S,G,CF005 Topicos Especiales V.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,95
+curriculum-course:n1:2018:cf045,curriculum:n1:2018,course:cf045,specialty-elective,,course:cf3f1,S,G,CF045 Mecanica_celeste.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,96
+curriculum-course:n1:2018:cf046,curriculum:n1:2018,course:cf046,specialty-elective,,course:cf2b2 course:cf3f1,S,G,CF046 Introducción a la Astronomia.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,97
+curriculum-course:n1:2018:cf047,curriculum:n1:2018,course:cf047,specialty-elective,,course:cf2b2 course:cf3f1,S,G,CF047 Astrofisica Observacional.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,98
+curriculum-course:n1:2018:cf049,curriculum:n1:2018,course:cf049,specialty-elective,,course:cf3f4,S,G,CF049 Electromagnetismo II.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,99
+curriculum-course:n1:2018:cf050,curriculum:n1:2018,course:cf050,specialty-elective,,course:cf3f4,S,G,CF050 Relatividad General.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,100
+curriculum-course:n1:2018:cf055,curriculum:n1:2018,course:cf055,specialty-elective,,course:cf3f2,S,G,CF055 Teoria de Grupos y espectroscopia.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,101
+curriculum-course:n1:2018:cf056,curriculum:n1:2018,course:cf056,specialty-elective,,course:cf4e1,S,G,CF056 Tecnicas Espectroscopicas.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,102
+curriculum-course:n1:2018:cf057,curriculum:n1:2018,course:cf057,specialty-elective,,course:cf2b2,S,A,CF057 Topicos de Optica.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,103
+curriculum-course:n1:2018:cf058,curriculum:n1:2018,course:cf058,specialty-elective,,course:cf4f2 course:cf4f3,S,G,CF058 Introduccion a la Fisica de Particulas Elementales.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,104
+curriculum-course:n1:2018:cf059,curriculum:n1:2018,course:cf059,specialty-elective,,course:cf4f2 course:cf4f3,S,G,CF059 Tecnicas Experimentales de Fisica de Particulas.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,105
+curriculum-course:n1:2018:cf060,curriculum:n1:2018,course:cf060,specialty-elective,,course:cf3c1,S,G,CF060 Metodos Numericos.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,106
+curriculum-course:n1:2018:cf065,curriculum:n1:2018,course:cf065,specialty-elective,,course:cf1c2 course:cf2c1,S,G,CF065 Introduccion a la Teoria de grupos y sus representaciones.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,107
+curriculum-course:n1:2018:cf066,curriculum:n1:2018,course:cf066,specialty-elective,,course:cf065,S,G,CF066 Aplicaciones de la Representacion de Grupos.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,108
+curriculum-course:n1:2018:cf068,curriculum:n1:2018,course:cf068,specialty-elective,,course:cf3f4,S,G,CF068 Mecanica de los Medios Continuos.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,109
+curriculum-course:n1:2018:cf075,curriculum:n1:2018,course:cf075,specialty-elective,,course:cf3f4,S,G,CF075 Introducción a la Teoría Clásica de Campos.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,110
+curriculum-course:n1:2018:cf076,curriculum:n1:2018,course:cf076,specialty-elective,,course:cf4f3,S,G,CF076 -Introduccion a la Electrodinámica Cuántica.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,111
+curriculum-course:n1:2018:cf077,curriculum:n1:2018,course:cf077,specialty-elective,,course:cf076,S,G,CF077 - Introducción a la Teoria Electrodebil.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,112
+curriculum-course:n1:2018:cf081,curriculum:n1:2018,course:cf081,specialty-elective,,,S,D,CF081 Topicos Especiales IB.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,113
+curriculum-course:n1:2018:cf082,curriculum:n1:2018,course:cf082,specialty-elective,,,S,D,CF082 Topicos Especiales IIB.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,114
+curriculum-course:n1:2018:cf083,curriculum:n1:2018,course:cf083,specialty-elective,,,S,D,CF083 Topicos Especiales IIIB.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,115
+curriculum-course:n1:2018:ge545,curriculum:n1:2018,course:ge545,specialty-elective,,,S,G,,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,116
+curriculum-course:n1:2018:cc0f2,curriculum:n1:2018,course:cc0f2,specialty-elective,,course:cf3f2,S,G,CC0F2 FISICA COMPUTACIONAL.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,117
+curriculum-course:n1:2018:ch007,curriculum:n1:2018,course:ch007,complementary-elective,,,S,D,,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,123
+curriculum-course:n1:2018:ch061,curriculum:n1:2018,course:ch061,complementary-elective,,,S,G,,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,124
+curriculum-course:n1:2018:cl003,curriculum:n1:2018,course:cl003,complementary-elective,,course:cl002,S,G,CL003 INGLES II.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,125
+curriculum-course:n1:2018:cl004,curriculum:n1:2018,course:cl004,complementary-elective,,course:cl003,S,G,,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,126
+curriculum-course:n1:2018:cm025,curriculum:n1:2018,course:cm025,complementary-elective,,course:cm4g2,S,G,,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,127
+curriculum-course:n1:2018:cm031,curriculum:n1:2018,course:cm031,complementary-elective,,course:cm3g2 course:cm4f1,S,G,,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,128
+curriculum-course:n1:2018:cm032,curriculum:n1:2018,course:cm032,complementary-elective,,course:cm4f1 course:cm4g2,S,G,,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,129
+curriculum-course:n1:2018:cm038,curriculum:n1:2018,course:cm038,complementary-elective,,course:cf2c1 course:cm4f1,S,G,,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,130
+curriculum-course:n1:2018:cm042,curriculum:n1:2018,course:cm042,complementary-elective,,course:cc112,S,G,,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,131
+curriculum-course:n1:2018:cm3g2,curriculum:n1:2018,course:cm3g2,complementary-elective,,course:cf2c2,S,G,CM3G2 -ECUACIONES DIFERENCIALES ORDINARIAS I.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,132
+curriculum-course:n1:2018:cm4f1,curriculum:n1:2018,course:cm4f1,complementary-elective,,course:cf2c1 course:cm2a2,S,G,CM4F1 ANALISIS Y MODELAMIENTO NUMERICO I.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,133
+curriculum-course:n1:2018:cm4g2,curriculum:n1:2018,course:cm4g2,complementary-elective,,course:cf2c2,S,G,CM4G2 ECUACIONES DIFERENCIALES PARCIALES I.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,134
+curriculum-course:n1:2018:cq112,curriculum:n1:2018,course:cq112,complementary-elective,,,S,F,,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,135
+curriculum-course:n1:2018:cq271,curriculum:n1:2018,course:cq271,complementary-elective,,course:bqu01 course:cf1b2,S,G,CQ271 PRINCIPIOS DE FISICOQUIMICA.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,136
+curriculum-course:n1:2018:if321,curriculum:n1:2018,course:if321,complementary-elective,,course:cc112 course:cf2c2,S,G,IF321 CALCULO NUMERICO I.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,137
+curriculum-course:n1:2018:if392,curriculum:n1:2018,course:if392,complementary-elective,,course:cf3c1 course:if321,S,G,IF392 CALCULO NUMERICO II.pdf,PLAN DE ESTUDIO 2018-EP-FISICA-CON SILABOS(PLAN CON SILABOS).csv,138

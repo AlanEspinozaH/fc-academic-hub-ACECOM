@@ -1,0 +1,666 @@
+[
+	{
+		"code": "CC112",
+		"variants": [
+			{
+				"programCode": "N3",
+				"requirementType": "complementary-elective",
+				"typeCode": "S",
+				"evaluationSystemCode": "G"
+			},
+			{
+				"programCode": "N5",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "G"
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "G"
+			},
+			{
+				"programCode": "N1",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "G"
+			}
+		]
+	},
+	{
+		"code": "CC211",
+		"variants": [
+			{
+				"programCode": "N5",
+				"requirementType": "complementary-elective",
+				"typeCode": "S",
+				"evaluationSystemCode": "G"
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "G"
+			}
+		]
+	},
+	{
+		"code": "CC221",
+		"variants": [
+			{
+				"programCode": "N5",
+				"requirementType": "complementary-elective",
+				"typeCode": "S",
+				"evaluationSystemCode": "G"
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "G"
+			}
+		]
+	},
+	{
+		"code": "CC332",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "complementary-elective",
+				"typeCode": "S",
+				"evaluationSystemCode": "G"
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "G"
+			}
+		]
+	},
+	{
+		"code": "CC421",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "complementary-elective",
+				"typeCode": "S",
+				"evaluationSystemCode": "G"
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "G"
+			}
+		]
+	},
+	{
+		"code": "CC431",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "complementary-elective",
+				"typeCode": "S",
+				"evaluationSystemCode": "G"
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "G"
+			}
+		]
+	},
+	{
+		"code": "CF1B2",
+		"variants": [
+			{
+				"programCode": "N3",
+				"requirementType": "complementary-elective",
+				"typeCode": "S",
+				"evaluationSystemCode": "G"
+			},
+			{
+				"programCode": "N2",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "G"
+			},
+			{
+				"programCode": "N5",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "G"
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "complementary-elective",
+				"typeCode": "S",
+				"evaluationSystemCode": "G"
+			},
+			{
+				"programCode": "N1",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "G"
+			}
+		]
+	},
+	{
+		"code": "CF2B1",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "complementary-elective",
+				"typeCode": "S",
+				"evaluationSystemCode": "G"
+			},
+			{
+				"programCode": "N5",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "G"
+			},
+			{
+				"programCode": "N1",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "G"
+			}
+		]
+	},
+	{
+		"code": "CF2B2",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "complementary-elective",
+				"typeCode": "S",
+				"evaluationSystemCode": "G"
+			},
+			{
+				"programCode": "N5",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "G"
+			},
+			{
+				"programCode": "N1",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "G"
+			}
+		]
+	},
+	{
+		"code": "CF3C1",
+		"variants": [
+			{
+				"programCode": "N5",
+				"requirementType": "complementary-elective",
+				"typeCode": "S",
+				"evaluationSystemCode": "G"
+			},
+			{
+				"programCode": "N1",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "G"
+			}
+		]
+	},
+	{
+		"code": "CF3E1",
+		"variants": [
+			{
+				"programCode": "N5",
+				"requirementType": "required",
+				"typeCode": "S",
+				"evaluationSystemCode": "A"
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "complementary-elective",
+				"typeCode": "S",
+				"evaluationSystemCode": "A"
+			},
+			{
+				"programCode": "N1",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "A"
+			}
+		]
+	},
+	{
+		"code": "CL002",
+		"variants": [
+			{
+				"programCode": "N3",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "G"
+			},
+			{
+				"programCode": "N2",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "G"
+			},
+			{
+				"programCode": "N5",
+				"requirementType": "complementary-elective",
+				"typeCode": "S",
+				"evaluationSystemCode": "G"
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "G"
+			},
+			{
+				"programCode": "N1",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "G"
+			}
+		]
+	},
+	{
+		"code": "CM1A2",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "G"
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "complementary-elective",
+				"typeCode": "S",
+				"evaluationSystemCode": "G"
+			}
+		]
+	},
+	{
+		"code": "CM1B2",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "G"
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": null
+			}
+		]
+	},
+	{
+		"code": "CM2A1",
+		"variants": [
+			{
+				"programCode": "N3",
+				"requirementType": "complementary-elective",
+				"typeCode": "S",
+				"evaluationSystemCode": "G"
+			},
+			{
+				"programCode": "N2",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "G"
+			},
+			{
+				"programCode": "N5",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "G"
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "G"
+			},
+			{
+				"programCode": "N1",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "G"
+			}
+		]
+	},
+	{
+		"code": "CM2B1",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "G"
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "complementary-elective",
+				"typeCode": "S",
+				"evaluationSystemCode": "G"
+			}
+		]
+	},
+	{
+		"code": "CM2G2",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "G"
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "complementary-elective",
+				"typeCode": "S",
+				"evaluationSystemCode": "G"
+			}
+		]
+	},
+	{
+		"code": "CM3E2",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "G"
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "complementary-elective",
+				"typeCode": "S",
+				"evaluationSystemCode": "G"
+			}
+		]
+	},
+	{
+		"code": "CM3G2",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "G"
+			},
+			{
+				"programCode": "N1",
+				"requirementType": "complementary-elective",
+				"typeCode": "S",
+				"evaluationSystemCode": "G"
+			}
+		]
+	},
+	{
+		"code": "CM4E1",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "G"
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "complementary-elective",
+				"typeCode": "S",
+				"evaluationSystemCode": "G"
+			}
+		]
+	},
+	{
+		"code": "CM4E2",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "G"
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "complementary-elective",
+				"typeCode": "S",
+				"evaluationSystemCode": "G"
+			}
+		]
+	},
+	{
+		"code": "CM4F1",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "G"
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "G"
+			},
+			{
+				"programCode": "N1",
+				"requirementType": "complementary-elective",
+				"typeCode": "S",
+				"evaluationSystemCode": "G"
+			}
+		]
+	},
+	{
+		"code": "CM4G2",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "G"
+			},
+			{
+				"programCode": "N1",
+				"requirementType": "complementary-elective",
+				"typeCode": "S",
+				"evaluationSystemCode": "G"
+			}
+		]
+	},
+	{
+		"code": "CM4H1",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "G"
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "complementary-elective",
+				"typeCode": "S",
+				"evaluationSystemCode": "G"
+			}
+		]
+	},
+	{
+		"code": "CM5F1",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "G"
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "complementary-elective",
+				"typeCode": "S",
+				"evaluationSystemCode": "G"
+			}
+		]
+	},
+	{
+		"code": "CM5H1",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "G"
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "complementary-elective",
+				"typeCode": "S",
+				"evaluationSystemCode": "G"
+			}
+		]
+	},
+	{
+		"code": "CQ241",
+		"variants": [
+			{
+				"programCode": "N3",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "N"
+			},
+			{
+				"programCode": "N5",
+				"requirementType": "complementary-elective",
+				"typeCode": "S",
+				"evaluationSystemCode": "N"
+			}
+		]
+	},
+	{
+		"code": "CQ271",
+		"variants": [
+			{
+				"programCode": "N3",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "G"
+			},
+			{
+				"programCode": "N5",
+				"requirementType": "complementary-elective",
+				"typeCode": "S",
+				"evaluationSystemCode": "G"
+			},
+			{
+				"programCode": "N1",
+				"requirementType": "complementary-elective",
+				"typeCode": "S",
+				"evaluationSystemCode": "G"
+			}
+		]
+	},
+	{
+		"code": "CQ4E1",
+		"variants": [
+			{
+				"programCode": "N3",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "F"
+			},
+			{
+				"programCode": "N5",
+				"requirementType": "complementary-elective",
+				"typeCode": "S",
+				"evaluationSystemCode": "F"
+			}
+		]
+	},
+	{
+		"code": "IF471",
+		"variants": [
+			{
+				"programCode": "N5",
+				"requirementType": "required",
+				"typeCode": "S",
+				"evaluationSystemCode": "A"
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "complementary-elective",
+				"typeCode": "S",
+				"evaluationSystemCode": "A"
+			},
+			{
+				"programCode": "N1",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "A"
+			}
+		]
+	},
+	{
+		"code": "IF4B1",
+		"variants": [
+			{
+				"programCode": "N5",
+				"requirementType": "required",
+				"typeCode": "S",
+				"evaluationSystemCode": "N"
+			},
+			{
+				"programCode": "N1",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "N"
+			}
+		]
+	},
+	{
+		"code": "XP200",
+		"variants": [
+			{
+				"programCode": "N3",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "D"
+			},
+			{
+				"programCode": "N2",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "D"
+			},
+			{
+				"programCode": "N5",
+				"requirementType": "required",
+				"typeCode": "S",
+				"evaluationSystemCode": "D"
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "required",
+				"typeCode": "E",
+				"evaluationSystemCode": "D"
+			},
+			{
+				"programCode": "N1",
+				"requirementType": "required",
+				"typeCode": "S",
+				"evaluationSystemCode": "D"
+			}
+		]
+	}
+]

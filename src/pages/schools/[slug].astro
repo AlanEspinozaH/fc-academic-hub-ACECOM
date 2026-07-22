@@ -1,7 +1,13 @@
 ---
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
-import CourseCard from '../../components/CourseCard.astro';
-import { getAllSchools, getCatalogSnapshot } from '../../domain/catalog';
+import { formatAcademicUnitDescription } from '../../domain/academic-unit';
+import { getAllSchools, getCatalogSnapshot, type CourseCatalogItem } from '../../domain/catalog';
+import type { CourseOffering } from '../../domain/catalog-view';
+import {
+	CURRICULUM_COURSE_REQUIREMENT_TYPE_LABELS,
+	type CurriculumCourseRequirementType,
+} from '../../domain/curriculum-course';
+import { CURRICULUM_STATUS_LABELS } from '../../domain/curriculum';
 import Layout from '../../layouts/Layout.astro';
 
 export const prerender = true;
@@ -11,6 +17,13 @@ export const getStaticPaths = async () => {
 
 	return schools.map((school) => ({ params: { slug: school.slug } }));
 };
+
+interface CurriculumPlacement {
+	readonly item: CourseCatalogItem;
+	readonly offering: CourseOffering;
+}
+
+const cycleLabels = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'] as const;
 
 const slug = Astro.params.slug;
 if (typeof slug !== 'string') {
@@ -24,17 +37,38 @@ if (school === undefined) {
 	throw new Error('Escuela no encontrada: ' + slug);
 }
 
+const schoolDescription = formatAcademicUnitDescription(school);
 const programs = catalog.programs.filter((program) => program.parentUnitId === school.id);
 const programIds = new Set(programs.map((program) => program.id));
 const curricula = catalog.curricula.filter((curriculum) =>
 	programIds.has(curriculum.academicUnitId),
 );
-const courseItems = catalog.courseItems.filter((item) =>
-	item.offerings.some((offering) => offering.school?.id === school.id),
+const placementsByCurriculumId = new Map<string, ReadonlyArray<CurriculumPlacement>>(
+	curricula.map((curriculum) => [
+		curriculum.id,
+		catalog.courseItems
+			.flatMap((item) =>
+				item.offerings
+					.filter((offering) => offering.curriculum.id === curriculum.id)
+					.map((offering) => ({ item, offering })),
+			)
+			.sort((left, right) => left.item.course.code.localeCompare(right.item.course.code, 'es')),
+	]),
 );
+
+const getPlacements = (
+	curriculumId: string,
+	requirementType: CurriculumCourseRequirementType,
+	cycle?: number,
+): ReadonlyArray<CurriculumPlacement> =>
+	(placementsByCurriculumId.get(curriculumId) ?? []).filter(
+		(placement) =>
+			placement.offering.curriculumCourse.requirementType === requirementType &&
+			(cycle === undefined || placement.offering.curriculumCourse.recommendedCycle === cycle),
+	);
 ---
 
-<Layout title={school.name} description={school.description}>
+<Layout title={school.name} description={schoolDescription}>
 	<Breadcrumbs
 		items={[
 			{ href: '/', label: 'Inicio' },
@@ -48,7 +82,7 @@ const courseItems = catalog.courseItems.filter((item) =>
 			{school.abbreviation} · {school.status === 'active' ? 'Activa' : 'Inactiva'}
 		</p>
 		<h1 id="school-title">{school.name}</h1>
-		<p>{school.description}</p>
+		<p>{schoolDescription}</p>
 	</section>
 
 	<section class="section detail-section" aria-labelledby="programs-title">
@@ -62,8 +96,13 @@ const courseItems = catalog.courseItems.filter((item) =>
 					return (
 						<li>
 							<strong>{program.name}</strong>
-							<span>{program.description}</span>
-							<small>{programCurricula.map((curriculum) => curriculum.code).join(', ')}</small>
+							<span>{formatAcademicUnitDescription(program)}</span>
+							{programCurricula.map((curriculum) => (
+								<small>
+									{curriculum.name} · {CURRICULUM_STATUS_LABELS[curriculum.status]} ·{' '}
+									<a href={curriculum.sourceUrl}>Ver fuente original</a>
+								</small>
+							))}
 						</li>
 					);
 				})
@@ -71,22 +110,64 @@ const courseItems = catalog.courseItems.filter((item) =>
 		</ul>
 	</section>
 
-	<section class="section" aria-labelledby="school-courses-title">
-		<div class="section-heading">
-			<h2 id="school-courses-title">Cursos</h2>
-			<p>{courseItems.length} cursos asociados a sus planes.</p>
-		</div>
-		<div class="grid">
-			{courseItems.slice(0, 4).map((item) => <CourseCard item={item} />)}
-		</div>
-		{
-			courseItems.length > 4 && (
-				<p class="more-link">
-					<a href="/courses">Ver lista completa</a>
-				</p>
-			)
-		}
-	</section>
+	{
+		curricula.map((curriculum) => (
+			<section class="section" aria-labelledby={curriculum.id + '-courses'}>
+				<div class="section-heading">
+					<h2 id={curriculum.id + '-courses'}>{curriculum.name}</h2>
+					<p>
+						{CURRICULUM_STATUS_LABELS[curriculum.status]} ·{' '}
+						<a href={curriculum.sourceUrl}>Ver fuente original</a>
+					</p>
+				</div>
+
+				{cycleLabels.map((cycleLabel, index) => {
+					const cycle = index + 1;
+					const placements = getPlacements(curriculum.id, 'required', cycle);
+					return (
+						placements.length > 0 && (
+							<section class="course-group" aria-labelledby={`${curriculum.id}-cycle-${cycle}`}>
+								<h3 id={`${curriculum.id}-cycle-${cycle}`}>Ciclo {cycleLabel}</h3>
+								<ul class="course-list">
+									{placements.map((placement) => (
+										<li>
+											<a href={'/courses/' + placement.item.course.slug}>
+												{placement.item.course.code} · {placement.item.course.name}
+											</a>
+											<span>{CURRICULUM_COURSE_REQUIREMENT_TYPE_LABELS.required}</span>
+										</li>
+									))}
+								</ul>
+							</section>
+						)
+					);
+				})}
+
+				{(['specialty-elective', 'complementary-elective'] as const).map((requirementType) => {
+					const placements = getPlacements(curriculum.id, requirementType);
+					return (
+						placements.length > 0 && (
+							<section class="course-group" aria-labelledby={`${curriculum.id}-${requirementType}`}>
+								<h3 id={`${curriculum.id}-${requirementType}`}>
+									{CURRICULUM_COURSE_REQUIREMENT_TYPE_LABELS[requirementType]}
+								</h3>
+								<ul class="course-list">
+									{placements.map((placement) => (
+										<li>
+											<a href={'/courses/' + placement.item.course.slug}>
+												{placement.item.course.code} · {placement.item.course.name}
+											</a>
+											<span>{CURRICULUM_COURSE_REQUIREMENT_TYPE_LABELS[requirementType]}</span>
+										</li>
+									))}
+								</ul>
+							</section>
+						)
+					);
+				})}
+			</section>
+		))
+	}
 </Layout>
 
 <style>
@@ -100,7 +181,8 @@ const courseItems = catalog.courseItems.filter((item) =>
 		font-size: 1.18rem;
 	}
 
-	.detail-list {
+	.detail-list,
+	.course-list {
 		display: grid;
 		gap: 0.6rem;
 		margin: 0;
@@ -108,20 +190,24 @@ const courseItems = catalog.courseItems.filter((item) =>
 		list-style: none;
 	}
 
-	.detail-list li {
+	.detail-list li,
+	.course-list li {
 		display: grid;
 		gap: 0.15rem;
 		border-top: 1px solid var(--color-border);
 		padding-top: 0.65rem;
 	}
 
-	.detail-list strong {
+	.detail-list strong,
+	.course-list a {
 		color: var(--color-text);
+		font-weight: 750;
 	}
 
 	.detail-list span,
 	.detail-list small,
-	.section-heading p {
+	.section-heading p,
+	.course-list span {
 		color: var(--color-muted);
 	}
 
@@ -131,13 +217,18 @@ const courseItems = catalog.courseItems.filter((item) =>
 		margin-bottom: 0.75rem;
 	}
 
-	.section-heading p,
-	.more-link {
+	.section-heading p {
 		margin: 0;
 	}
 
-	.more-link {
-		margin-top: 0.75rem;
-		font-weight: 750;
+	.course-group {
+		display: grid;
+		gap: 0.6rem;
+		margin-top: 1rem;
+	}
+
+	.course-group h3 {
+		margin: 0;
+		font-size: 1rem;
 	}
 </style>

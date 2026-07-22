@@ -1,5 +1,9 @@
-import { RESOURCE_TYPES, type AcademicResource, type ResourceType } from './resource';
 import type { CourseCatalogItem, CourseOffering } from './catalog-view';
+import {
+	CURRICULUM_COURSE_REQUIREMENT_TYPES,
+	type CurriculumCourseRequirementType,
+} from './curriculum-course';
+import { RESOURCE_TYPES, type AcademicResource, type ResourceType } from './resource';
 
 export type SolutionAvailabilityFilter = 'with' | 'without';
 
@@ -7,6 +11,7 @@ export interface CourseFilters {
 	readonly academicUnitId?: string;
 	readonly programId?: string;
 	readonly recommendedCycle?: number;
+	readonly requirementType?: CurriculumCourseRequirementType;
 	readonly text?: string;
 }
 
@@ -43,6 +48,21 @@ export const parseRecommendedCycleFilter = (value: string | null): number | unde
 	return Number.isInteger(parsed) && parsed > 0 ? parsed : undefined;
 };
 
+export const isCurriculumCourseRequirementType = (
+	value: string,
+): value is CurriculumCourseRequirementType =>
+	CURRICULUM_COURSE_REQUIREMENT_TYPES.includes(value as CurriculumCourseRequirementType);
+
+export const parseRequirementTypeFilter = (
+	value: string | null,
+): CurriculumCourseRequirementType | undefined => {
+	if (value === null || value.trim() === '') {
+		return undefined;
+	}
+
+	return isCurriculumCourseRequirementType(value) ? value : undefined;
+};
+
 export const isResourceType = (value: string): value is ResourceType =>
 	RESOURCE_TYPES.includes(value as ResourceType);
 
@@ -56,29 +76,45 @@ export const parseSolutionAvailabilityFilter = (
 	return undefined;
 };
 
+const offeringMatchesCourseFilters = (
+	offering: CourseOffering,
+	filters: CourseFilters,
+	effectiveCycle: number | undefined,
+): boolean => {
+	const matchesProgram =
+		filters.programId === undefined || offering.program.id === filters.programId;
+	const matchesAcademicUnit =
+		filters.academicUnitId === undefined || offeringMatchesUnit(offering, filters.academicUnitId);
+	const matchesCycle =
+		effectiveCycle === undefined || offering.curriculumCourse.recommendedCycle === effectiveCycle;
+	const matchesRequirement =
+		filters.requirementType === undefined ||
+		offering.curriculumCourse.requirementType === filters.requirementType;
+
+	return matchesProgram && matchesAcademicUnit && matchesCycle && matchesRequirement;
+};
+
 export const filterCourses = (
 	items: ReadonlyArray<CourseCatalogItem>,
 	filters: CourseFilters,
 ): ReadonlyArray<CourseCatalogItem> => {
 	const text = normalizeSearch(filters.text);
+	const effectiveCycle = filters.programId === undefined ? undefined : filters.recommendedCycle;
+	const hasOfferingFilters =
+		filters.programId !== undefined ||
+		filters.academicUnitId !== undefined ||
+		effectiveCycle !== undefined ||
+		filters.requirementType !== undefined;
 
 	return items.filter((item) => {
 		const matchesText = includesSearchText([item.course.code, item.course.name], text);
-		const matchesProgram =
-			filters.programId === undefined ||
-			item.offerings.some((offering) => offering.program.id === filters.programId);
-		const matchesAcademicUnit =
-			filters.academicUnitId === undefined ||
+		const matchesOfferings =
+			!hasOfferingFilters ||
 			item.offerings.some((offering) =>
-				offeringMatchesUnit(offering, filters.academicUnitId ?? ''),
-			);
-		const matchesCycle =
-			filters.recommendedCycle === undefined ||
-			item.offerings.some(
-				(offering) => offering.curriculumCourse.recommendedCycle === filters.recommendedCycle,
+				offeringMatchesCourseFilters(offering, filters, effectiveCycle),
 			);
 
-		return matchesText && matchesProgram && matchesAcademicUnit && matchesCycle;
+		return matchesText && matchesOfferings;
 	});
 };
 

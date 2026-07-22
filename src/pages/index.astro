@@ -7,11 +7,6 @@ import Layout from '../layouts/Layout.astro';
 export const prerender = true;
 
 const catalog = await getCatalogSnapshot();
-const cycleLinks = [
-	...new Set(catalog.curriculumCourses.map((relation) => relation.recommendedCycle)),
-]
-	.sort((left, right) => left - right)
-	.map((cycle) => ({ href: '/courses?cycle=' + cycle, label: 'Ciclo ' + cycle }));
 const publicResources = catalog.resources.filter((resource) => resource.visibility === 'public');
 const recentResources = [...publicResources]
 	.sort((left, right) => {
@@ -27,34 +22,22 @@ const termLabelById = new Map(catalog.academicTerms.map((term) => [term.id, term
 	<section class="home-search" aria-labelledby="home-title">
 		<div>
 			<p class="kicker">{siteConfig.stage}</p>
-			<h1 id="home-title">Catalogo academico</h1>
+			<h1 id="home-title">Catálogo académico</h1>
 			<p>
-				Busca cursos de la muestra inicial versionada en Git. Sin Supabase, R2, login ni archivos
-				reales en esta etapa.
+				Busca cursos de los planes de estudios 2018 versionados en Git. Sin Supabase, R2, login ni
+				archivos reales en esta etapa.
 			</p>
 		</div>
 		<form class="search-box" method="get" action="/courses" role="search">
 			<label for="home-course-search">Buscar cursos</label>
 			<div>
-				<input id="home-course-search" name="q" type="search" placeholder="Codigo o nombre" />
+				<input id="home-course-search" name="q" type="search" placeholder="Código o nombre" />
 				<button type="submit">Buscar</button>
 			</div>
 		</form>
 	</section>
 
 	<section class="quick-access" aria-label="Accesos principales">
-		<section aria-labelledby="cycles-title">
-			<h2 id="cycles-title">Por ciclo</h2>
-			<ul class="link-pills">
-				{
-					cycleLinks.map((cycle) => (
-						<li>
-							<a href={cycle.href}>{cycle.label}</a>
-						</li>
-					))
-				}
-			</ul>
-		</section>
 		<section aria-labelledby="programs-title">
 			<h2 id="programs-title">Por carrera</h2>
 			<ul class="link-list">
@@ -152,7 +135,7 @@ const termLabelById = new Map(catalog.academicTerms.map((term) => [term.id, term
 
 	.quick-access {
 		display: grid;
-		grid-template-columns: repeat(3, minmax(0, 1fr));
+		grid-template-columns: repeat(2, minmax(0, 1fr));
 		gap: 1rem;
 		margin-top: 2rem;
 	}
@@ -214,7 +197,7 @@ const termLabelById = new Map(catalog.academicTerms.map((term) => [term.id, term
 
 	.resource-grid {
 		display: grid;
-		grid-template-columns: repeat(3, minmax(0, 1fr));
+		grid-template-columns: repeat(2, minmax(0, 1fr));
 		gap: 0.75rem;
 	}
 

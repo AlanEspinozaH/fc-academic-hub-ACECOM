@@ -1,6 +1,7 @@
 ---
 import type { CourseCatalogItem } from '../domain/catalog-view';
 import { formatCourseCreditsWithUnit } from '../domain/course';
+import { formatRecommendedCycle } from '../domain/curriculum-course';
 
 interface Props {
 	href?: string;
@@ -11,7 +12,9 @@ const { item, href = '/courses/' + item.course.slug } = Astro.props;
 const titleId = item.course.id + '-title';
 const cycleLabels = [
 	...new Set(
-		item.offerings.map((offering) => 'Ciclo ' + offering.curriculumCourse.recommendedCycle),
+		item.offerings.map((offering) =>
+			formatRecommendedCycle(offering.curriculumCourse.recommendedCycle),
+		),
 	),
 ];
 const programLabels = [...new Set(item.offerings.map((offering) => offering.program.abbreviation))];

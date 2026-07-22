@@ -85,6 +85,39 @@ const toIdMap = <T extends { readonly id: string }>(
 const textFromResource = (resource: AcademicResource): string =>
 	[resource.title, resource.description, resource.evaluation ?? '', ...resource.tags].join(' ');
 
+const isValidUrl = (value: string): boolean => {
+	try {
+		new URL(value);
+		return true;
+	} catch {
+		return false;
+	}
+};
+
+const expectedAdminUnitIdForCourseCode = (code: string): string | undefined => {
+	if (code.startsWith('CM')) {
+		return 'academic-unit:school:n2';
+	}
+
+	if (code.startsWith('CF')) {
+		return 'academic-unit:school:n1';
+	}
+
+	if (code.startsWith('IFE') || code.startsWith('IF')) {
+		return 'academic-unit:school:n5';
+	}
+
+	if (code.startsWith('CQ')) {
+		return 'academic-unit:school:n3';
+	}
+
+	if (code.startsWith('CC')) {
+		return 'academic-unit:school:n6';
+	}
+
+	return undefined;
+};
+
 const validateAcademicTerms = (
 	issues: Array<string>,
 	academicTerms: ReadonlyArray<AcademicTerm>,
@@ -140,14 +173,23 @@ const validateAcademicUnits = (
 	}
 };
 
-const validateCourses = (issues: Array<string>, courses: ReadonlyArray<Course>): void => {
-	for (const course of courses) {
+const validateCourses = (
+	issues: Array<string>,
+	catalog: CatalogCollections,
+	academicUnitIds: ReadonlySet<string>,
+): void => {
+	for (const course of catalog.courses) {
 		if (!COURSE_ID_PATTERN.test(course.id)) {
 			issues.push('Identificador de curso invalido: ' + course.id);
 		}
 
 		if (!COURSE_CODE_PATTERN.test(course.code)) {
 			issues.push('Codigo de curso invalido: ' + course.code);
+		}
+
+		const expectedCourseId = 'course:' + course.code.toLocaleLowerCase('es');
+		if (course.id !== expectedCourseId) {
+			issues.push('Identificador de curso no coincide con codigo: ' + course.id);
 		}
 
 		const expectedSlugPrefix = course.code.toLocaleLowerCase('es') + '-';
@@ -157,6 +199,35 @@ const validateCourses = (issues: Array<string>, courses: ReadonlyArray<Course>):
 
 		if (course.credits === null && course.dataStatus !== 'pending-verification') {
 			issues.push('Curso con creditos pendientes sin estado de verificacion: ' + course.id);
+		}
+
+		if (course.adminAcademicUnitId !== null && !academicUnitIds.has(course.adminAcademicUnitId)) {
+			issues.push(
+				'Curso con unidad administradora inexistente: ' +
+					course.id +
+					' -> ' +
+					course.adminAcademicUnitId,
+			);
+		}
+
+		const expectedAdminUnitId = expectedAdminUnitIdForCourseCode(course.code);
+		if (course.adminAssignmentBasis === 'prefix-rule') {
+			if (expectedAdminUnitId === undefined) {
+				issues.push('Curso con regla de prefijo no permitida: ' + course.id);
+			} else if (course.adminAcademicUnitId !== expectedAdminUnitId) {
+				issues.push('Curso con administrador inferido incorrecto: ' + course.id);
+			}
+		}
+
+		if (
+			course.adminAssignmentBasis === 'pending-verification' &&
+			course.adminAcademicUnitId !== null
+		) {
+			issues.push('Curso pendiente con administrador asignado: ' + course.id);
+		}
+
+		if (course.adminAssignmentBasis === 'verified-manual' && course.adminAcademicUnitId === null) {
+			issues.push('Curso verificado manualmente sin administrador: ' + course.id);
 		}
 	}
 };
@@ -181,6 +252,10 @@ const validateCurricula = (
 
 		if (unitsById.get(curriculum.academicUnitId)?.unitType !== 'program') {
 			issues.push('Plan curricular asociado a unidad que no es programa: ' + curriculum.id);
+		}
+
+		if (!isValidUrl(curriculum.sourceUrl)) {
+			issues.push('Plan curricular con URL fuente invalida: ' + curriculum.id);
 		}
 	}
 };
@@ -230,6 +305,30 @@ const validateCurriculumCourses = (
 					' -> ' +
 					relation.courseId,
 			);
+		}
+
+		if (relation.requirementType === 'required') {
+			if (relation.recommendedCycle === null) {
+				issues.push('Curso obligatorio sin ciclo recomendado: ' + relation.id);
+			}
+		} else if (relation.recommendedCycle !== null) {
+			issues.push('Curso electivo con ciclo recomendado fijo: ' + relation.id);
+		}
+
+		if (relation.syllabus.url === null && relation.syllabus.linkStatus === 'verified-link') {
+			issues.push('Silabo verificado sin URL: ' + relation.id);
+		}
+
+		if (relation.syllabus.url !== null && relation.syllabus.linkStatus !== 'verified-link') {
+			issues.push('Silabo con URL sin estado verificado: ' + relation.id);
+		}
+
+		if (relation.syllabus.label === null && relation.syllabus.linkStatus !== 'not-listed') {
+			issues.push('Silabo sin etiqueta con estado inconsistente: ' + relation.id);
+		}
+
+		if (!isValidUrl(relation.source.curriculumUrl)) {
+			issues.push('Relacion curriculum-curso con URL fuente invalida: ' + relation.id);
 		}
 
 		for (const prerequisiteCourseId of relation.prerequisiteCourseIds) {
@@ -342,7 +441,7 @@ export const collectCatalogIntegrityIssues = (
 	);
 	addDuplicateIssues(issues, 'Slug de recurso', slugValues('resources', catalog.resources));
 
-	validateCourses(issues, catalog.courses);
+	validateCourses(issues, catalog, academicUnitIds);
 	validateAcademicTerms(issues, catalog.academicTerms);
 	validateAcademicUnits(issues, catalog.academicUnits);
 	validateCurricula(issues, catalog, academicUnitIds);

@@ -8,7 +8,10 @@ import {
 	COURSE_DATA_STATUSES,
 	COURSE_STATUSES,
 } from './domain/course';
-import { CURRICULUM_COURSE_REQUIREMENT_TYPES } from './domain/curriculum-course';
+import {
+	CURRICULUM_COURSE_REQUIREMENT_TYPES,
+	CURRICULUM_COURSE_SYLLABUS_LINK_STATUSES,
+} from './domain/curriculum-course';
 import { CURRICULUM_STATUSES } from './domain/curriculum';
 import {
 	RESOURCE_TYPES,
@@ -23,13 +26,18 @@ const slugSchema = z
 	.regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
 
 const tagSchema = z.array(z.string().min(1)).default([]);
+const nullableRawTextSchema = z.string().min(1).nullable();
+const urlSchema = z
+	.string()
+	.min(1)
+	.refine((value) => URL.canParse(value), 'URL inválida');
 
 const academicUnits = defineCollection({
 	loader: file('src/content/catalog/academic-units.json'),
 	schema: z
 		.object({
 			abbreviation: z.string().min(2),
-			description: z.string().min(1),
+			description: z.string().min(1).nullable(),
 			id: z.string().min(1),
 			name: z.string().min(1),
 			parentUnitId: z.string().min(1).optional(),
@@ -49,6 +57,7 @@ const curricula = defineCollection({
 			effectivePeriod: z.string().min(1),
 			id: z.string().min(1),
 			name: z.string().min(1),
+			sourceUrl: urlSchema,
 			status: z.enum(CURRICULUM_STATUSES),
 		})
 		.strict(),
@@ -60,10 +69,35 @@ const curriculumCourses = defineCollection({
 		.object({
 			courseId: z.string().min(1),
 			curriculumId: z.string().min(1),
+			evaluationSystemCode: z.string().min(1).nullable(),
+			hours: z
+				.object({
+					laboratoryRaw: nullableRawTextSchema,
+					practiceRaw: nullableRawTextSchema,
+					seminarRaw: nullableRawTextSchema,
+					theoryRaw: nullableRawTextSchema,
+					totalRaw: nullableRawTextSchema,
+				})
+				.strict(),
 			id: z.string().min(1),
 			prerequisiteCourseIds: z.array(z.string().min(1)).default([]),
-			recommendedCycle: z.number().int().min(1).max(12),
+			recommendedCycle: z.number().int().min(1).max(10).nullable(),
 			requirementType: z.enum(CURRICULUM_COURSE_REQUIREMENT_TYPES),
+			source: z
+				.object({
+					curriculumUrl: urlSchema,
+					file: z.string().min(1),
+					row: z.number().int().positive(),
+				})
+				.strict(),
+			syllabus: z
+				.object({
+					label: z.string().min(1).nullable(),
+					linkStatus: z.enum(CURRICULUM_COURSE_SYLLABUS_LINK_STATUSES),
+					url: urlSchema.nullable(),
+				})
+				.strict(),
+			typeCode: z.string().min(1).nullable(),
 		})
 		.strict(),
 });

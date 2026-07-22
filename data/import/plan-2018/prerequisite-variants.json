@@ -1,0 +1,913 @@
+[
+	{
+		"code": "CC0A7",
+		"variants": [
+			{
+				"programCode": "N5",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["BIC01", "IF471"]
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "specialty-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CC4P1"]
+			}
+		]
+	},
+	{
+		"code": "CC0F2",
+		"variants": [
+			{
+				"programCode": "N5",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["IF411", "IF4A1"]
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "specialty-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CC3M2"]
+			},
+			{
+				"programCode": "N1",
+				"requirementType": "specialty-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CF3F2"]
+			}
+		]
+	},
+	{
+		"code": "CC221",
+		"variants": [
+			{
+				"programCode": "N5",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["IF471"]
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "required",
+				"cycle": 3,
+				"prerequisiteCodes": ["CC112"]
+			}
+		]
+	},
+	{
+		"code": "CC332",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CM4F1"]
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "required",
+				"cycle": 6,
+				"prerequisiteCodes": ["CC371"]
+			}
+		]
+	},
+	{
+		"code": "CC431",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CM4F1"]
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "required",
+				"cycle": 7,
+				"prerequisiteCodes": ["CC3M2"]
+			}
+		]
+	},
+	{
+		"code": "CF2B1",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CF1B2"]
+			},
+			{
+				"programCode": "N5",
+				"requirementType": "required",
+				"cycle": 3,
+				"prerequisiteCodes": ["BMA02", "CF1B2"]
+			},
+			{
+				"programCode": "N1",
+				"requirementType": "required",
+				"cycle": 3,
+				"prerequisiteCodes": ["BMA02", "CF1B2", "CF1C2"]
+			}
+		]
+	},
+	{
+		"code": "CF2B2",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CF2B1"]
+			},
+			{
+				"programCode": "N5",
+				"requirementType": "required",
+				"cycle": 4,
+				"prerequisiteCodes": ["CF2B1"]
+			},
+			{
+				"programCode": "N1",
+				"requirementType": "required",
+				"cycle": 4,
+				"prerequisiteCodes": ["CF2B1", "CM2A1"]
+			}
+		]
+	},
+	{
+		"code": "CF3C1",
+		"variants": [
+			{
+				"programCode": "N5",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["IF252"]
+			},
+			{
+				"programCode": "N1",
+				"requirementType": "required",
+				"cycle": 5,
+				"prerequisiteCodes": ["CF2B2", "CF2C2", "CM2A2"]
+			}
+		]
+	},
+	{
+		"code": "CF3E1",
+		"variants": [
+			{
+				"programCode": "N5",
+				"requirementType": "required",
+				"cycle": 4,
+				"prerequisiteCodes": ["CF2B1"]
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CQ221"]
+			},
+			{
+				"programCode": "N1",
+				"requirementType": "required",
+				"cycle": 5,
+				"prerequisiteCodes": ["CF2B1", "CF2C2"]
+			}
+		]
+	},
+	{
+		"code": "CF3F1",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CF2B1", "CM3G2"]
+			},
+			{
+				"programCode": "N5",
+				"requirementType": "required",
+				"cycle": 5,
+				"prerequisiteCodes": ["IF252"]
+			},
+			{
+				"programCode": "N1",
+				"requirementType": "required",
+				"cycle": 5,
+				"prerequisiteCodes": ["CF2C2"]
+			}
+		]
+	},
+	{
+		"code": "CF4E1",
+		"variants": [
+			{
+				"programCode": "N5",
+				"requirementType": "required",
+				"cycle": 7,
+				"prerequisiteCodes": ["IF294", "IF372"]
+			},
+			{
+				"programCode": "N1",
+				"requirementType": "required",
+				"cycle": 7,
+				"prerequisiteCodes": ["CF3F2", "CF3F4", "IF471"]
+			}
+		]
+	},
+	{
+		"code": "CF4E2",
+		"variants": [
+			{
+				"programCode": "N5",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CF4E1"]
+			},
+			{
+				"programCode": "N1",
+				"requirementType": "required",
+				"cycle": 8,
+				"prerequisiteCodes": ["CF4E1", "CF4F3"]
+			}
+		]
+	},
+	{
+		"code": "CF4F1",
+		"variants": [
+			{
+				"programCode": "N5",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["IF352", "IF411"]
+			},
+			{
+				"programCode": "N1",
+				"requirementType": "required",
+				"cycle": 7,
+				"prerequisiteCodes": ["CF3F2"]
+			}
+		]
+	},
+	{
+		"code": "CF4F2",
+		"variants": [
+			{
+				"programCode": "N5",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["IF411"]
+			},
+			{
+				"programCode": "N1",
+				"requirementType": "required",
+				"cycle": 8,
+				"prerequisiteCodes": ["CF4F3"]
+			}
+		]
+	},
+	{
+		"code": "CF5F1",
+		"variants": [
+			{
+				"programCode": "N5",
+				"requirementType": "required",
+				"cycle": 9,
+				"prerequisiteCodes": ["IF482"]
+			},
+			{
+				"programCode": "N1",
+				"requirementType": "required",
+				"cycle": 9,
+				"prerequisiteCodes": ["CF4F1", "CF4F2"]
+			}
+		]
+	},
+	{
+		"code": "CF5F3",
+		"variants": [
+			{
+				"programCode": "N5",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["IF411"]
+			},
+			{
+				"programCode": "N1",
+				"requirementType": "required",
+				"cycle": 9,
+				"prerequisiteCodes": ["CF4F2"]
+			}
+		]
+	},
+	{
+		"code": "CM015",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "specialty-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CM4H1"]
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CM2H2"]
+			}
+		]
+	},
+	{
+		"code": "CM026",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "specialty-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CM424"]
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CM2G2"]
+			}
+		]
+	},
+	{
+		"code": "CM031",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "specialty-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CM3G2", "CM5F1"]
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CM2G2", "CM4F1"]
+			},
+			{
+				"programCode": "N1",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CM3G2", "CM4F1"]
+			}
+		]
+	},
+	{
+		"code": "CM032",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "specialty-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CM4G2", "CM5F1"]
+			},
+			{
+				"programCode": "N1",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CM4F1", "CM4G2"]
+			}
+		]
+	},
+	{
+		"code": "CM035",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "specialty-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CM3G2", "CM4F1"]
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CC431"]
+			}
+		]
+	},
+	{
+		"code": "CM038",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "specialty-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CM2B1", "CM4F1"]
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CM2B1", "CM4F1"]
+			},
+			{
+				"programCode": "N1",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CF2C1", "CM4F1"]
+			}
+		]
+	},
+	{
+		"code": "CM042",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "specialty-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CM2F1"]
+			},
+			{
+				"programCode": "N1",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CC112"]
+			}
+		]
+	},
+	{
+		"code": "CM048",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "specialty-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CM2F1"]
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CC531"]
+			}
+		]
+	},
+	{
+		"code": "CM054",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "specialty-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CM4E2", "CM5F1"]
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CM4F1"]
+			}
+		]
+	},
+	{
+		"code": "CM056",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "specialty-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CM052"]
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CM5F1"]
+			}
+		]
+	},
+	{
+		"code": "CM096",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "specialty-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CM095"]
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CC371"]
+			}
+		]
+	},
+	{
+		"code": "CM0A4",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "specialty-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CM2I2", "CM4F1"]
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CM4F1"]
+			}
+		]
+	},
+	{
+		"code": "CM0D4",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "specialty-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CM5H1"]
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CM4H1"]
+			}
+		]
+	},
+	{
+		"code": "CM0D5",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "specialty-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CM2H2", "CM4F1"]
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CC442"]
+			}
+		]
+	},
+	{
+		"code": "CM0D7",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "specialty-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CM2F2", "CM2I2"]
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CC371"]
+			}
+		]
+	},
+	{
+		"code": "CM0D9",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "specialty-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CM4E2", "CM5H1"]
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CM4E2"]
+			}
+		]
+	},
+	{
+		"code": "CM0E0",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "specialty-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CM4F1", "CM5H1"]
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CM4E2"]
+			}
+		]
+	},
+	{
+		"code": "CM0E2",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "specialty-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CM4E2", "CM4F1"]
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CM4E2"]
+			}
+		]
+	},
+	{
+		"code": "CM2A1",
+		"variants": [
+			{
+				"programCode": "N3",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["BMA02"]
+			},
+			{
+				"programCode": "N2",
+				"requirementType": "required",
+				"cycle": 3,
+				"prerequisiteCodes": ["BMA02", "CM1A2"]
+			},
+			{
+				"programCode": "N5",
+				"requirementType": "required",
+				"cycle": 3,
+				"prerequisiteCodes": ["BMA02"]
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "required",
+				"cycle": 3,
+				"prerequisiteCodes": ["BMA02"]
+			},
+			{
+				"programCode": "N1",
+				"requirementType": "required",
+				"cycle": 3,
+				"prerequisiteCodes": ["BMA02", "CF1C2"]
+			}
+		]
+	},
+	{
+		"code": "CM2G2",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "required",
+				"cycle": 4,
+				"prerequisiteCodes": ["BMA02", "CM2B1"]
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CM2A1"]
+			}
+		]
+	},
+	{
+		"code": "CM2H1",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "required",
+				"cycle": 3,
+				"prerequisiteCodes": ["CM1A2"]
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "required",
+				"cycle": 3,
+				"prerequisiteCodes": ["BMA03"]
+			}
+		]
+	},
+	{
+		"code": "CM3E2",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "required",
+				"cycle": 6,
+				"prerequisiteCodes": ["CM2A2"]
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CM2A1"]
+			}
+		]
+	},
+	{
+		"code": "CM3G2",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "required",
+				"cycle": 6,
+				"prerequisiteCodes": ["CM2G2"]
+			},
+			{
+				"programCode": "N1",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CF2C2"]
+			}
+		]
+	},
+	{
+		"code": "CM4F1",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "required",
+				"cycle": 7,
+				"prerequisiteCodes": ["CM3C1"]
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "required",
+				"cycle": 5,
+				"prerequisiteCodes": ["CM2A1"]
+			},
+			{
+				"programCode": "N1",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CF2C1", "CM2A2"]
+			}
+		]
+	},
+	{
+		"code": "CM4G2",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "required",
+				"cycle": 8,
+				"prerequisiteCodes": ["CM3G2"]
+			},
+			{
+				"programCode": "N1",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CF2C2"]
+			}
+		]
+	},
+	{
+		"code": "CM4H1",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "required",
+				"cycle": 7,
+				"prerequisiteCodes": ["CM2H2", "CM3C2"]
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CM2H2"]
+			}
+		]
+	},
+	{
+		"code": "CM5H1",
+		"variants": [
+			{
+				"programCode": "N2",
+				"requirementType": "required",
+				"cycle": 9,
+				"prerequisiteCodes": ["CM4H1"]
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CM2H2"]
+			}
+		]
+	},
+	{
+		"code": "CQ221",
+		"variants": [
+			{
+				"programCode": "N3",
+				"requirementType": "required",
+				"cycle": 3,
+				"prerequisiteCodes": ["BFI01"]
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "required",
+				"cycle": 4,
+				"prerequisiteCodes": ["BFI01", "BMA02"]
+			}
+		]
+	},
+	{
+		"code": "CQ271",
+		"variants": [
+			{
+				"programCode": "N3",
+				"requirementType": "required",
+				"cycle": 3,
+				"prerequisiteCodes": ["BQU01"]
+			},
+			{
+				"programCode": "N5",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["BQU01"]
+			},
+			{
+				"programCode": "N1",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["BQU01", "CF1B2"]
+			}
+		]
+	},
+	{
+		"code": "CQ4E1",
+		"variants": [
+			{
+				"programCode": "N3",
+				"requirementType": "required",
+				"cycle": 7,
+				"prerequisiteCodes": ["CQ300"]
+			},
+			{
+				"programCode": "N5",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["IF411"]
+			}
+		]
+	},
+	{
+		"code": "IF321",
+		"variants": [
+			{
+				"programCode": "N5",
+				"requirementType": "required",
+				"cycle": 5,
+				"prerequisiteCodes": ["CC112", "IF252"]
+			},
+			{
+				"programCode": "N1",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CC112", "CF2C2"]
+			}
+		]
+	},
+	{
+		"code": "IF392",
+		"variants": [
+			{
+				"programCode": "N5",
+				"requirementType": "required",
+				"cycle": 6,
+				"prerequisiteCodes": ["IF321"]
+			},
+			{
+				"programCode": "N1",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CF3C1", "IF321"]
+			}
+		]
+	},
+	{
+		"code": "IF471",
+		"variants": [
+			{
+				"programCode": "N5",
+				"requirementType": "required",
+				"cycle": 7,
+				"prerequisiteCodes": ["CF3E1", "IF3B2"]
+			},
+			{
+				"programCode": "N6",
+				"requirementType": "complementary-elective",
+				"cycle": null,
+				"prerequisiteCodes": ["CF3E1"]
+			},
+			{
+				"programCode": "N1",
+				"requirementType": "required",
+				"cycle": 6,
+				"prerequisiteCodes": ["CF3E1"]
+			}
+		]
+	}
+]

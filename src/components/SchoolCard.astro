@@ -1,5 +1,5 @@
 ---
-import type { AcademicUnit } from '../domain/academic-unit';
+import { formatAcademicUnitDescription, type AcademicUnit } from '../domain/academic-unit';
 
 interface Props {
 	courseCount: number;
@@ -9,13 +9,14 @@ interface Props {
 
 const { courseCount, curriculumCount, school } = Astro.props;
 const titleId = school.id + '-title';
+const schoolDescription = formatAcademicUnitDescription(school);
 ---
 
 <article class="school-card" aria-labelledby={titleId}>
 	<div class="school-card__mark" aria-hidden="true">{school.abbreviation}</div>
 	<div class="school-card__body">
 		<h2 id={titleId}><a href={'/schools/' + school.slug}>{school.name}</a></h2>
-		<p>{school.description}</p>
+		<p>{schoolDescription}</p>
 		<p class="school-card__meta">{curriculumCount} planes · {courseCount} cursos</p>
 	</div>
 </article>

@@ -13,6 +13,8 @@ type CatalogFilterField =
 			value: string;
 	  }
 	| {
+			disabled?: boolean;
+			emptyLabel?: string;
 			label: string;
 			name: string;
 			options: ReadonlyArray<FilterOption>;
@@ -56,8 +58,8 @@ const {
 								value={field.value}
 							/>
 						) : (
-							<select id={inputId} name={field.name}>
-								<option value="">Todos</option>
+							<select id={inputId} name={field.name} disabled={field.disabled}>
+								<option value="">{field.emptyLabel ?? 'Todos'}</option>
 								{field.options.map((option) => (
 									<option value={option.value} selected={field.value === option.value}>
 										{option.label}
@@ -111,6 +113,11 @@ const {
 		background: var(--color-surface);
 		color: var(--color-text);
 		padding: 0.45rem 0.6rem;
+	}
+
+	select:disabled {
+		color: var(--color-muted);
+		cursor: not-allowed;
 	}
 
 	.catalog-filters__actions {

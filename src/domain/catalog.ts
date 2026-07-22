@@ -64,6 +64,17 @@ const getParentUnit = (
 	return unitsById.get(unit.parentUnitId);
 };
 
+const cycleSortValue = (relation: CurriculumCourse): number =>
+	relation.recommendedCycle === null ? 99 : relation.recommendedCycle;
+
+const requirementSortValue = (relation: CurriculumCourse): number => {
+	if (relation.requirementType === 'required') {
+		return 0;
+	}
+
+	return relation.requirementType === 'specialty-elective' ? 1 : 2;
+};
+
 const buildCourseOfferings = (catalog: CatalogCollections): ReadonlyArray<CourseOffering> => {
 	const curriculaById = new Map(catalog.curricula.map((curriculum) => [curriculum.id, curriculum]));
 	const unitsById = new Map(catalog.academicUnits.map((unit) => [unit.id, unit]));
@@ -87,9 +98,15 @@ const buildCourseOfferings = (catalog: CatalogCollections): ReadonlyArray<Course
 
 	return offerings.sort((left, right) => {
 		const cycleOrder =
-			left.curriculumCourse.recommendedCycle - right.curriculumCourse.recommendedCycle;
+			cycleSortValue(left.curriculumCourse) - cycleSortValue(right.curriculumCourse);
 		if (cycleOrder !== 0) {
 			return cycleOrder;
+		}
+
+		const requirementOrder =
+			requirementSortValue(left.curriculumCourse) - requirementSortValue(right.curriculumCourse);
+		if (requirementOrder !== 0) {
+			return requirementOrder;
 		}
 
 		return left.curriculum.code.localeCompare(right.curriculum.code, 'es');
