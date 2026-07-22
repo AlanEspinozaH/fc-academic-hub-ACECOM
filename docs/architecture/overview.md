@@ -1,34 +1,22 @@
-# Resumen De Arquitectura
+# Vista general de arquitectura
 
-## Proposito
+FC Academic Hub usa Astro con TypeScript estricto y datos estaticos versionados en Git durante esta etapa.
 
-FC Academic Hub organizara cursos, examenes, apuntes, silabos y recursos para la comunidad de la Facultad de Ciencias. El sistema objetivo debe ser seguro, de bajo costo y mantenible por administradores estudiantes.
+## Capas
 
-## Arquitectura De Etapa 1
+- `src/content/catalog/`: JSON activos del catalogo academico.
+- `src/domain/`: tipos, consultas, filtros y validaciones de integridad.
+- `src/components/` y `src/pages/`: presentacion Astro sin framework cliente.
+- `docs/`: modelo de datos, guias y ADR.
 
-La implementacion actual es una aplicacion Astro con TypeScript estricto y adaptador de Cloudflare. Incluye paginas publicas, endpoint de health y datos ficticios de cursos de demostracion.
+## Catalogo estatico
 
-```text
-Navegador
-  -> Paginas y rutas API de Astro
-  -> Modulos de dominio/configuracion en src/
-  -> Adaptador Cloudflare para futuro runtime Pages/Workers
-```
+La aplicacion carga Content Collections desde JSON y construye una vista `CourseCatalogItem` que une cada `Course` con sus ubicaciones `CurriculumCourse`.
 
-No hay integracion activa con productos externos en etapa 1.
+El almacenamiento futuro puede migrar a PostgreSQL reemplazando la capa de consulta sin cambiar el contrato conceptual del dominio.
 
-## Limites De Codigo Fuente
+## Limites vigentes
 
-- src/domain/ contiene conceptos academicos como Course y AcademicTerm, mas registros ficticios de demostracion.
-- src/config/ contiene metadatos generales y navegacion.
-- src/components/ y src/layouts/ contienen presentacion.
-- src/infrastructure/ contiene helpers de servidor que no son conceptos de dominio.
-- src/pages/ contiene rutas Astro y endpoints API.
+No hay Supabase, PostgreSQL, autenticacion, roles, R2, carga de documentos ni URLs permanentes de archivos privados.
 
-## Integraciones Futuras
-
-Supabase Auth/PostgreSQL y storage privado en Cloudflare R2 quedan para etapas posteriores. La autorizacion debe validarse en servidor, no inferirse desde roles enviados por el navegador.
-
-## Controles Operativos
-
-CI instala dependencias con npm ci y ejecuta formato, lint, astro check, pruebas unitarias y build. El despliegue no es automatico en esta etapa.
+Los recursos permanecen vacios hasta que exista una etapa con almacenamiento y reglas de autorizacion.

@@ -1,0 +1,387 @@
+﻿id,code,slug,name,credits,adminAcademicUnitId,adminAssignmentBasis,status
+course:bae01,BAE01,bae01-actividades-extracurriculares,Actividades Extracurriculares,1,,pending-verification,active
+course:bef01,BEF01,bef01-etica-y-filosofia-politica,Ética y Filosofía Política,2,,pending-verification,active
+course:beg01,BEG01,beg01-economia-general,Economía General,3,,pending-verification,active
+course:bfi01,BFI01,bfi01-fisica-i,Física I,5,,pending-verification,active
+course:bic01,BIC01,bic01-introduccion-a-la-computacion,Introducción a la Computación,2,,pending-verification,active
+course:bie01,BIE01,bie01-idioma-extranjero-o-lengua-nativa-en-el-nivel-intermedio,Idioma Extranjero o Lengua Nativa en el Nivel Intermedio,2,,pending-verification,active
+course:bma01,BMA01,bma01-calculo-diferencial,Cálculo Diferencial,5,,pending-verification,active
+course:bma02,BMA02,bma02-calculo-integral,Cálculo Integral,5,,pending-verification,active
+course:bma03,BMA03,bma03-algebra-lineal,Álgebra Lineal,4,,pending-verification,active
+course:bqu01,BQU01,bqu01-quimica-i,Química I,5,,pending-verification,active
+course:brc01,BRC01,brc01-redaccion-y-comunicacion,Redacción y Comunicación,2,,pending-verification,active
+course:brn01,BRN01,brn01-realidad-nacional-constitucion-y-derechos-humanos,"Realidad Nacional, Constitución y Derechos Humanos",3,,pending-verification,active
+course:cc0a1,CC0A1,cc0a1-base-de-datos-avanzadas,Base de Datos Avanzadas,4,academic-unit:school:n6,prefix-rule,active
+course:cc0a2,CC0A2,cc0a2-programacion-de-dispositivos-moviles,Programación de Dispositivos Móviles,4,academic-unit:school:n6,prefix-rule,active
+course:cc0a3,CC0A3,cc0a3-diseno-de-sistemas-basados-en-microordenador,Diseño de Sistemas Basados en Microordenador,4,academic-unit:school:n6,prefix-rule,active
+course:cc0a4,CC0A4,cc0a4-sistemas-empotrados,Sistemas Empotrados,4,academic-unit:school:n6,prefix-rule,active
+course:cc0a5,CC0A5,cc0a5-calidad-de-software,Calidad de Software,4,academic-unit:school:n6,prefix-rule,active
+course:cc0a6,CC0A6,cc0a6-auditoria-de-sistemas,Auditoría de Sistemas,4,academic-unit:school:n6,prefix-rule,active
+course:cc0a7,CC0A7,cc0a7-sistemas-embebidos-en-tiempo-real,Sistemas Embebidos en Tiempo Real,4,academic-unit:school:n6,prefix-rule,active
+course:cc0b1,CC0B1,cc0b1-sistemas-operativos-avanzados,Sistemas Operativos Avanzados,4,academic-unit:school:n6,prefix-rule,active
+course:cc0b2,CC0B2,cc0b2-programacion-de-aplicaciones-en-redes,Programación de Aplicaciones en Redes,4,academic-unit:school:n6,prefix-rule,active
+course:cc0b3,CC0B3,cc0b3-topicos-de-seguridad,Tópicos de Seguridad,4,academic-unit:school:n6,prefix-rule,active
+course:cc0b4,CC0B4,cc0b4-nucleo-y-redes-para-computacion-paralela,Núcleo y Redes para Computación Paralela,4,academic-unit:school:n6,prefix-rule,active
+course:cc0c1,CC0C1,cc0c1-sistemas-cognitivos,Sistemas Cognitivos,4,academic-unit:school:n6,prefix-rule,active
+course:cc0c2,CC0C2,cc0c2-procesamiento-del-lenguaje-natural,Procesamiento del Lenguaje Natural,4,academic-unit:school:n6,prefix-rule,active
+course:cc0c3,CC0C3,cc0c3-algoritmos-bioinspirados,Algoritmos Bioinspirados,4,academic-unit:school:n6,prefix-rule,active
+course:cc0c4,CC0C4,cc0c4-lenguaje-paralelo-orientado-a-objetos,Lenguaje Paralelo Orientado a Objetos,4,academic-unit:school:n6,prefix-rule,active
+course:cc0d1,CC0D1,cc0d1-deep-learning-en-vision-artificial,Deep Learning en VIsión Artificial,4,academic-unit:school:n6,prefix-rule,active
+course:cc0d2,CC0D2,cc0d2-multimedia,Multimedia,4,academic-unit:school:n6,prefix-rule,active
+course:cc0d3,CC0D3,cc0d3-topicos-de-computacion-grafica,Tópicos de Computación Gráfica,4,academic-unit:school:n6,prefix-rule,active
+course:cc0d4,CC0D4,cc0d4-diseno-geometrico-asistido-por-computador,Diseño Geométrico Asistido por Computador,4,academic-unit:school:n6,prefix-rule,active
+course:cc0e1,CC0E1,cc0e1-programacion-en-tarjetas-graficas,Programación en Tarjetas Gráficas,4,academic-unit:school:n6,prefix-rule,active
+course:cc0e2,CC0E2,cc0e2-programacion-declarativa,Programación Declarativa,4,academic-unit:school:n6,prefix-rule,active
+course:cc0e3,CC0E3,cc0e3-compiladores,Compiladores,4,academic-unit:school:n6,prefix-rule,active
+course:cc0e4,CC0E4,cc0e4-paradigmas-de-programacion,Paradigmas de Programación,4,academic-unit:school:n6,prefix-rule,active
+course:cc0e5,CC0E5,cc0e5-algoritmos-y-estructuras-de-datos-avanzados,Algoritmos y Estructuras de Datos Avanzados,4,academic-unit:school:n6,prefix-rule,active
+course:cc0f1,CC0F1,cc0f1-simulacion-numerica,Simulación Numérica,4,academic-unit:school:n6,prefix-rule,active
+course:cc0f2,CC0F2,cc0f2-fisica-computacional,Física Computacional,4,academic-unit:school:n6,prefix-rule,active
+course:cc0f3,CC0F3,cc0f3-biologia-computacional,Biología Computacional,4,academic-unit:school:n6,prefix-rule,active
+course:cc0f4,CC0F4,cc0f4-topicos-de-ciencia-de-la-computacion-i,Tópicos de Ciencia de la Computación I,4,academic-unit:school:n6,prefix-rule,active
+course:cc0f5,CC0F5,cc0f5-topicos-de-ciencia-de-la-computacion-ii,Tópicos de Ciencia de la Computación II,4,academic-unit:school:n6,prefix-rule,active
+course:cc0f6,CC0F6,cc0f6-topicos-de-ciencia-de-la-computacion-iii,Tópicos de Ciencia de la Computación III,4,academic-unit:school:n6,prefix-rule,active
+course:cc0f7,CC0F7,cc0f7-topicos-de-ciencia-de-la-computacion-iv,Tópicos de Ciencia de la Computación IV,4,academic-unit:school:n6,prefix-rule,active
+course:cc0f8,CC0F8,cc0f8-introduccion-a-la-computacion-cuantica,Introducción a la Computación Cuántica,4,academic-unit:school:n6,prefix-rule,active
+course:cc0s2,CC0S2,cc0s2-modelamiento-y-simulacion,Modelamiento y Simulación,4,academic-unit:school:n6,prefix-rule,active
+course:cc112,CC112,cc112-fundamentos-de-programacion,Fundamentos de Programación,4,academic-unit:school:n6,prefix-rule,active
+course:cc202,CC202,cc202-base-de-datos,Base de Datos,4,academic-unit:school:n6,prefix-rule,active
+course:cc211,CC211,cc211-programacion-orientada-a-objetos,Programación Orientada a Objetos,4,academic-unit:school:n6,prefix-rule,active
+course:cc221,CC221,cc221-arquitectura-de-computadores,Arquitectura de Computadores,4,academic-unit:school:n6,prefix-rule,active
+course:cc222,CC222,cc222-sistemas-operativos,Sistemas Operativos,4,academic-unit:school:n6,prefix-rule,active
+course:cc232,CC232,cc232-algoritmos-y-estructuras-de-datos,Algoritmos y Estructuras de Datos,4,academic-unit:school:n6,prefix-rule,active
+course:cc311,CC311,cc311-computacion-centrada-en-redes,Computación Centrada en Redes,4,academic-unit:school:n6,prefix-rule,active
+course:cc312,CC312,cc312-administracion-de-redes,Administración de Redes,4,academic-unit:school:n6,prefix-rule,active
+course:cc321,CC321,cc321-teoria-de-automatas-lenguajes-y-computacion,"Teoría de Autómatas, Lenguajes y Computación",4,academic-unit:school:n6,prefix-rule,active
+course:cc332,CC332,cc332-programacion-paralela,Programación Paralela,4,academic-unit:school:n6,prefix-rule,active
+course:cc341,CC341,cc341-ingenieria-de-software,Ingeniería de Software,4,academic-unit:school:n6,prefix-rule,active
+course:cc371,CC371,cc371-analisis-y-diseno-de-algoritmos,Análisis y Diseño de Algoritmos,4,academic-unit:school:n6,prefix-rule,active
+course:cc3m2,CC3M2,cc3m2-matematica-computacional,Matemática Computacional,4,academic-unit:school:n6,prefix-rule,active
+course:cc3s2,CC3S2,cc3s2-desarrollo-de-software,Desarrollo de Software,4,academic-unit:school:n6,prefix-rule,active
+course:cc411,CC411,cc411-seguridad-en-sistemas-informaticos,Seguridad en Sistemas Informáticos,4,academic-unit:school:n6,prefix-rule,active
+course:cc412,CC412,cc412-proyecto-de-tesis-i,Proyecto de Tesis I,4,academic-unit:school:n6,prefix-rule,active
+course:cc421,CC421,cc421-inteligencia-artificial,Inteligencia Artificial,4,academic-unit:school:n6,prefix-rule,active
+course:cc422,CC422,cc422-infraestructuras-de-computacion,Infraestructuras de Computación,4,academic-unit:school:n6,prefix-rule,active
+course:cc431,CC431,cc431-computacion-grafica,Computación Gráfica,4,academic-unit:school:n6,prefix-rule,active
+course:cc432,CC432,cc432-robotica,Robótica,4,academic-unit:school:n6,prefix-rule,active
+course:cc442,CC442,cc442-mineria-de-datos,Minería de Datos,4,academic-unit:school:n6,prefix-rule,active
+course:cc451,CC451,cc451-interaccion-humano-computador,Interacción Humano-Computador,4,academic-unit:school:n6,prefix-rule,active
+course:cc4h1,CC4H1,cc4h1-metodologia-de-la-investigacion,Metodología de la Investigación,2,academic-unit:school:n6,prefix-rule,active
+course:cc4p1,CC4P1,cc4p1-programacion-concurrente-y-distribuida,Programación Concurrente y Distribuida,4,academic-unit:school:n6,prefix-rule,active
+course:cc511,CC511,cc511-proyecto-de-tesis-ii,Proyecto de Tesis II,4,academic-unit:school:n6,prefix-rule,active
+course:cc521,CC521,cc521-programacion-evolutiva,Programación Evolutiva,4,academic-unit:school:n6,prefix-rule,active
+course:cc531,CC531,cc531-analisis-en-macrodatos,Análisis en Macrodatos,4,academic-unit:school:n6,prefix-rule,active
+course:cc5t3,CC5T3,cc5t3-taller-de-investigacion,Taller de Investigación,4,academic-unit:school:n6,prefix-rule,active
+course:cf001,CF001,cf001-topicos-especiales-i,Tópicos Especiales I,2,academic-unit:school:n1,prefix-rule,active
+course:cf002,CF002,cf002-topicos-especiales-ii,Tópicos Especiales II,3,academic-unit:school:n1,prefix-rule,active
+course:cf003,CF003,cf003-topicos-especiales-iii,Tópicos Especiales III,4,academic-unit:school:n1,prefix-rule,active
+course:cf004,CF004,cf004-topicos-especiales-iv,Tópicos Especiales IV,5,academic-unit:school:n1,prefix-rule,active
+course:cf005,CF005,cf005-topicos-especiales-v,Tópicos Especiales V,6,academic-unit:school:n1,prefix-rule,active
+course:cf045,CF045,cf045-mecanica-celeste,Mecánica Celeste,5,academic-unit:school:n1,prefix-rule,active
+course:cf046,CF046,cf046-introduccion-a-la-astronomia,Introducción a la Astronomía,6,academic-unit:school:n1,prefix-rule,active
+course:cf047,CF047,cf047-introduccion-a-la-astronomia-observacional,Introducción a la Astronomía Observacional,6,academic-unit:school:n1,prefix-rule,active
+course:cf049,CF049,cf049-electromagnetismo-ii,Electromagnetismo II,7,academic-unit:school:n1,prefix-rule,active
+course:cf050,CF050,cf050-relatividad-general,Relatividad General,7,academic-unit:school:n1,prefix-rule,active
+course:cf055,CF055,cf055-teoria-de-grupos-y-espectroscopia,Teoría de Grupos y Espectroscopía,5,academic-unit:school:n1,prefix-rule,active
+course:cf056,CF056,cf056-tecnicas-espectroscopicas,Técnicas Espectroscópicas,5,academic-unit:school:n1,prefix-rule,active
+course:cf057,CF057,cf057-topicos-de-optica,Tópicos de Óptica,5,academic-unit:school:n1,prefix-rule,active
+course:cf058,CF058,cf058-introduccion-a-la-fisica-de-particulas-elementales,Introducción a la Física de Partículas Elementales,7,academic-unit:school:n1,prefix-rule,active
+course:cf059,CF059,cf059-tecnicas-experimentales-de-la-fisica-de-particulas,Técnicas Experimentales de la Física de Partículas,7,academic-unit:school:n1,prefix-rule,active
+course:cf060,CF060,cf060-metodos-numericos,Métodos Numéricos,5,academic-unit:school:n1,prefix-rule,active
+course:cf065,CF065,cf065-introduccion-a-la-teoria-de-grupos-y-sus-representaciones,Introducción a la Teoría de Grupos y sus Representaciones,5,academic-unit:school:n1,prefix-rule,active
+course:cf066,CF066,cf066-aplicaciones-de-la-representacion-de-grupos,Aplicaciones de la Representación de Grupos,5,academic-unit:school:n1,prefix-rule,active
+course:cf068,CF068,cf068-mecanica-de-medios-continuos,Mecánica de Medios Continuos,5,academic-unit:school:n1,prefix-rule,active
+course:cf075,CF075,cf075-introduccion-a-la-teoria-clasica-de-campos,Introducción a la Teoría Clásica de Campos,5,academic-unit:school:n1,prefix-rule,active
+course:cf076,CF076,cf076-introduccion-a-la-electrodinamica-cuantica,Introducción a la Electrodinámica Cuántica,5,academic-unit:school:n1,prefix-rule,active
+course:cf077,CF077,cf077-introduccion-a-la-teoria-electrodebil,Introducción a la Teoría Electrodébil,5,academic-unit:school:n1,prefix-rule,active
+course:cf081,CF081,cf081-topicos-especiales-i-b,Tópicos Especiales I B,2,academic-unit:school:n1,prefix-rule,active
+course:cf082,CF082,cf082-topicos-especiales-ii-b,Tópicos Especiales II B,3,academic-unit:school:n1,prefix-rule,active
+course:cf083,CF083,cf083-topicos-especiales-iii-b,Tópicos Especiales III B,4,academic-unit:school:n1,prefix-rule,active
+course:cf1b2,CF1B2,cf1b2-fisica-ii,Física II,5,academic-unit:school:n1,prefix-rule,active
+course:cf1c2,CF1C2,cf1c2-algebra-lineal-para-fisicos-i,Álgebra Lineal para Físicos I,5,academic-unit:school:n1,prefix-rule,active
+course:cf2b1,CF2B1,cf2b1-fisica-iii,Física III,5,academic-unit:school:n1,prefix-rule,active
+course:cf2b2,CF2B2,cf2b2-optica-clasica,Óptica Clásica,5,academic-unit:school:n1,prefix-rule,active
+course:cf2c1,CF2C1,cf2c1-algebra-lineal-para-fisicos-ii,Álgebra Lineal para Físicos II,5,academic-unit:school:n1,prefix-rule,active
+course:cf2c2,CF2C2,cf2c2-metodos-matematicos-para-fisicos-i,Métodos Matemáticos para Físicos I,7,academic-unit:school:n1,prefix-rule,active
+course:cf3c1,CF3C1,cf3c1-metodos-matematicos-para-fisicos-ii,Métodos Matemáticos para Físicos II,7,academic-unit:school:n1,prefix-rule,active
+course:cf3e1,CF3E1,cf3e1-circuitos-electronicos-analogicos,Circuitos Electrónicos Analógicos,4,academic-unit:school:n1,prefix-rule,active
+course:cf3f1,CF3F1,cf3f1-mecanica-clasica,Mecánica Clásica,7,academic-unit:school:n1,prefix-rule,active
+course:cf3f2,CF3F2,cf3f2-mecanica-cuantica-i,Mecánica Cuántica I,6,academic-unit:school:n1,prefix-rule,active
+course:cf3f3,CF3F3,cf3f3-fisica-moderna,Física Moderna,5,academic-unit:school:n1,prefix-rule,active
+course:cf3f4,CF3F4,cf3f4-electromagnetismo-i,Electromagnetismo I,8,academic-unit:school:n1,prefix-rule,active
+course:cf4d2,CF4D2,cf4d2-proyecto-de-tesis-i,Proyecto de Tesis I,4,academic-unit:school:n1,prefix-rule,active
+course:cf4e1,CF4E1,cf4e1-laboratorio-de-fisica-intermedia,Laboratorio de Física Intermedia,4,academic-unit:school:n1,prefix-rule,active
+course:cf4e2,CF4E2,cf4e2-laboratorio-de-fisica-avanzada,Laboratorio de Física Avanzada,5,academic-unit:school:n1,prefix-rule,active
+course:cf4f1,CF4F1,cf4f1-termodinamica-y-mecanica-estadistica,Termodinámica y Mecánica Estadística,8,academic-unit:school:n1,prefix-rule,active
+course:cf4f2,CF4F2,cf4f2-fisica-atomica-y-molecular,Física Atómica y Molecular,5,academic-unit:school:n1,prefix-rule,active
+course:cf4f3,CF4F3,cf4f3-mecanica-cuantica-ii,Mecánica Cuántica II,6,academic-unit:school:n1,prefix-rule,active
+course:cf5d1,CF5D1,cf5d1-proyecto-de-tesis-ii,Proyecto de Tesis II,4,academic-unit:school:n1,prefix-rule,active
+course:cf5f1,CF5F1,cf5f1-fisica-del-estado-solido-i,Física del Estado Sólido I,6,academic-unit:school:n1,prefix-rule,active
+course:cf5f3,CF5F3,cf5f3-fisica-nuclear-y-de-particulas,Física Nuclear y de Partículas,7,academic-unit:school:n1,prefix-rule,active
+course:cf5t3,CF5T3,cf5t3-taller-de-investigacion,Taller de Investigación*,4,academic-unit:school:n1,prefix-rule,active
+course:ch007,CH007,ch007-ciencia-tecnologia-y-sociedad,"Ciencia, Tecnología y Sociedad",2,,pending-verification,active
+course:ch020,CH020,ch020-historia-de-la-ciencia-y-la-tecnologia,Historia de la Ciencia y la Tecnología,2,,pending-verification,active
+course:ch022,CH022,ch022-metodos-de-ensenanza-de-la-matematica,Métodos de Enseñanza de la Matemática,2,,pending-verification,active
+course:ch033,CH033,ch033-metodologia-de-la-investigacion-cientifica,Metodología de la Investigación Científica,2,,pending-verification,active
+course:ch044,CH044,ch044-realidad-nacional,Realidad Nacional,2,,pending-verification,active
+course:ch046,CH046,ch046-gestion-cientifica-y-tecnologica,Gestión Científica y Tecnológica,2,,pending-verification,active
+course:ch050,CH050,ch050-microeconomia,Microeconomía,3,,pending-verification,active
+course:ch051,CH051,ch051-macroeconomia,Macroeconomía,3,,pending-verification,active
+course:ch061,CH061,ch061-biologia,Biología,3,,pending-verification,active
+course:cl002,CL002,cl002-ingles-i,Inglés I,2,,pending-verification,active
+course:cl003,CL003,cl003-ingles-ii,Inglés II,2,,pending-verification,active
+course:cl004,CL004,cl004-ingles-iii,Inglés III,2,,pending-verification,active
+course:cm001,CM001,cm001-topicos-especiales-de-analisis-funcional,Tópicos Especiales de Análisis Funcional,3,academic-unit:school:n2,prefix-rule,active
+course:cm002,CM002,cm002-topicos-especiales-de-analisis-numerico,Tópicos Especiales de Análisis Numérico,3,academic-unit:school:n2,prefix-rule,active
+course:cm003,CM003,cm003-topicos-especiales-de-optimizacion,Tópicos Especiales de Optimización,3,academic-unit:school:n2,prefix-rule,active
+course:cm004,CM004,cm004-topicos-especiales-de-calculo-variacional,Tópicos Especiales de Cálculo Variacional,3,academic-unit:school:n2,prefix-rule,active
+course:cm005,CM005,cm005-topicos-especiales-de-algebra,Tópicos Especiales de Álgebra,3,academic-unit:school:n2,prefix-rule,active
+course:cm006,CM006,cm006-topicos-especiales-de-ecuaciones-diferenciales-parciales,Tópicos Especiales de Ecuaciones Diferenciales Parciales,3,academic-unit:school:n2,prefix-rule,active
+course:cm007,CM007,cm007-topicos-especiales-de-ecuaciones-diferenciales-ordinarias,Tópicos Especiales de Ecuaciones Diferenciales Ordinarias,3,academic-unit:school:n2,prefix-rule,active
+course:cm008,CM008,cm008-geometria-diferencial,Geometría Diferencial,5,academic-unit:school:n2,prefix-rule,active
+course:cm009,CM009,cm009-introduccion-a-la-teoria-de-distribuciones,Introducción a la Teoría de Distribuciones,4,academic-unit:school:n2,prefix-rule,active
+course:cm010,CM010,cm010-teoria-de-distribuciones,Teoría de Distribuciones,5,academic-unit:school:n2,prefix-rule,active
+course:cm011,CM011,cm011-analisis-de-fourier,Análisis de Fourier,5,academic-unit:school:n2,prefix-rule,active
+course:cm012,CM012,cm012-topologia-i,Topología I,5,academic-unit:school:n2,prefix-rule,active
+course:cm015,CM015,cm015-series-de-tiempo,Series de Tiempo,5,academic-unit:school:n2,prefix-rule,active
+course:cm017,CM017,cm017-estadistica-matematica,Estadística Matemática,5,academic-unit:school:n2,prefix-rule,active
+course:cm018,CM018,cm018-procesos-estocasticos,Procesos Estocásticos,7,academic-unit:school:n2,prefix-rule,active
+course:cm019,CM019,cm019-teoria-de-colas,Teoría de Colas,5,academic-unit:school:n2,prefix-rule,active
+course:cm020,CM020,cm020-topologia-ii,Topología II,5,academic-unit:school:n2,prefix-rule,active
+course:cm022,CM022,cm022-ecuaciones-diferenciales-ordinarias-ii,Ecuaciones Diferenciales Ordinarias II,5,academic-unit:school:n2,prefix-rule,active
+course:cm025,CM025,cm025-ecuaciones-diferenciales-parciales-ii,Ecuaciones Diferenciales Parciales II,6,academic-unit:school:n2,prefix-rule,active
+course:cm026,CM026,cm026-sistemas-dinamicos,Sistemas Dinámicos,5,academic-unit:school:n2,prefix-rule,active
+course:cm029,CM029,cm029-ecuaciones-diferenciales-no-lineales,Ecuaciones Diferenciales No Lineales,6,academic-unit:school:n2,prefix-rule,active
+course:cm030,CM030,cm030-analisis-complejo-avanzado,Análisis Complejo Avanzado,5,academic-unit:school:n2,prefix-rule,active
+course:cm031,CM031,cm031-metodos-numericos-para-ecuaciones-diferenciales-ordinarias,Métodos Numéricos para Ecuaciones Diferenciales Ordinarias,5,academic-unit:school:n2,prefix-rule,active
+course:cm032,CM032,cm032-metodos-numericos-para-ecuaciones-diferenciales-parciales,Métodos Numéricos para Ecuaciones Diferenciales Parciales,5,academic-unit:school:n2,prefix-rule,active
+course:cm034,CM034,cm034-teoria-de-simulacion,Teoría de Simulación,4,academic-unit:school:n2,prefix-rule,active
+course:cm035,CM035,cm035-construccion-numerica-diseno-geometrico,Construcción Numérica-Diseño Geométrico,5,academic-unit:school:n2,prefix-rule,active
+course:cm036,CM036,cm036-aproximacion-e-interpolacion,Aproximación e Interpolación,5,academic-unit:school:n2,prefix-rule,active
+course:cm038,CM038,cm038-metodos-numericos-del-algebra,Métodos Numéricos del Álgebra,5,academic-unit:school:n2,prefix-rule,active
+course:cm039,CM039,cm039-analisis-iterativos-matriciales,Análisis Iterativos Matriciales,6,academic-unit:school:n2,prefix-rule,active
+course:cm040,CM040,cm040-teoria-de-medida-e-integracion,Teoría de Medida e Integración,5,academic-unit:school:n2,prefix-rule,active
+course:cm042,CM042,cm042-programacion-en-c,Programación en C++,3,academic-unit:school:n2,prefix-rule,active
+course:cm048,CM048,cm048-programacion-cientifica,Programación Científica,3,academic-unit:school:n2,prefix-rule,active
+course:cm050,CM050,cm050-analisis-funcional-iii,Análisis Funcional III,5,academic-unit:school:n2,prefix-rule,active
+course:cm052,CM052,cm052-optimizacion,Optimización,5,academic-unit:school:n2,prefix-rule,active
+course:cm054,CM054,cm054-metodos-numericos-de-optimizacion-i,Métodos Numéricos de Optimización I,5,academic-unit:school:n2,prefix-rule,active
+course:cm055,CM055,cm055-metodos-numericos-de-optimizacion-ii,Métodos Numéricos de Optimización II,5,academic-unit:school:n2,prefix-rule,active
+course:cm056,CM056,cm056-modelos-de-optimizacion,Modelos de Optimización,4,academic-unit:school:n2,prefix-rule,active
+course:cm057,CM057,cm057-calculo-variacional-y-teoria-de-control,Cálculo Variacional y Teoría de Control,5,academic-unit:school:n2,prefix-rule,active
+course:cm058,CM058,cm058-optimizacion-vectorial,Optimización Vectorial,5,academic-unit:school:n2,prefix-rule,active
+course:cm060,CM060,cm060-estructuras-algebraicas-i,Estructuras Algebraicas I,5,academic-unit:school:n2,prefix-rule,active
+course:cm061,CM061,cm061-estructuras-algebraicas-ii,Estructuras Algebraicas II,5,academic-unit:school:n2,prefix-rule,active
+course:cm062,CM062,cm062-teoria-de-numeros,Teoría de Números,5,academic-unit:school:n2,prefix-rule,active
+course:cm065,CM065,cm065-curvas-algebraicas,Curvas Algebraicas,5,academic-unit:school:n2,prefix-rule,active
+course:cm066,CM066,cm066-aritmetica-teorica,Aritmética Teórica,5,academic-unit:school:n2,prefix-rule,active
+course:cm067,CM067,cm067-algebra-homologica,Álgebra Homológica,5,academic-unit:school:n2,prefix-rule,active
+course:cm068,CM068,cm068-algebra-lineal-iii,Álgebra Lineal III,5,academic-unit:school:n2,prefix-rule,active
+course:cm071,CM071,cm071-teoria-del-punto-fijo,Teoría del Punto Fijo,5,academic-unit:school:n2,prefix-rule,active
+course:cm072,CM072,cm072-topicos-de-la-investigacion-i,Tópicos de la Investigación I,4,academic-unit:school:n2,prefix-rule,active
+course:cm073,CM073,cm073-topicos-de-la-investigacion-ii,Tópicos de la Investigación II,4,academic-unit:school:n2,prefix-rule,active
+course:cm074,CM074,cm074-topicos-de-la-investigacion-iii,Tópicos de la Investigación III,4,academic-unit:school:n2,prefix-rule,active
+course:cm075,CM075,cm075-topicos-de-la-investigacion-iv,Tópicos de la Investigación IV,4,academic-unit:school:n2,prefix-rule,active
+course:cm076,CM076,cm076-topicos-de-la-investigacion-v,Tópicos de la Investigación V,4,academic-unit:school:n2,prefix-rule,active
+course:cm077,CM077,cm077-microeconomia-avanzada,Microeconomía Avanzada,5,academic-unit:school:n2,prefix-rule,active
+course:cm078,CM078,cm078-programacion-dinamica-i,Programación Dinámica I,5,academic-unit:school:n2,prefix-rule,active
+course:cm079,CM079,cm079-inferencia-estadistica-no-parametrica,Inferencia Estadística No Paramétrica,4,academic-unit:school:n2,prefix-rule,active
+course:cm080,CM080,cm080-inferencia-estadistica-parametrica,Inferencia Estadística Paramétrica,5,academic-unit:school:n2,prefix-rule,active
+course:cm081,CM081,cm081-introduccion-a-la-economia-matematica,Introducción a la Economía Matemática,4,academic-unit:school:n2,prefix-rule,active
+course:cm082,CM082,cm082-economia-matematica-i,Economía Matemática I,4,academic-unit:school:n2,prefix-rule,active
+course:cm083,CM083,cm083-modelos-lineales-y-analisis-de-regresion,Modelos Lineales y Análisis de Regresión,7,academic-unit:school:n2,prefix-rule,active
+course:cm084,CM084,cm084-econometria,Econometría,7,academic-unit:school:n2,prefix-rule,active
+course:cm085,CM085,cm085-matematica-discreta-i,Matemática Discreta I,5,academic-unit:school:n2,prefix-rule,active
+course:cm086,CM086,cm086-matematica-discreta-ii,Matemática Discreta II,5,academic-unit:school:n2,prefix-rule,active
+course:cm090,CM090,cm090-introduccion-a-los-elementos-finitos,Introducción a los Elementos Finitos,5,academic-unit:school:n2,prefix-rule,active
+course:cm091,CM091,cm091-elementos-finitos,Elementos Finitos,5,academic-unit:school:n2,prefix-rule,active
+course:cm092,CM092,cm092-introduccion-a-la-mecanica-de-fluidos,Introducción a la Mecánica de Fluidos,5,academic-unit:school:n2,prefix-rule,active
+course:cm093,CM093,cm093-dinamica-de-estructuras,Dinámica de Estructuras,5,academic-unit:school:n2,prefix-rule,active
+course:cm094,CM094,cm094-estructura-de-datos,Estructura de Datos,5,academic-unit:school:n2,prefix-rule,active
+course:cm095,CM095,cm095-analisis-de-algoritmos,Análisis de Algoritmos,5,academic-unit:school:n2,prefix-rule,active
+course:cm096,CM096,cm096-teoria-de-grafos-y-algoritmos,Teoría de Grafos y Algoritmos,5,academic-unit:school:n2,prefix-rule,active
+course:cm097,CM097,cm097-modelos-dinamicos-en-economia,Modelos Dinámicos en Economía,5,academic-unit:school:n2,prefix-rule,active
+course:cm098,CM098,cm098-modelos-matematicos-para-economia,Modelos Matemáticos para Economía,5,academic-unit:school:n2,prefix-rule,active
+course:cm099,CM099,cm099-modelos-matematicos-para-dinamica-de-fluidos,Modelos Matemáticos para Dinámica de Fluidos,5,academic-unit:school:n2,prefix-rule,active
+course:cm0a0,CM0A0,cm0a0-ecuaciones-diferenciales-complejas,Ecuaciones Diferenciales Complejas,5,academic-unit:school:n2,prefix-rule,active
+course:cm0a1,CM0A1,cm0a1-analisis-no-lineal,Análisis No Lineal,5,academic-unit:school:n2,prefix-rule,active
+course:cm0a2,CM0A2,cm0a2-ecuaciones-diferenciales-estocasticas,Ecuaciones Diferenciales Estocásticas,5,academic-unit:school:n2,prefix-rule,active
+course:cm0a3,CM0A3,cm0a3-ecuaciones-integro-diferenciales,Ecuaciones Integro-Diferenciales,5,academic-unit:school:n2,prefix-rule,active
+course:cm0a4,CM0A4,cm0a4-criptografia-y-seguridad,Criptografía y Seguridad,5,academic-unit:school:n2,prefix-rule,active
+course:cm0a5,CM0A5,cm0a5-modelos-matematicos-en-hidrologia,Modelos Matemáticos en Hidrología,5,academic-unit:school:n2,prefix-rule,active
+course:cm0a6,CM0A6,cm0a6-procesador-de-texto-cientifico-avanzado-i,Procesador de Texto Científico Avanzado I,3,academic-unit:school:n2,prefix-rule,active
+course:cm0a7,CM0A7,cm0a7-topicos-especiales-de-teoria-de-numeros,Tópicos Especiales de Teoría de Números,3,academic-unit:school:n2,prefix-rule,active
+course:cm0a8,CM0A8,cm0a8-topicos-especiales-de-procesos-estocasticos,Tópicos Especiales de Procesos Estocásticos,3,academic-unit:school:n2,prefix-rule,active
+course:cm0a9,CM0A9,cm0a9-topicos-especiales-de-geometria-diferencial,Tópicos Especiales de Geometría Diferencial,3,academic-unit:school:n2,prefix-rule,active
+course:cm0b0,CM0B0,cm0b0-ecuaciones-en-diferencias,Ecuaciones en Diferencias,5,academic-unit:school:n2,prefix-rule,active
+course:cm0b1,CM0B1,cm0b1-modelos-matematicos-en-biologia,Modelos Matemáticos en Biología,5,academic-unit:school:n2,prefix-rule,active
+course:cm0b2,CM0B2,cm0b2-modelos-matematicos-en-geologia,Modelos Matemáticos en Geología,5,academic-unit:school:n2,prefix-rule,active
+course:cm0b3,CM0B3,cm0b3-ecuaciones-diferenciales-ordinarias-aplicadas,Ecuaciones Diferenciales Ordinarias Aplicadas,5,academic-unit:school:n2,prefix-rule,active
+course:cm0b4,CM0B4,cm0b4-topicos-especiales-de-topologia,Tópicos Especiales de Topología,3,academic-unit:school:n2,prefix-rule,active
+course:cm0b5,CM0B5,cm0b5-metodos-numericos-para-ecuaciones-diferenciales-estocasticas,Métodos Numéricos para Ecuaciones Diferenciales Estocásticas,5,academic-unit:school:n2,prefix-rule,active
+course:cm0b6,CM0B6,cm0b6-matematica-aplicada-a-recursos-naturales,Matemática Aplicada a Recursos Naturales,5,academic-unit:school:n2,prefix-rule,active
+course:cm0b7,CM0B7,cm0b7-topicos-especiales-de-economia-matematica,Tópicos Especiales de Economía Matemática,4,academic-unit:school:n2,prefix-rule,active
+course:cm0b8,CM0B8,cm0b8-topicos-especiales-de-teoria-de-control,Tópicos Especiales de Teoría de Control,3,academic-unit:school:n2,prefix-rule,active
+course:cm0b9,CM0B9,cm0b9-procesador-de-texto-cientifico-avanzado-ii,Procesador de Texto Científico Avanzado II,3,academic-unit:school:n2,prefix-rule,active
+course:cm0c4,CM0C4,cm0c4-geometria-no-euclidiana,Geometría No Euclidiana,4,academic-unit:school:n2,prefix-rule,active
+course:cm0c5,CM0C5,cm0c5-geometria-proyectiva,Geometría Proyectiva,4,academic-unit:school:n2,prefix-rule,active
+course:cm0c6,CM0C6,cm0c6-matematica-financiera,Matemática Financiera,4,academic-unit:school:n2,prefix-rule,active
+course:cm0c7,CM0C7,cm0c7-ecuaciones-diferenciales-parciales-estocasticas,Ecuaciones Diferenciales Parciales Estocásticas,4,academic-unit:school:n2,prefix-rule,active
+course:cm0c8,CM0C8,cm0c8-analisis-variacional,Análisis Variacional,4,academic-unit:school:n2,prefix-rule,active
+course:cm0c9,CM0C9,cm0c9-teoria-del-problema-inverso,Teoría del Problema Inverso,4,academic-unit:school:n2,prefix-rule,active
+course:cm0d0,CM0D0,cm0d0-programacion-dinamica-ii,Programación Dinámica II,5,academic-unit:school:n2,prefix-rule,active
+course:cm0d1,CM0D1,cm0d1-teoria-de-senales,Teoría de Señales,4,academic-unit:school:n2,prefix-rule,active
+course:cm0d2,CM0D2,cm0d2-teoria-de-viabilidad,Teoría de Viabilidad,4,academic-unit:school:n2,prefix-rule,active
+course:cm0d3,CM0D3,cm0d3-multiplicadores-de-lagrange,Multiplicadores de Lagrange,5,academic-unit:school:n2,prefix-rule,active
+course:cm0d4,CM0D4,cm0d4-geoestadistica,Geoestadística,4,academic-unit:school:n2,prefix-rule,active
+course:cm0d5,CM0D5,cm0d5-analisis-de-datos,Análisis de Datos,5,academic-unit:school:n2,prefix-rule,active
+course:cm0d6,CM0D6,cm0d6-teoria-algebraica-de-numeros,Teoría Algebraica de Números,5,academic-unit:school:n2,prefix-rule,active
+course:cm0d7,CM0D7,cm0d7-teoria-algoritmica-de-numeros,Teoría Algorítmica de Números,5,academic-unit:school:n2,prefix-rule,active
+course:cm0d8,CM0D8,cm0d8-teoria-analitica-de-numeros,Teoría Analítica de Números,5,academic-unit:school:n2,prefix-rule,active
+course:cm0d9,CM0D9,cm0d9-optimizacion-estocastica,Optimización Estocástica,5,academic-unit:school:n2,prefix-rule,active
+course:cm0e0,CM0E0,cm0e0-programacion-estocastica,Programación Estocástica,5,academic-unit:school:n2,prefix-rule,active
+course:cm0e1,CM0E1,cm0e1-optimizacion-geometrica,Optimización Geométrica,5,academic-unit:school:n2,prefix-rule,active
+course:cm0e2,CM0E2,cm0e2-programacion-geometrica,Programación Geométrica,5,academic-unit:school:n2,prefix-rule,active
+course:cm0e3,CM0E3,cm0e3-superficies-de-riemann,Superficies de Riemann,5,academic-unit:school:n2,prefix-rule,active
+course:cm0e4,CM0E4,cm0e4-representaciones-de-grupos-finitos,Representaciones de Grupos Finitos,5,academic-unit:school:n2,prefix-rule,active
+course:cm0e5,CM0E5,cm0e5-teoria-global-de-superficies,Teoría Global de Superficies,5,academic-unit:school:n2,prefix-rule,active
+course:cm0e6,CM0E6,cm0e6-topologia-diferencial,Topología Diferencial,5,academic-unit:school:n2,prefix-rule,active
+course:cm0e7,CM0E7,cm0e7-analisis-en-rn-i,Análisis en Rn I,5,academic-unit:school:n2,prefix-rule,active
+course:cm0e8,CM0E8,cm0e8-programacion-entera,Programación Entera,5,academic-unit:school:n2,prefix-rule,active
+course:cm0e9,CM0E9,cm0e9-topicos-especiales-en-probabilidad,Tópicos Especiales en Probabilidad,5,academic-unit:school:n2,prefix-rule,active
+course:cm0f0,CM0F0,cm0f0-analisis-y-modelamiento-numerico-iii,Análisis y Modelamiento Numérico III,4,academic-unit:school:n2,prefix-rule,active
+course:cm0h1,CM0H1,cm0h1-didactica-de-la-matematica,Didáctica de la Matemática,3,academic-unit:school:n2,prefix-rule,active
+course:cm142,CM142,cm142-calculo-vectorial-ii,Cálculo Vectorial II,5,academic-unit:school:n2,prefix-rule,active
+course:cm1a2,CM1A2,cm1a2-logica-y-teoria-de-conjuntos,Lógica y Teoría de Conjuntos,4,academic-unit:school:n2,prefix-rule,active
+course:cm1b2,CM1B2,cm1b2-algebra-lineal-i,Álgebra Lineal I,5,academic-unit:school:n2,prefix-rule,active
+course:cm1h2,CM1H2,cm1h2-calculo-de-probabilidades,Cálculo de Probabilidades,3,academic-unit:school:n2,prefix-rule,active
+course:cm2a1,CM2A1,cm2a1-calculo-diferencial-e-integral-avanzado,Cálculo Diferencial e Integral Avanzado,7,academic-unit:school:n2,prefix-rule,active
+course:cm2a2,CM2A2,cm2a2-analisis-real,Análisis Real,7,academic-unit:school:n2,prefix-rule,active
+course:cm2b1,CM2B1,cm2b1-algebra-lineal-ii,Álgebra Lineal II,5,academic-unit:school:n2,prefix-rule,active
+course:cm2f1,CM2F1,cm2f1-programacion-estructurada,Programación Estructurada,4,academic-unit:school:n2,prefix-rule,active
+course:cm2f2,CM2F2,cm2f2-procesador-de-texto-y-programacion,Procesador de Texto y Programación,3,academic-unit:school:n2,prefix-rule,active
+course:cm2g2,CM2G2,cm2g2-introduccion-a-las-ecuaciones-diferenciales-ordinarias,Introducción a las Ecuaciones Diferenciales Ordinarias,5,academic-unit:school:n2,prefix-rule,active
+course:cm2h1,CM2H1,cm2h1-matematica-discreta,Matemática Discreta,4,academic-unit:school:n2,prefix-rule,active
+course:cm2h2,CM2H2,cm2h2-estadistica-inferencial,Estadística Inferencial,3,academic-unit:school:n2,prefix-rule,active
+course:cm2i2,CM2I2,cm2i2-estructuras-algebraicas,Estructuras Algebraicas,5,academic-unit:school:n2,prefix-rule,active
+course:cm3a1,CM3A1,cm3a1-analisis-complejo,Análisis Complejo,5,academic-unit:school:n2,prefix-rule,active
+course:cm3c1,CM3C1,cm3c1-analisis-en-rn,Análisis en Rn,5,academic-unit:school:n2,prefix-rule,active
+course:cm3c2,CM3C2,cm3c2-teoria-de-la-medida,Teoría de la Medida,5,academic-unit:school:n2,prefix-rule,active
+course:cm3e2,CM3E2,cm3e2-analisis-convexo,Análisis Convexo,4,academic-unit:school:n2,prefix-rule,active
+course:cm3g2,CM3G2,cm3g2-ecuaciones-diferenciales-ordinarias-i,Ecuaciones Diferenciales Ordinarias I,5,academic-unit:school:n2,prefix-rule,active
+course:cm3i1,CM3I1,cm3i1-teoria-local-de-superficies,Teoría Local de Superficies,5,academic-unit:school:n2,prefix-rule,active
+course:cm3i2,CM3I2,cm3i2-topologia,Topología,5,academic-unit:school:n2,prefix-rule,active
+course:cm424,CM424,cm424-introduccion-a-los-sistemas-dinamicos,Introducción a los Sistemas Dinámicos,4,academic-unit:school:n2,prefix-rule,active
+course:cm4c1,CM4C1,cm4c1-analisis-funcional-i,Análisis Funcional I,5,academic-unit:school:n2,prefix-rule,active
+course:cm4c2,CM4C2,cm4c2-analisis-funcional-ii,Análisis Funcional II,5,academic-unit:school:n2,prefix-rule,active
+course:cm4d2,CM4D2,cm4d2-proyecto-de-tesis-i,Proyecto de Tesis I,4,academic-unit:school:n2,prefix-rule,active
+course:cm4e1,CM4E1,cm4e1-programacion-lineal-y-flujo-en-redes,Programación Lineal y Flujo en Redes,5,academic-unit:school:n2,prefix-rule,active
+course:cm4e2,CM4E2,cm4e2-programacion-no-lineal,Programación No Lineal,6,academic-unit:school:n2,prefix-rule,active
+course:cm4f1,CM4F1,cm4f1-analisis-y-modelamiento-numerico-i,Análisis y Modelamiento Numérico I,5,academic-unit:school:n2,prefix-rule,active
+course:cm4g2,CM4G2,cm4g2-ecuaciones-diferenciales-parciales-i,Ecuaciones Diferenciales Parciales I,5,academic-unit:school:n2,prefix-rule,active
+course:cm4h1,CM4H1,cm4h1-teoria-de-la-probabilidad,Teoría de la Probabilidad,5,academic-unit:school:n2,prefix-rule,active
+course:cm5d1,CM5D1,cm5d1-proyecto-de-tesis-ii,Proyecto de Tesis II,4,academic-unit:school:n2,prefix-rule,active
+course:cm5d2,CM5D2,cm5d2-proyecto-de-tesis-iii,Proyecto de Tesis III,4,academic-unit:school:n2,prefix-rule,active
+course:cm5f1,CM5F1,cm5f1-analisis-y-modelamiento-numerico-ii,Análisis y Modelamiento Numérico II,5,academic-unit:school:n2,prefix-rule,active
+course:cm5h1,CM5H1,cm5h1-introduccion-a-los-procesos-estocasticos,Introducción a los Procesos Estocásticos,4,academic-unit:school:n2,prefix-rule,active
+course:cq001,CQ001,cq001-topicos-de-quimica-especializada-i,Tópicos de Química Especializada I,3,academic-unit:school:n3,prefix-rule,active
+course:cq002,CQ002,cq002-topicos-de-quimica-especializada-ii,Tópicos de Química Especializada II,4,academic-unit:school:n3,prefix-rule,active
+course:cq003,CQ003,cq003-topicos-de-quimica-especializada-iii,Tópicos de Química Especializada III,5,academic-unit:school:n3,prefix-rule,active
+course:cq004,CQ004,cq004-topicos-de-quimica-especializada-iv,Tópicos de Química Especializada IV,6,academic-unit:school:n3,prefix-rule,active
+course:cq007,CQ007,cq007-temas-de-especialidad,Temas de Especialidad,2,academic-unit:school:n3,prefix-rule,active
+course:cq011,CQ011,cq011-bioquimica,Bioquímica,4,academic-unit:school:n3,prefix-rule,active
+course:cq013,CQ013,cq013-electroquimica-aplicada,Electroquímica Aplicada,6,academic-unit:school:n3,prefix-rule,active
+course:cq020,CQ020,cq020-quimica-del-carbon,Química del Carbón,6,academic-unit:school:n3,prefix-rule,active
+course:cq037,CQ037,cq037-quimica-bioinorganica,Química Bioinorgánica,5,academic-unit:school:n3,prefix-rule,active
+course:cq046,CQ046,cq046-quimica-de-productos-naturales,Química de Productos Naturales,5,academic-unit:school:n3,prefix-rule,active
+course:cq047,CQ047,cq047-sintesis-organica,Síntesis Orgánica,5,academic-unit:school:n3,prefix-rule,active
+course:cq053,CQ053,cq053-cinetica-quimica,Cinética Química,5,academic-unit:school:n3,prefix-rule,active
+course:cq061,CQ061,cq061-quimica-del-estado-solido,Química del Estado Sólido,5,academic-unit:school:n3,prefix-rule,active
+course:cq063,CQ063,cq063-catalisis-quimica,Catálisis Química,6,academic-unit:school:n3,prefix-rule,active
+course:cq081,CQ081,cq081-diseno-y-optimizacion-de-experimentos,Diseño y Optimización de Experimentos,4,academic-unit:school:n3,prefix-rule,active
+course:cq085,CQ085,cq085-quimiometria,Quimiometría,4,academic-unit:school:n3,prefix-rule,active
+course:cq093,CQ093,cq093-modelacion-cinetica-aplicada-a-catalisis,Modelación Cinética Aplicada a Catálisis,5,academic-unit:school:n3,prefix-rule,active
+course:cq094,CQ094,cq094-quimica-de-los-alimentos,Química de los Alimentos,5,academic-unit:school:n3,prefix-rule,active
+course:cq099,CQ099,cq099-gestion-de-proyectos,Gestión de Proyectos,5,academic-unit:school:n3,prefix-rule,active
+course:cq0l1,CQ0L1,cq0l1-metales-en-medicina,Metales en Medicina,5,academic-unit:school:n3,prefix-rule,active
+course:cq0l2,CQ0L2,cq0l2-quimica-de-los-polimeros,Química de los Polímeros,4,academic-unit:school:n3,prefix-rule,active
+course:cq102,CQ102,cq102-quimica-experimental,Química Experimental,2,academic-unit:school:n3,prefix-rule,active
+course:cq112,CQ112,cq112-quimica-ii,Química II,5,academic-unit:school:n3,prefix-rule,active
+course:cq132,CQ132,cq132-quimica-ciencia-y-tecnologia,Química Ciencia y Tecnología,2,academic-unit:school:n3,prefix-rule,active
+course:cq212,CQ212,cq212-fisica-optica,Física Óptica,3,academic-unit:school:n3,prefix-rule,active
+course:cq221,CQ221,cq221-introduccion-a-la-electricidad-y-magnetismo,Introducción a la Electricidad y Magnetismo,5,academic-unit:school:n3,prefix-rule,active
+course:cq241,CQ241,cq241-elementos-quimicos-propiedades-y-aplicaciones,"Elementos Químicos, Propiedades y Aplicaciones",6,academic-unit:school:n3,prefix-rule,active
+course:cq242,CQ242,cq242-estructura-quimica-y-reactividad,Estructura Química y Reactividad,6,academic-unit:school:n3,prefix-rule,active
+course:cq261,CQ261,cq261-hidrocarburos-alifaticos-alcoholes-y-derivados,"Hidrocarburos Alifáticos, Alcoholes y Derivados",6,academic-unit:school:n3,prefix-rule,active
+course:cq262,CQ262,cq262-compuestos-carbonilicos-y-aromaticos,Compuestos Carbonílicos y Aromáticos,6,academic-unit:school:n3,prefix-rule,active
+course:cq271,CQ271,cq271-principios-de-fisicoquimica,Principios de Fisicoquímica,6,academic-unit:school:n3,prefix-rule,active
+course:cq272,CQ272,cq272-fundamentos-de-electroquimica,Fundamentos de Electroquímica,6,academic-unit:school:n3,prefix-rule,active
+course:cq2e2,CQ2E2,cq2e2-quimica-analitica,Química Analítica,6,academic-unit:school:n3,prefix-rule,active
+course:cq300,CQ300,cq300-metodos-numericos-aplicados-a-la-quimica,Métodos Numéricos Aplicados a la Química,4,academic-unit:school:n3,prefix-rule,active
+course:cq301,CQ301,cq301-quimica-de-coordinacion,Química de Coordinación,6,academic-unit:school:n3,prefix-rule,active
+course:cq302,CQ302,cq302-quimica-inorganica-aplicada,Química Inorgánica Aplicada,5,academic-unit:school:n3,prefix-rule,active
+course:cq361,CQ361,cq361-carbohidratos-aminoacidos-y-heterociclicos,"Carbohidratos, Aminoácidos y Heterocíclicos",6,academic-unit:school:n3,prefix-rule,active
+course:cq371,CQ371,cq371-cinetica-quimica-y-fenomenos-de-superficie,Cinética Química y Fenómenos de Superficie,6,academic-unit:school:n3,prefix-rule,active
+course:cq372,CQ372,cq372-quimica-de-coloides-y-nanoparticulas,Química de Coloides y Nanopartículas,5,academic-unit:school:n3,prefix-rule,active
+course:cq381,CQ381,cq381-tratamiento-estadistico-en-quimica-analitica,Tratamiento Estadístico en Química Analítica,3,academic-unit:school:n3,prefix-rule,active
+course:cq382,CQ382,cq382-tecnicas-espectroscopicas-en-quimica-analitica,Técnicas Espectroscópicas en Química Analítica,6,academic-unit:school:n3,prefix-rule,active
+course:cq392,CQ392,cq392-identificacion-espectroscopica-de-compuestos-organicos,Identificación Espectroscópica de Compuestos Orgánicos,5,academic-unit:school:n3,prefix-rule,active
+course:cq401,CQ401,cq401-microbiologia,Microbiología,3,academic-unit:school:n3,prefix-rule,active
+course:cq402,CQ402,cq402-tecnicas-de-caracterizacion-de-materiales,Técnicas de Caracterización de Materiales,3,academic-unit:school:n3,prefix-rule,active
+course:cq431,CQ431,cq431-quimica-y-gestion-ambiental,Química y Gestión Ambiental,6,academic-unit:school:n3,prefix-rule,active
+course:cq461,CQ461,cq461-seminario-de-elaboracion-de-la-tesis-profesional,Seminario de Elaboración de la Tesis Profesional,2,academic-unit:school:n3,prefix-rule,active
+course:cq472,CQ472,cq472-quimica-de-materiales,Química de Materiales,6,academic-unit:school:n3,prefix-rule,active
+course:cq482,CQ482,cq482-gestion-de-la-calidad-de-laboratorios,Gestión de la Calidad de Laboratorios,3,academic-unit:school:n3,prefix-rule,active
+course:cq491,CQ491,cq491-tecnicas-electroquimicas-y-cromatograficas-en-quimica-analitica,Técnicas Electroquímicas y Cromatográficas en Química Analítica,6,academic-unit:school:n3,prefix-rule,active
+course:cq4e1,CQ4E1,cq4e1-quimica-cuantica,Química Cuántica,5,academic-unit:school:n3,prefix-rule,active
+course:cq4e2,CQ4E2,cq4e2-proyecto-de-tesis-en-quimica-i,Proyecto de Tesis en Química I,4,academic-unit:school:n3,prefix-rule,active
+course:cq501,CQ501,cq501-procesos-quimicos-industriales,Procesos Químicos Industriales,5,academic-unit:school:n3,prefix-rule,active
+course:cq511,CQ511,cq511-diseno-organizacional-y-seguridad-en-el-laboratorio,Diseño Organizacional y Seguridad en el Laboratorio,3,academic-unit:school:n3,prefix-rule,active
+course:cq541,CQ541,cq541-proyecto-de-tesis-en-quimica-ii,Proyecto de Tesis en Química II,4,academic-unit:school:n3,prefix-rule,active
+course:cq542,CQ542,cq542-proyecto-de-tesis-en-quimica-iii,Proyecto de Tesis en Química III,4,academic-unit:school:n3,prefix-rule,active
+course:ge545,GE545,ge545-espectrometria,Espectrometría,4,,pending-verification,active
+course:if242,IF242,if242-introduccion-a-la-metrologia,Introducción a la Metrología,3,academic-unit:school:n5,prefix-rule,active
+course:if252,IF252,if252-metodos-matematicos-para-ingenieria,Métodos Matemáticos para Ingeniería,8,academic-unit:school:n5,prefix-rule,active
+course:if281,IF281,if281-dibujo-y-diseno-para-ingenieria,Dibujo y Diseño para Ingeniería,4,academic-unit:school:n5,prefix-rule,active
+course:if292,IF292,if292-ingenieria-de-procesos-mecanicos,Ingeniería de Procesos Mecánicos,2,academic-unit:school:n5,prefix-rule,active
+course:if294,IF294,if294-ingenieria-de-instalaciones-industriales,Ingeniería de Instalaciones Industriales,2,academic-unit:school:n5,prefix-rule,active
+course:if321,IF321,if321-calculo-numerico-i,Cálculo Numérico I,6,academic-unit:school:n5,prefix-rule,active
+course:if325,IF325,if325-fisica-termica-ii,Física Térmica II,3,academic-unit:school:n5,prefix-rule,active
+course:if352,IF352,if352-fisica-termica-i,Física Térmica I,5,academic-unit:school:n5,prefix-rule,active
+course:if372,IF372,if372-electromagnetismo-para-ingenieria,Electromagnetismo para Ingeniería,5,academic-unit:school:n5,prefix-rule,active
+course:if392,IF392,if392-calculo-numerico-ii,Cálculo Numérico II,4,academic-unit:school:n5,prefix-rule,active
+course:if3a2,IF3A2,if3a2-ingenieria-economica,Ingeniería Económica,2,academic-unit:school:n5,prefix-rule,active
+course:if3b2,IF3B2,if3b2-procesamiento-de-senales-y-datos,Procesamiento de Señales y Datos,3,academic-unit:school:n5,prefix-rule,active
+course:if411,IF411,if411-mecanica-cuantica,Mecánica Cuántica,7,academic-unit:school:n5,prefix-rule,active
+course:if462,IF462,if462-teoria-de-control,Teoría de Control,5,academic-unit:school:n5,prefix-rule,active
+course:if471,IF471,if471-sistemas-digitales,Sistemas Digitales,4,academic-unit:school:n5,prefix-rule,active
+course:if482,IF482,if482-introduccion-a-la-ciencia-e-ingenieria-de-los-materiales,Introducción a la Ciencia e Ingeniería de los Materiales,5,academic-unit:school:n5,prefix-rule,active
+course:if492,IF492,if492-ingenieria-solar,Ingeniería Solar,5,academic-unit:school:n5,prefix-rule,active
+course:if4a1,IF4A1,if4a1-mecanica-de-fluidos,Mecánica de Fluidos,2,academic-unit:school:n5,prefix-rule,active
+course:if4a2,IF4A2,if4a2-proyecto-de-tesis-i,Proyecto de Tesis I,4,academic-unit:school:n5,prefix-rule,active
+course:if4b1,IF4B1,if4b1-metodologia-de-la-investigacion-cientifica,Metodología de la Investigación Científica,2,academic-unit:school:n5,prefix-rule,active
+course:if511,IF511,if511-proyecto-de-instrumentacion-electronica,Proyecto de Instrumentación Electrónica,5,academic-unit:school:n5,prefix-rule,active
+course:if543,IF543,if543-proyecto-de-tesis-ii,Proyecto de Tesis II,4,academic-unit:school:n5,prefix-rule,active
+course:if554,IF554,if554-proyecto-de-tesis-iii,Proyecto de Tesis III,4,academic-unit:school:n5,prefix-rule,active
+course:if562,IF562,if562-tecnicas-fisicas-para-la-industria,Técnicas Físicas para la Industria,5,academic-unit:school:n5,prefix-rule,active
+course:ife14,IFE14,ife14-topicos-de-nanomateriales,Tópicos de Nanomateriales,3,academic-unit:school:n5,prefix-rule,active
+course:ife15,IFE15,ife15-ciencia-de-los-materiales,Ciencia de los Materiales,5,academic-unit:school:n5,prefix-rule,active
+course:ife16,IFE16,ife16-topicos-de-metrologia,Tópicos de Metrología,4,academic-unit:school:n5,prefix-rule,active
+course:ife17,IFE17,ife17-topicos-de-control-y-automatizacion,Tópicos de Control y Automatización,4,academic-unit:school:n5,prefix-rule,active
+course:ife18,IFE18,ife18-laboratorio-de-energia-renovables,Laboratorio de Energía Renovables,4,academic-unit:school:n5,prefix-rule,active
+course:ife19,IFE19,ife19-topicos-especiales-de-ingenieria-fisica,Tópicos Especiales de Ingeniería Física,5,academic-unit:school:n5,prefix-rule,active
+course:ife20,IFE20,ife20-espectrometria,Espectrometría,3,academic-unit:school:n5,prefix-rule,active
+course:ife21,IFE21,ife21-optica-aplicada,Óptica Aplicada,4,academic-unit:school:n5,prefix-rule,active
+course:ife22,IFE22,ife22-topicos-especiales-de-ingenieria-fisica-i,Tópicos Especiales de Ingeniería Física I,5,academic-unit:school:n5,prefix-rule,active
+course:ife23,IFE23,ife23-topicos-especiales-de-ingenieria-fisica-ii,Tópicos Especiales de Ingeniería Física II,5,academic-unit:school:n5,prefix-rule,active
+course:ife24,IFE24,ife24-topicos-especiales-de-ingenieria-fisica-iii,Tópicos Especiales de Ingeniería Física III,4,academic-unit:school:n5,prefix-rule,active
+course:ife25,IFE25,ife25-topicos-especiales-de-ingenieria-fisica-iv,Tópicos Especiales de Ingeniería Física IV,4,academic-unit:school:n5,prefix-rule,active
+course:ife26,IFE26,ife26-topicos-especiales-de-ingenieria-fisica-v,Tópicos Especiales de Ingeniería Física V,4,academic-unit:school:n5,prefix-rule,active
+course:ife27,IFE27,ife27-topicos-especiales-de-ingenieria-fisica-vi,Tópicos Especiales de Ingeniería Física VI,2,academic-unit:school:n5,prefix-rule,active
+course:ife28,IFE28,ife28-topicos-especiales-de-ingenieria-fisica-vii,Tópicos Especiales de Ingeniería Física VII,1,academic-unit:school:n5,prefix-rule,active
+course:ife29,IFE29,ife29-topicos-especiales-de-ingenieria-fisica-viii,Tópicos Especiales de Ingeniería Física VIII,3,academic-unit:school:n5,prefix-rule,active
+course:ife30,IFE30,ife30-topicos-especiales-de-ingenieria-fisica-ix,Tópicos Especiales de Ingeniería Física IX,3,academic-unit:school:n5,prefix-rule,active
+course:ife31,IFE31,ife31-introduccion-a-la-microscopia-electronica,Introducción a la Microscopía Electrónica,6,academic-unit:school:n5,prefix-rule,active
+course:ife32,IFE32,ife32-fisicoquimica-de-los-recubrimientos-delgados,Fisicoquímica de los Recubrimientos Delgados,6,academic-unit:school:n5,prefix-rule,active
+course:xp200,XP200,xp200-practicas-pre-profesionales-ii,Practicas Pre-Profesionales II,2,,pending-verification,active
+course:ya100,YA100,ya100-ayudantia-academica-i,Ayudantía Académica I,1,,pending-verification,active

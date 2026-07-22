@@ -1,0 +1,127 @@
+---
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import CatalogFilters from '../components/CatalogFilters.astro';
+import ResourceCard from '../components/ResourceCard.astro';
+import {
+	filterResources,
+	isResourceType,
+	parseSolutionAvailabilityFilter,
+} from '../domain/catalog-filters';
+import { getCatalogSnapshot } from '../domain/catalog';
+import { RESOURCE_TYPE_LABELS, RESOURCE_TYPES } from '../domain/resource';
+import Layout from '../layouts/Layout.astro';
+
+const catalog = await getCatalogSnapshot();
+const params = Astro.url.searchParams;
+const textFilter = params.get('q') ?? '';
+const resourceTypeValue = params.get('type') ?? '';
+const termValue = params.get('term') ?? '';
+const solutionFilter = parseSolutionAvailabilityFilter(params.get('solution'));
+const resourceTypeFilter = isResourceType(resourceTypeValue) ? resourceTypeValue : undefined;
+const academicTermFilter = catalog.academicTerms.some((term) => term.id === termValue)
+	? termValue
+	: undefined;
+const publicResources = catalog.resources.filter((resource) => resource.visibility === 'public');
+const filteredResources = filterResources(publicResources, {
+	academicTermId: academicTermFilter,
+	resourceType: resourceTypeFilter,
+	solutionAvailability: solutionFilter,
+	text: textFilter,
+});
+const courseNameById = new Map(catalog.courses.map((course) => [course.id, course.name]));
+const termLabelById = new Map(catalog.academicTerms.map((term) => [term.id, term.label]));
+const filterFields = [
+	{
+		label: 'Texto',
+		name: 'q',
+		placeholder: 'Titulo, descripcion o etiqueta',
+		type: 'search' as const,
+		value: textFilter,
+	},
+	{
+		label: 'Tipo',
+		name: 'type',
+		options: RESOURCE_TYPES.map((resourceType) => ({
+			label: RESOURCE_TYPE_LABELS[resourceType],
+			value: resourceType,
+		})),
+		type: 'select' as const,
+		value: resourceTypeFilter ?? '',
+	},
+	{
+		label: 'Periodo',
+		name: 'term',
+		options: catalog.academicTerms.map((term) => ({ label: term.label, value: term.id })),
+		type: 'select' as const,
+		value: academicTermFilter ?? '',
+	},
+	{
+		label: 'Solucion',
+		name: 'solution',
+		options: [
+			{ label: 'Con solucion', value: 'with' },
+			{ label: 'Sin solucion', value: 'without' },
+		],
+		type: 'select' as const,
+		value: solutionFilter ?? '',
+	},
+];
+---
+
+<Layout title="Recursos" description="Recursos academicos sin archivos ni URLs de descarga.">
+	<Breadcrumbs items={[{ href: '/', label: 'Inicio' }, { label: 'Recursos' }]} />
+
+	<section class="page-heading" aria-labelledby="resources-title">
+		<p class="kicker">Catalogo publico</p>
+		<h1 id="resources-title">Recursos academicos</h1>
+		<p>
+			Metadatos de recursos academicos preparados para una etapa futura. Ningun recurso contiene
+			archivo, URL de descarga ni documento real.
+		</p>
+	</section>
+
+	<section class="section" aria-labelledby="resource-filters-title">
+		<h2 id="resource-filters-title" class="visually-hidden">Filtros de recursos</h2>
+		<CatalogFilters
+			action="/resources"
+			fields={filterFields}
+			resetHref="/resources"
+			resultCount={filteredResources.length}
+			resultLabel={filteredResources.length === 1 ? 'recurso encontrado' : 'recursos encontrados'}
+		/>
+	</section>
+
+	<section class="section" aria-label="Resultados de recursos">
+		{
+			filteredResources.length > 0 ? (
+				<div class="resource-grid">
+					{filteredResources.map((resource) => (
+						<ResourceCard
+							courseName={courseNameById.get(resource.courseId)}
+							resource={resource}
+							termLabel={
+								resource.academicTermId ? termLabelById.get(resource.academicTermId) : undefined
+							}
+						/>
+					))}
+				</div>
+			) : (
+				<p class="empty-state">No hay recursos que coincidan con los filtros seleccionados.</p>
+			)
+		}
+	</section>
+</Layout>
+
+<style>
+	.resource-grid {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1rem;
+	}
+
+	@media (max-width: 780px) {
+		.resource-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

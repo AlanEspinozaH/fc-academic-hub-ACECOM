@@ -1,0 +1,72 @@
+---
+import { RESOURCE_TYPE_LABELS } from '../domain/resource';
+import type { AcademicResource } from '../domain/resource';
+
+interface Props {
+	courseName?: string;
+	resource: AcademicResource;
+	termLabel?: string;
+}
+
+const { courseName, resource, termLabel } = Astro.props;
+const titleId = resource.id + '-title';
+const typeLabel = RESOURCE_TYPE_LABELS[resource.resourceType];
+---
+
+<article class="resource-card" aria-labelledby={titleId}>
+	<p class="resource-card__meta">
+		<span>{typeLabel}</span>
+		{termLabel && <span>{termLabel}</span>}
+		{resource.hasSolution && <span>Con solucion</span>}
+	</p>
+	<h2 id={titleId}>{resource.title}</h2>
+	<p>{resource.description}</p>
+	<p class="resource-card__line">
+		{courseName ? courseName + ' · ' : ''}{
+			resource.fileAvailable ? 'Archivo disponible' : 'Sin archivo'
+		}
+	</p>
+</article>
+
+<style>
+	.resource-card {
+		display: grid;
+		gap: 0.5rem;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius);
+		background: var(--color-surface);
+		padding: 0.8rem;
+	}
+
+	.resource-card__meta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+		margin: 0;
+	}
+
+	.resource-card__meta span {
+		border-radius: 999px;
+		background: var(--color-surface-muted);
+		color: var(--color-primary-strong);
+		font-size: 0.78rem;
+		font-weight: 750;
+		padding: 0.22rem 0.45rem;
+	}
+
+	h2 {
+		margin: 0;
+		font-size: 1rem;
+		line-height: 1.3;
+	}
+
+	p {
+		margin: 0;
+		color: var(--color-muted);
+	}
+
+	.resource-card__line {
+		font-size: 0.88rem;
+		font-weight: 700;
+	}
+</style>

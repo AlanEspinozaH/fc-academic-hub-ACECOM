@@ -1,0 +1,47 @@
+[
+	{
+		"id": "curriculum:n1:2018",
+		"code": "N1-2018",
+		"name": "Plan de Estudios 2018 — Física",
+		"academicUnitId": "academic-unit:program:n1",
+		"effectivePeriod": "2018",
+		"status": "pending-verification",
+		"sourceUrl": "https://uniedupe93141-my.sharepoint.com/:x:/g/personal/escuelas_fc2_uni_edu_pe/IQCik7Y0dAcJTrzMrW29_KMxAcNsZ0Pc_lsNXAUDkHJEuY0?rtime=fdX424Tn3kg"
+	},
+	{
+		"id": "curriculum:n2:2018",
+		"code": "N2-2018",
+		"name": "Plan de Estudios 2018 — Matemática",
+		"academicUnitId": "academic-unit:program:n2",
+		"effectivePeriod": "2018",
+		"status": "pending-verification",
+		"sourceUrl": "https://uniedupe93141-my.sharepoint.com/:x:/g/personal/escuelas_fc1_uni_edu_pe/IQDJbyTmwF4GTaxfxvwI0vItATl_t91UHITX-xP9c1I8NMQ?e=NnTzpF"
+	},
+	{
+		"id": "curriculum:n3:2018",
+		"code": "N3-2018",
+		"name": "Plan de Estudios 2018 — Química",
+		"academicUnitId": "academic-unit:program:n3",
+		"effectivePeriod": "2018",
+		"status": "pending-verification",
+		"sourceUrl": "https://uniedupe93141-my.sharepoint.com/:x:/g/personal/escuelas_fc1_uni_edu_pe/EY-RjTVPOsdJsAIh_0HJBQIBrlal1gQEq-Xg9mZ63E4rQg?e=QYhBFP"
+	},
+	{
+		"id": "curriculum:n5:2018",
+		"code": "N5-2018",
+		"name": "Plan de Estudios 2018 — Ingeniería Física",
+		"academicUnitId": "academic-unit:program:n5",
+		"effectivePeriod": "2018",
+		"status": "pending-verification",
+		"sourceUrl": "https://uniedupe93141-my.sharepoint.com/:x:/g/personal/escuelas_fc1_uni_edu_pe/IQAbJkketZ6DT6kIQMdmSA9eAfT1bV249bqn4CUhdtMiUtI?e=nTqZyM"
+	},
+	{
+		"id": "curriculum:n6:2018",
+		"code": "N6-2018",
+		"name": "Plan de Estudios 2018 — Ciencia de la Computación",
+		"academicUnitId": "academic-unit:program:n6",
+		"effectivePeriod": "2018",
+		"status": "pending-verification",
+		"sourceUrl": "https://uniedupe93141-my.sharepoint.com/:x:/g/personal/escuelas_fc2_uni_edu_pe/IQDxU0tzIWqwRKty7bHw9ceFAfwyZNSDd0QOnQ7j7KUNCu4?e=t7j4CM"
+	}
+]

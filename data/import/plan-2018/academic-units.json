@@ -1,0 +1,111 @@
+[
+	{
+		"id": "academic-unit:faculty:fc",
+		"slug": "facultad-ciencias",
+		"name": "Facultad de Ciencias",
+		"abbreviation": "FC",
+		"description": "Facultad de Ciencias de la Universidad Nacional de Ingeniería.",
+		"unitType": "faculty",
+		"status": "active"
+	},
+	{
+		"id": "academic-unit:school:n1",
+		"slug": "escuela-fisica",
+		"name": "Escuela Profesional de Física",
+		"abbreviation": "EP-N1",
+		"description": null,
+		"unitType": "school",
+		"parentUnitId": "academic-unit:faculty:fc",
+		"status": "active"
+	},
+	{
+		"id": "academic-unit:program:n1",
+		"slug": "programa-fisica",
+		"name": "Física",
+		"abbreviation": "N1",
+		"description": null,
+		"unitType": "program",
+		"parentUnitId": "academic-unit:school:n1",
+		"status": "active"
+	},
+	{
+		"id": "academic-unit:school:n2",
+		"slug": "escuela-matematica",
+		"name": "Escuela Profesional de Matemática",
+		"abbreviation": "EP-N2",
+		"description": null,
+		"unitType": "school",
+		"parentUnitId": "academic-unit:faculty:fc",
+		"status": "active"
+	},
+	{
+		"id": "academic-unit:program:n2",
+		"slug": "programa-matematica",
+		"name": "Matemática",
+		"abbreviation": "N2",
+		"description": null,
+		"unitType": "program",
+		"parentUnitId": "academic-unit:school:n2",
+		"status": "active"
+	},
+	{
+		"id": "academic-unit:school:n3",
+		"slug": "escuela-quimica",
+		"name": "Escuela Profesional de Química",
+		"abbreviation": "EP-N3",
+		"description": null,
+		"unitType": "school",
+		"parentUnitId": "academic-unit:faculty:fc",
+		"status": "active"
+	},
+	{
+		"id": "academic-unit:program:n3",
+		"slug": "programa-quimica",
+		"name": "Química",
+		"abbreviation": "N3",
+		"description": null,
+		"unitType": "program",
+		"parentUnitId": "academic-unit:school:n3",
+		"status": "active"
+	},
+	{
+		"id": "academic-unit:school:n5",
+		"slug": "escuela-ingenieria-fisica",
+		"name": "Escuela Profesional de Ingeniería Física",
+		"abbreviation": "EP-N5",
+		"description": null,
+		"unitType": "school",
+		"parentUnitId": "academic-unit:faculty:fc",
+		"status": "active"
+	},
+	{
+		"id": "academic-unit:program:n5",
+		"slug": "programa-ingenieria-fisica",
+		"name": "Ingeniería Física",
+		"abbreviation": "N5",
+		"description": null,
+		"unitType": "program",
+		"parentUnitId": "academic-unit:school:n5",
+		"status": "active"
+	},
+	{
+		"id": "academic-unit:school:n6",
+		"slug": "escuela-ciencia-computacion",
+		"name": "Escuela Profesional de Ciencia de la Computación",
+		"abbreviation": "EP-N6",
+		"description": null,
+		"unitType": "school",
+		"parentUnitId": "academic-unit:faculty:fc",
+		"status": "active"
+	},
+	{
+		"id": "academic-unit:program:n6",
+		"slug": "programa-ciencia-computacion",
+		"name": "Ciencia de la Computación",
+		"abbreviation": "N6",
+		"description": null,
+		"unitType": "program",
+		"parentUnitId": "academic-unit:school:n6",
+		"status": "active"
+	}
+]

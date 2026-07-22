@@ -1,45 +1,215 @@
 ---
-import CourseCard from '../components/CourseCard.astro';
+import ResourceCard from '../components/ResourceCard.astro';
 import { siteConfig } from '../config/site';
-import { demoCourses } from '../domain';
+import { getCatalogSnapshot } from '../domain/catalog';
 import Layout from '../layouts/Layout.astro';
+
+export const prerender = true;
+
+const catalog = await getCatalogSnapshot();
+const publicResources = catalog.resources.filter((resource) => resource.visibility === 'public');
+const recentResources = [...publicResources]
+	.sort((left, right) => {
+		const termOrder = (right.academicTermId ?? '').localeCompare(left.academicTermId ?? '');
+		return termOrder === 0 ? left.title.localeCompare(right.title, 'es') : termOrder;
+	})
+	.slice(0, 3);
+const courseNameById = new Map(catalog.courses.map((course) => [course.id, course.name]));
+const termLabelById = new Map(catalog.academicTerms.map((term) => [term.id, term.label]));
 ---
 
 <Layout title={siteConfig.name}>
-	<section class="hero" aria-labelledby="home-title">
-		<div class="hero-copy">
+	<section class="home-search" aria-labelledby="home-title">
+		<div>
 			<p class="kicker">{siteConfig.stage}</p>
-			<h1 id="home-title">FC Academic Hub</h1>
+			<h1 id="home-title">Catálogo académico</h1>
 			<p>
-				Base inicial para una plataforma comunitaria de cursos, examenes, apuntes, silabos y
-				recursos academicos de la Facultad de Ciencias.
+				Busca cursos de los planes de estudios 2018 versionados en Git. Sin Supabase, R2, login ni
+				archivos reales en esta etapa.
 			</p>
-			<div class="actions" aria-label="Acciones principales">
-				<a class="button" href="/courses">Ver cursos demo</a>
-				<a class="text-link" href="/about">Leer alcance</a>
-			</div>
 		</div>
-		<aside class="hero-panel" aria-labelledby="stage-title">
-			<h2 id="stage-title">Alcance de etapa 1</h2>
-			<ul>
-				<li>Sin autenticacion ni roles en navegador.</li>
-				<li>Sin conexion a Supabase o Cloudflare R2.</li>
-				<li>Sin documentos reales ni datos personales.</li>
-			</ul>
-		</aside>
+		<form class="search-box" method="get" action="/courses" role="search">
+			<label for="home-course-search">Buscar cursos</label>
+			<div>
+				<input id="home-course-search" name="q" type="search" placeholder="Código o nombre" />
+				<button type="submit">Buscar</button>
+			</div>
+		</form>
 	</section>
 
-	<section class="section" aria-labelledby="demo-courses-title">
-		<div class="page-heading">
-			<p class="kicker">Catalogo inicial</p>
-			<h1 id="demo-courses-title">Cursos de demostracion</h1>
-			<p>
-				Estos registros son ficticios y existen solo para validar estructura, navegacion y
-				presentacion antes de conectar servicios reales.
-			</p>
+	<section class="quick-access" aria-label="Accesos principales">
+		<section aria-labelledby="programs-title">
+			<h2 id="programs-title">Por carrera</h2>
+			<ul class="link-list">
+				{
+					catalog.programs.map((program) => (
+						<li>
+							<a href={'/courses?program=' + program.id}>{program.name}</a>
+						</li>
+					))
+				}
+			</ul>
+		</section>
+		<section aria-labelledby="resources-access-title">
+			<h2 id="resources-access-title">Recursos</h2>
+			<p>{catalog.resources.length} recursos registrados sin archivos.</p>
+			<a class="button button-compact" href="/resources">Ver recursos</a>
+		</section>
+	</section>
+
+	<section class="section" aria-labelledby="recent-resources-title">
+		<div class="section-heading">
+			<h2 id="recent-resources-title">Recursos recientes</h2>
+			<a href="/resources">Ver todos</a>
 		</div>
-		<div class="grid">
-			{demoCourses.map((course) => <CourseCard course={course} />)}
+		<div class="resource-grid">
+			{
+				recentResources.map((resource) => (
+					<ResourceCard
+						courseName={courseNameById.get(resource.courseId)}
+						resource={resource}
+						termLabel={
+							resource.academicTermId ? termLabelById.get(resource.academicTermId) : undefined
+						}
+					/>
+				))
+			}
 		</div>
 	</section>
 </Layout>
+
+<style>
+	.home-search {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.8fr);
+		gap: 1.2rem;
+		align-items: end;
+	}
+
+	.home-search h1 {
+		max-width: 18ch;
+		margin: 0 0 0.6rem;
+		font-size: clamp(2rem, 4vw, 2.8rem);
+		line-height: 1.05;
+	}
+
+	.home-search p {
+		max-width: 62ch;
+		margin: 0;
+		color: var(--color-muted);
+	}
+
+	.search-box {
+		display: grid;
+		gap: 0.45rem;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius);
+		background: var(--color-surface);
+		padding: 0.85rem;
+	}
+
+	.search-box label {
+		font-weight: 750;
+	}
+
+	.search-box div {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+		gap: 0.5rem;
+	}
+
+	.search-box input {
+		min-height: 2.45rem;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius);
+		background: var(--color-surface);
+		color: var(--color-text);
+		padding: 0.45rem 0.65rem;
+	}
+
+	.search-box button,
+	.button-compact {
+		min-height: 2.45rem;
+		padding: 0.45rem 0.8rem;
+	}
+
+	.quick-access {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1rem;
+		margin-top: 2rem;
+	}
+
+	.quick-access section {
+		border-top: 1px solid var(--color-border);
+		padding-top: 0.8rem;
+	}
+
+	.quick-access h2,
+	.section-heading h2 {
+		margin: 0 0 0.6rem;
+		font-size: 1.15rem;
+	}
+
+	.quick-access p {
+		margin: 0 0 0.7rem;
+		color: var(--color-muted);
+	}
+
+	.link-pills,
+	.link-list {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.45rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.link-list {
+		display: grid;
+	}
+
+	.link-pills a {
+		display: inline-flex;
+		border-radius: 999px;
+		background: var(--color-surface-muted);
+		font-weight: 750;
+		padding: 0.3rem 0.55rem;
+		text-decoration: none;
+	}
+
+	.section-heading {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.75rem;
+		margin-bottom: 0.75rem;
+	}
+
+	.section-heading h2 {
+		margin-bottom: 0;
+	}
+
+	.section-heading a {
+		font-weight: 750;
+	}
+
+	.resource-grid {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 0.75rem;
+	}
+
+	@media (max-width: 840px) {
+		.home-search,
+		.quick-access,
+		.resource-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.search-box div {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

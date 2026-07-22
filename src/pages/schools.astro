@@ -1,0 +1,51 @@
+---
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import SchoolCard from '../components/SchoolCard.astro';
+import { getCatalogSnapshot } from '../domain/catalog';
+import Layout from '../layouts/Layout.astro';
+
+export const prerender = true;
+
+const catalog = await getCatalogSnapshot();
+const programsBySchoolId = new Map(
+	catalog.schools.map((school) => [
+		school.id,
+		catalog.programs.filter((program) => program.parentUnitId === school.id),
+	]),
+);
+const countCurricula = (schoolId: string) => {
+	const programIds = new Set(programsBySchoolId.get(schoolId)?.map((program) => program.id) ?? []);
+	return catalog.curricula.filter((curriculum) => programIds.has(curriculum.academicUnitId)).length;
+};
+const countCourses = (schoolId: string) =>
+	catalog.courseItems.filter((item) =>
+		item.offerings.some((offering) => offering.school?.id === schoolId),
+	).length;
+---
+
+<Layout title="Escuelas" description="Unidades académicas del catálogo público de FC Academic Hub.">
+	<Breadcrumbs items={[{ href: '/', label: 'Inicio' }, { label: 'Escuelas' }]} />
+
+	<section class="page-heading" aria-labelledby="schools-title">
+		<p class="kicker">Catálogo público</p>
+		<h1 id="schools-title">Unidades académicas</h1>
+		<p>
+			Facultad, escuelas y programas asociados a los planes de estudios 2018 importados al catálogo
+			estático.
+		</p>
+	</section>
+
+	<section class="section" aria-label="Listado de escuelas">
+		<div class="grid">
+			{
+				catalog.schools.map((school) => (
+					<SchoolCard
+						courseCount={countCourses(school.id)}
+						curriculumCount={countCurricula(school.id)}
+						school={school}
+					/>
+				))
+			}
+		</div>
+	</section>
+</Layout>
