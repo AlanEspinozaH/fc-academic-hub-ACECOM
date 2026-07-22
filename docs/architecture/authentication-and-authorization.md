@@ -37,6 +37,14 @@ Hay dos callbacks distintos:
 
 La configuracion real del proveedor Google, credenciales y allow-list remota de redirects pertenecen a 3B.2B.
 
+## Recursos academicos 4A
+
+La etapa 4A agrega metadatos de recursos academicos a PostgreSQL sin mover el catalogo de cursos fuera de JSON y sin crear R2. `public.academic_resources` guarda metadatos revisables; `public.resource_files` guarda metadatos no sensibles de archivos; `private.resource_storage_objects` guarda `storage_key` y estado interno; `public.resource_review_events` registra eventos append-only.
+
+Las RLS usan perfiles activos y roles activos. `anon` solo lee recursos aprobados publicos. Usuarios autenticados activos pueden leer aprobados restringidos. Propietarios con rol `contributor` o superior crean y editan recursos propios en `draft` o `rejected`; `reviewer` rechaza pero no publica; `moderator` y `administrator` aprueban/publican. Las transiciones se hacen por RPC transaccionales, no por cambios directos de estado.
+
+`course_id` y `academic_term_id` son referencias logicas al catalogo JSON hasta una migracion futura del catalogo a PostgreSQL. 4A no crea URLs publicas ni buckets R2; la subida binaria pertenece a 4B y la revision/descarga a 4C.
+
 ## Tratamiento de tokens del proveedor
 
 Supabase puede devolver `provider_token` y `provider_refresh_token` con la sesion OAuth. `auth-js` persiste la sesion adquirida en el almacenamiento configurado, por lo que omitir esos campos en la logica posterior al intercambio no es suficiente.

@@ -9,9 +9,16 @@ export const RESOURCE_TYPES = [
 	'book-reference',
 ] as const;
 
-export const REVIEW_STATUSES = ['draft', 'in-review', 'approved'] as const;
-export const RESOURCE_VISIBILITIES = ['public', 'restricted'] as const;
-export const RIGHTS_STATUSES = ['demo-only', 'bibliographic-reference-only'] as const;
+export const REVIEW_STATUSES = ['draft', 'pending', 'approved', 'rejected'] as const;
+export const RESOURCE_VISIBILITIES = ['private', 'restricted', 'public'] as const;
+export const RIGHTS_STATUSES = [
+	'pending',
+	'own-work',
+	'authorized',
+	'institutional',
+	'bibliographic-reference-only',
+	'copyright-restricted',
+] as const;
 
 export type ResourceType = (typeof RESOURCE_TYPES)[number];
 export type ReviewStatus = (typeof REVIEW_STATUSES)[number];
