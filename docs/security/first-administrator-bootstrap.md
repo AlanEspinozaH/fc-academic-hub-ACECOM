@@ -7,12 +7,10 @@ Reemplazar los placeholders antes de ejecutar. No usar datos ficticios permanent
 ## Procedimiento
 
 1. Confirmar que el usuario institucional existe en `auth.users` y que su correo pertenece a un dominio permitido.
-2. Confirmar que existe su perfil en `public.profiles`. La creacion del perfil ya se crea automáticamente mediante el ciclo de vida Auth de 3B.1.
-3. Iniciar una transaccion SQL con privilegios administrativos.
-4. Insertar la asignacion activa `administrator`.
-5. Insertar la entrada de auditoria correspondiente.
-6. Confirmar la transaccion.
-7. Verificar que existe exactamente una asignacion activa.
+2. Confirmar que existe su perfil en `public.profiles`. El perfil ya se crea automaticamente mediante el ciclo de vida de Auth de 3B.1.
+3. Sustituir `<INSTITUTIONAL_EMAIL>` por el correo institucional confirmado.
+4. Ejecutar el bloque `DO` con privilegios administrativos.
+5. Verificar que existe exactamente una asignacion activa y una entrada de auditoria de bootstrap.
 
 ## SQL auditable
 
@@ -37,7 +35,7 @@ BEGIN
   JOIN public.profiles AS profile
     ON profile.user_id = auth_user.id
   WHERE private.normalize_email(auth_user.email)
-      = private.normalize_email('INSTITUTIONAL_EMAIL@uni.pe')
+      = private.normalize_email('<INSTITUTIONAL_EMAIL@uni.pe>')
     AND private.normalize_email(profile.email)
       = private.normalize_email(auth_user.email);
 
@@ -110,17 +108,17 @@ BEGIN
       'Bootstrap aborted: expected exactly one active administrator assignment, found %',
       active_assignment_count;
   END IF;
-END
+END;
 $bootstrap$;
 ```
 
 Este bloque:
 
-aborta automáticamente si el perfil no existe;
-exige cuenta active;
-valida el dominio permitido;
-crea exactamente una asignación;
-escribe la auditoría en la misma operación;
-no requiere copiar el UUID manualmente.
+- aborta automaticamente si el perfil no existe;
+- exige una cuenta `active`;
+- valida que el dominio institucional este habilitado;
+- crea exactamente una asignacion activa;
+- escribe la auditoria dentro de la misma operacion;
+- no requiere copiar el UUID manualmente.
 
 El indice unico parcial `user_roles_one_active_role_per_user_idx` impide una segunda asignacion activa duplicada. El `ON CONFLICT ... WHERE revoked_at IS NULL DO NOTHING` evita crear auditoria si no se inserta una nueva asignacion.
