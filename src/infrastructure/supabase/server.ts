@@ -2,6 +2,7 @@ import { createServerClient, parseCookieHeader, type CookieOptions } from '@supa
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { AstroCookies, AstroCookieSetOptions } from 'astro';
 import { getSupabaseConfig, type SupabaseEnv } from './config';
+import { createProviderTokenRedactingFetch } from './provider-token-redaction';
 import type { SupabaseDatabase } from './types';
 
 export type SupabaseServerClient = SupabaseClient<SupabaseDatabase>;
@@ -22,6 +23,9 @@ export const createSupabaseServerClient = (
 	const config = getSupabaseConfig(env);
 
 	return createServerClient<SupabaseDatabase>(config.url, config.publishableKey, {
+		global: {
+			fetch: createProviderTokenRedactingFetch(config.url),
+		},
 		cookies: {
 			getAll() {
 				return parseCookieHeader(context.request.headers.get('Cookie') ?? '');

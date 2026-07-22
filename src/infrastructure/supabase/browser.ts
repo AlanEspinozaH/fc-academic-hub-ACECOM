@@ -1,6 +1,7 @@
 import { createBrowserClient } from '@supabase/ssr';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { getSupabaseConfig, type SupabaseEnv } from './config';
+import { createProviderTokenRedactingFetch } from './provider-token-redaction';
 import type { SupabaseDatabase } from './types';
 
 export type SupabaseBrowserClient = SupabaseClient<SupabaseDatabase>;
@@ -19,6 +20,9 @@ export const getSupabaseBrowserClient = (env?: SupabaseEnv): SupabaseBrowserClie
 	const config = getSupabaseConfig(env);
 
 	browserClient = createBrowserClient<SupabaseDatabase>(config.url, config.publishableKey, {
+		global: {
+			fetch: createProviderTokenRedactingFetch(config.url),
+		},
 		isSingleton: true,
 	});
 
