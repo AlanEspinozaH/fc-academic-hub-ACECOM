@@ -2,8 +2,9 @@
 
 ## Estado
 
-Contrato de base de datos implementado en la etapa 4B.2 y refinado para la
-orquestación Worker en la etapa 4B.6.
+Contrato de base de datos implementado en la etapa 4B.2, refinado para la
+orquestación Worker en la etapa 4B.6 y expuesto mediante un endpoint server-side
+en la etapa 4B.7.
 
 ## Propósito
 
@@ -31,6 +32,37 @@ hasta que exista un modelo explícito para múltiples archivos.
 
 El flujo no crea URLs públicas, no habilita acceso directo a R2 y no aprueba ni
 publica recursos automáticamente.
+
+## Endpoint HTTP de subida
+
+La etapa 4B.7 expone únicamente del lado servidor:
+
+```text
+POST /api/resources/:resourceId/files
+```
+
+La petición usa `multipart/form-data` con:
+
+- `file`: archivo PDF obligatorio;
+- `comment`: texto opcional.
+
+El endpoint:
+
+1. rechaza solicitudes cross-origin antes de iniciar la subida;
+2. exige una sesión autenticada;
+3. valida el UUID del recurso;
+4. exige exactamente el media type `multipart/form-data`;
+5. limita el body HTTP antes de parsear completamente el multipart;
+6. delega la validación del PDF y la orquestación de PostgreSQL/R2 al flujo
+   server-side existente;
+7. devuelve únicamente el `fileId` después de una finalización confirmada.
+
+El archivo PDF mantiene el límite de 10 000 000 bytes. El body multipart tiene
+un margen adicional de 65 536 bytes para boundaries, headers y campos de
+formulario.
+
+El endpoint no devuelve `storage_key`, no crea URLs públicas o firmadas y no
+expone acceso directo a R2.
 
 ## Responsabilidades
 
@@ -259,11 +291,11 @@ confirmado remotamente.
 
 ## Fuera de alcance
 
-Quedan fuera de 4B.2:
+Quedan fuera del alcance actual de la etapa 4B:
 
 - activación de la suscripción R2;
 - creación del bucket remoto;
-- interfaz de subida;
+- interfaz visual de subida;
 - descarga de archivos;
 - revisión y aprobación visual;
 - múltiples archivos por recurso;
@@ -303,3 +335,24 @@ Las pruebas unitarias de la orquestación Worker deben cubrir además:
 - fallo de eliminación compensatoria;
 - uso de `mark_resource_file_failed` únicamente después de un fallo conocido de
   finalización y un fallo de eliminación R2.
+
+Las pruebas de la capa HTTP deben cubrir además:
+
+- sesión no autenticada;
+- origen cross-site;
+- UUID de recurso inválido;
+- media type incorrecto;
+- multipart malformado;
+- body multipart por encima del límite;
+- ausencia del campo `file`;
+- comentario no textual;
+- errores seguros de validación del PDF;
+- fallos deterministas y resultados desconocidos del orquestador;
+- ausencia de detalles internos en errores inesperados.
+
+El smoke test local debe comprobar como mínimo:
+
+- `GET` al endpoint devuelve `405` con `Allow: POST`;
+- `POST` same-origin sin sesión devuelve `401`;
+- una petición cross-origin es rechazada;
+- el endpoint carga correctamente bajo el runtime local de Cloudflare.
