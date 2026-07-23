@@ -16,6 +16,10 @@ ALTER TABLE public.resource_files
 ADD CONSTRAINT resource_files_display_filename_pdf_check
 CHECK (lower(display_filename) LIKE '%.pdf');
 
+ALTER TABLE public.resource_files
+ADD CONSTRAINT resource_files_byte_size_max_check
+CHECK (byte_size <= 10000000);
+
 -- Preserve existing audit actions and add the explicit reservation-abort event.
 ALTER TABLE public.resource_review_events
 DROP CONSTRAINT resource_review_events_action_check;
@@ -96,9 +100,13 @@ BEGIN
 
 	IF normalized_display_filename IS NULL
 		OR normalized_content_type IS NULL
-		OR byte_size IS NULL
-		OR byte_size <= 0 THEN
+		OR byte_size IS NULL THEN
 		RAISE EXCEPTION 'valid file metadata is required' USING ERRCODE = '23514';
+	END IF;
+
+	IF byte_size <= 0 OR byte_size > 10000000 THEN
+		RAISE EXCEPTION 'file size must be between 1 and 10000000 bytes'
+			USING ERRCODE = '23514';
 	END IF;
 
 	IF normalized_content_type <> 'application/pdf'
@@ -488,6 +496,10 @@ TO authenticated;
 
 GRANT EXECUTE
 ON FUNCTION public.abort_resource_file_upload(uuid, text)
+TO authenticated;
+
+GRANT EXECUTE
+ON FUNCTION public.mark_resource_file_failed(uuid, text)
 TO authenticated;
 
 COMMIT;

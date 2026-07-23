@@ -362,11 +362,10 @@ SELECT lives_ok(
 			'exam.pdf',
 			'application/pdf',
 			1024,
-			'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-			'resources/10000000-0000-0000-0000-000000000010/exam.pdf'
+			NULL
 		)
 	$$,
-	'contributor can register private file metadata through RPC'
+	'contributor can reserve private PDF metadata through RPC'
 );
 SELECT is(
 	(SELECT count(*)::integer FROM public.resource_files WHERE resource_id = '10000000-0000-0000-0000-000000000010'),
@@ -386,21 +385,27 @@ SELECT ok(
 );
 SELECT lives_ok(
 	$$
-		SELECT public.mark_resource_file_stored(
+		SELECT public.finalize_resource_file_upload(
 			(
 				SELECT id
 				FROM public.resource_files
 				WHERE resource_id = '10000000-0000-0000-0000-000000000010'
 				LIMIT 1
 			),
-			'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'
+			'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
+			'ready for review'
 		)
 	$$,
-	'contributor can mark own uploading file as stored through RPC'
+	'contributor can atomically store and submit own resource'
 );
-SELECT lives_ok(
-	$$ SELECT public.submit_academic_resource('10000000-0000-0000-0000-000000000010', 'ready for review') $$,
-	'contributor can submit own stored resource for review'
+SELECT is(
+	(
+		SELECT review_status::text
+		FROM public.academic_resources
+		WHERE id = '10000000-0000-0000-0000-000000000010'
+	),
+	'pending',
+	'atomic finalization moves the resource to pending'
 );
 SELECT ok(
 	pg_temp.try_sql($$
@@ -533,8 +538,7 @@ SELECT ok(
 			'reference.pdf',
 			'application/pdf',
 			256,
-			NULL,
-			'resources/10000000-0000-0000-0000-000000000021/reference.pdf'
+			NULL
 		)
 	$$),
 	'bibliographic-reference-only resources cannot register stored files'
@@ -587,30 +591,40 @@ VALUES (
 	'Pending rights with file',
 	'Pending rights must block approval when a file exists.',
 	'restricted',
-	'pending'
+	'own-work'
 );
 SELECT public.register_resource_file_upload(
 	'10000000-0000-0000-0000-000000000023',
 	'pending-rights.pdf',
 	'application/pdf',
 	512,
-	NULL,
-	'resources/10000000-0000-0000-0000-000000000023/pending-rights.pdf'
+	NULL
 );
-SELECT public.mark_resource_file_stored(
+SELECT public.finalize_resource_file_upload(
 	(
 		SELECT id
 		FROM public.resource_files
 		WHERE resource_id = '10000000-0000-0000-0000-000000000023'
 		LIMIT 1
 	),
-	NULL
+	'cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc',
+	'pending rights fixture'
 );
-SELECT public.submit_academic_resource('10000000-0000-0000-0000-000000000023', 'pending rights');
 
+-- Trusted fixture mutation: simulate rights becoming unresolved after storage
+-- so the approval guard can be tested independently from upload finalization.
 RESET ROLE;
+
+UPDATE public.academic_resources
+SET rights_status = 'pending'::public.resource_rights_status
+WHERE id = '10000000-0000-0000-0000-000000000023';
+
 SET LOCAL ROLE authenticated;
-SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000504', 'authenticated');
+SELECT pg_temp.set_request_context(
+	'00000000-0000-0000-0000-000000000504',
+	'authenticated'
+);
+
 SELECT lives_ok(
 	$$ SELECT public.approve_academic_resource('10000000-0000-0000-0000-000000000020', 'bibliographic metadata approved') $$,
 	'moderator can approve bibliographic-reference-only metadata without files'

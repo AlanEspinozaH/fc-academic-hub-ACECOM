@@ -23,7 +23,7 @@ request.
 ## Alcance inicial
 
 La primera versión admite como máximo un archivo PDF privado por recurso
-académico.
+académico. El archivo no puede superar 10 000 000 bytes. Este límite corresponde a 10 MB decimales, no a 10 MiB.
 
 Un examen, una solución y un anexo deben representarse como recursos separados
 hasta que exista un modelo explícito para múltiples archivos.
@@ -190,15 +190,22 @@ debe:
 
 Un archivo `stored` no puede abortarse mediante esta RPC.
 
-## RPC heredadas
+## RPC de almacenamiento
 
-Las funciones siguientes pueden conservarse temporalmente para compatibilidad de
-esquema, pero dejan de ser ejecutables por `authenticated`:
+`mark_resource_file_stored` se conserva temporalmente por compatibilidad de
+esquema, pero no es ejecutable por `authenticated`. La confirmación de un objeto
+almacenado debe realizarse exclusivamente mediante
+`finalize_resource_file_upload`, porque esa RPC actualiza atómicamente archivo,
+storage, recurso y auditoría.
 
-```text
-mark_resource_file_stored
-mark_resource_file_failed
-```
+`mark_resource_file_failed` permanece ejecutable por `authenticated` para la
+compensación server-side. El Worker la utiliza únicamente cuando el objeto fue
+escrito en R2, la finalización PostgreSQL falló y la eliminación compensatoria
+del objeto también falló.
+
+Esta RPC conserva el archivo y el registro privado de almacenamiento, cambia
+`uploading` a `failed`, registra `failure_reason` y emite `storage_failed`. Esto
+preserva la referencia privada necesaria para una limpieza posterior.
 
 `submit_academic_resource` permanece disponible para recursos sin archivo,
 referencias bibliográficas y reenvíos explícitos.
@@ -207,12 +214,13 @@ referencias bibliográficas y reenvíos explícitos.
 
 PostgreSQL y R2 no comparten una transacción distribuida.
 
-| Fallo                                         | Compensación                                   |
-| --------------------------------------------- | ---------------------------------------------- |
-| La reserva PostgreSQL falla                   | No escribir en R2                              |
-| R2 rechaza la escritura                       | Abortar la reserva PostgreSQL                  |
-| R2 escribe y la finalización PostgreSQL falla | Eliminar el objeto R2 y abortar la reserva     |
-| La eliminación compensatoria de R2 falla      | Registrar el incidente para limpieza posterior |
+| Fallo | Compensación |
+| --- | --- |
+| La reserva PostgreSQL falla | No escribir en R2 |
+| R2 rechaza la escritura y el objeto no existe | Abortar la reserva PostgreSQL |
+| R2 escribe y la finalización PostgreSQL falla | Intentar eliminar el objeto R2 |
+| La eliminación R2 funciona | Abortar la reserva PostgreSQL |
+| La eliminación R2 también falla | Marcar el storage como `failed` y conservar sus metadatos privados |
 
 La etapa 4B no implementa todavía una tarea automática de limpieza.
 
