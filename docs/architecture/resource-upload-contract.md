@@ -2,7 +2,8 @@
 
 ## Estado
 
-Propuesto para la etapa 4B.2.
+Contrato de base de datos implementado en la etapa 4B.2 y refinado para la
+orquestación Worker en la etapa 4B.6.
 
 ## Propósito
 
@@ -53,7 +54,13 @@ El Worker:
 - calcula SHA-256;
 - escribe el objeto privado en R2;
 - llama a las RPC PostgreSQL;
-- elimina el objeto de R2 cuando debe compensar una finalización fallida;
+- distingue un fallo confirmado de un resultado de transporte desconocido;
+- reintenta una vez la finalización cuando el resultado de transporte es
+  desconocido, usando el mismo `file_id` y SHA-256;
+- realiza compensación destructiva únicamente cuando la finalización PostgreSQL
+  falló de forma conocida;
+- conserva R2 y los metadatos PostgreSQL cuando el resultado de la finalización
+  sigue siendo desconocido;
 - no usa `service_role`.
 
 ### Cloudflare R2
@@ -113,6 +120,12 @@ Una reserva histórica en `failed` también puede ser abortada.
 11. Las operaciones concurrentes usan el orden de bloqueo:
     recurso, archivo y objeto de almacenamiento.
 12. Ninguna operación de subida aprueba o publica el recurso.
+13. Un error de transporte no implica que la operación remota no haya sido
+    confirmada; el Worker distingue fallos conocidos de resultados desconocidos.
+14. Si el resultado de `finalize_resource_file_upload` permanece desconocido,
+    el Worker no elimina el objeto R2 ni aborta la reserva PostgreSQL.
+15. El reintento automático de finalización reutiliza exactamente el mismo
+    `file_id` y SHA-256 y depende de la idempotencia definida por este contrato.
 
 ## Reserva
 
@@ -214,15 +227,24 @@ referencias bibliográficas y reenvíos explícitos.
 
 PostgreSQL y R2 no comparten una transacción distribuida.
 
-| Fallo                                         | Compensación                                                       |
-| --------------------------------------------- | ------------------------------------------------------------------ |
-| La reserva PostgreSQL falla                   | No escribir en R2                                                  |
-| R2 rechaza la escritura y el objeto no existe | Abortar la reserva PostgreSQL                                      |
-| R2 escribe y la finalización PostgreSQL falla | Intentar eliminar el objeto R2                                     |
-| La eliminación R2 funciona                    | Abortar la reserva PostgreSQL                                      |
-| La eliminación R2 también falla               | Marcar el storage como `failed` y conservar sus metadatos privados |
+| Situación                                                                    | Acción del Worker                                                                         |
+| ---------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| La reserva PostgreSQL devuelve un fallo conocido                             | No escribir en R2                                                                         |
+| La reserva PostgreSQL termina con resultado desconocido                      | No escribir en R2 ni intentar una compensación sin `file_id` confirmado                   |
+| La escritura R2 falla o su resultado es desconocido                          | Intentar eliminar defensivamente la clave R2                                              |
+| La eliminación defensiva R2 funciona                                         | Abortar la reserva PostgreSQL                                                             |
+| La eliminación defensiva R2 también falla                                    | Conservar la reserva PostgreSQL y reportar fallo de compensación                          |
+| La finalización PostgreSQL devuelve un fallo conocido                        | Intentar eliminar el objeto R2                                                            |
+| La eliminación R2 funciona después de un fallo conocido de finalización      | Abortar la reserva PostgreSQL                                                             |
+| La eliminación R2 también falla después de un fallo conocido de finalización | Marcar el storage como `failed` y conservar sus metadatos privados                        |
+| La primera finalización termina con resultado desconocido                    | Reintentar una vez con el mismo `file_id` y SHA-256                                       |
+| El reintento confirma la finalización                                        | Considerar la subida finalizada                                                           |
+| El resultado de la finalización sigue siendo desconocido                     | No eliminar R2, no abortar PostgreSQL y preservar el estado para reconciliación posterior |
 
-La etapa 4B no implementa todavía una tarea automática de limpieza.
+La etapa 4B no implementa todavía una tarea automática de limpieza ni de
+reconciliación. Los resultados desconocidos se preservan deliberadamente para
+evitar una compensación destructiva sobre una operación que podría haberse
+confirmado remotamente.
 
 ## Seguridad
 
@@ -269,3 +291,15 @@ Las pruebas pgTAP deben cubrir:
 - conservación del recurso después del aborto;
 - auditoría append-only;
 - ausencia de acceso directo a `storage_key`.
+
+Las pruebas unitarias de la orquestación Worker deben cubrir además:
+
+- reserva con fallo conocido;
+- reserva con resultado desconocido;
+- fallo o resultado desconocido de escritura R2 y eliminación defensiva;
+- finalización con fallo conocido;
+- reintento idempotente después de un resultado de transporte desconocido;
+- finalización con resultado todavía desconocido sin compensación destructiva;
+- fallo de eliminación compensatoria;
+- uso de `mark_resource_file_failed` únicamente después de un fallo conocido de
+  finalización y un fallo de eliminación R2.
