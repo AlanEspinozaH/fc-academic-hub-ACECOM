@@ -82,6 +82,11 @@ No se usa `service_role` en Astro. No se crean URLs publicas ni se exponen clave
 de storage. Los eventos de revision son append-only. Las funciones definer fijan
 `search_path` vacio, usan referencias calificadas y no usan SQL dinamico.
 
+## Contrato operativo
+
+Las invariantes, transiciones, RPC y compensaciones del flujo de subida se
+definen en [Contrato de subida de recursos académicos](../architecture/resource-upload-contract.md).
+
 ## Consecuencias
 
 - La base de datos ya puede autorizar metadatos de recursos y revision sin R2.
