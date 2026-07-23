@@ -50,3 +50,12 @@ export {
 	type ReviewStatus,
 	type RightsStatus,
 } from './resource';
+export {
+	RESOURCE_PDF_CONTENT_TYPE,
+	RESOURCE_PDF_MAX_BYTES,
+	ResourcePdfValidationError,
+	validateResourcePdf,
+	type ResourceFileCandidate,
+	type ResourcePdfValidationErrorCode,
+	type ValidatedResourcePdf,
+} from './resource-file-validation';
