@@ -214,13 +214,13 @@ referencias bibliográficas y reenvíos explícitos.
 
 PostgreSQL y R2 no comparten una transacción distribuida.
 
-| Fallo | Compensación |
-| --- | --- |
-| La reserva PostgreSQL falla | No escribir en R2 |
-| R2 rechaza la escritura y el objeto no existe | Abortar la reserva PostgreSQL |
-| R2 escribe y la finalización PostgreSQL falla | Intentar eliminar el objeto R2 |
-| La eliminación R2 funciona | Abortar la reserva PostgreSQL |
-| La eliminación R2 también falla | Marcar el storage como `failed` y conservar sus metadatos privados |
+| Fallo                                         | Compensación                                                       |
+| --------------------------------------------- | ------------------------------------------------------------------ |
+| La reserva PostgreSQL falla                   | No escribir en R2                                                  |
+| R2 rechaza la escritura y el objeto no existe | Abortar la reserva PostgreSQL                                      |
+| R2 escribe y la finalización PostgreSQL falla | Intentar eliminar el objeto R2                                     |
+| La eliminación R2 funciona                    | Abortar la reserva PostgreSQL                                      |
+| La eliminación R2 también falla               | Marcar el storage como `failed` y conservar sus metadatos privados |
 
 La etapa 4B no implementa todavía una tarea automática de limpieza.
 
