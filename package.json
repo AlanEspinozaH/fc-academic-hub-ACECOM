@@ -19,7 +19,8 @@
 		"ci": "npm run format:check && npm run lint && npm run check && npm run test && npm run build",
 		"generate-types": "wrangler types",
 		"cf-typegen": "wrangler types",
-		"deploy": "astro build && wrangler deploy"
+		"deploy": "astro build && wrangler deploy",
+		"generate:supabase-types": "npx --yes supabase@2.109.1 gen types typescript --local --schema public > src/infrastructure/supabase/database.generated.ts && prettier --write src/infrastructure/supabase/database.generated.ts"
 	},
 	"dependencies": {
 		"@astrojs/cloudflare": "^14.1.4",
