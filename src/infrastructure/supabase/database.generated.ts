@@ -105,6 +105,54 @@ export type Database = {
 				};
 				Relationships: [];
 			};
+			external_identity_preauthorizations: {
+				Row: {
+					authorized_at: string;
+					authorized_by: string;
+					id: number;
+					normalized_email: string;
+					reason: string | null;
+					revocation_reason: string | null;
+					revoked_at: string | null;
+					revoked_by: string | null;
+				};
+				Insert: {
+					authorized_at?: string;
+					authorized_by: string;
+					id?: never;
+					normalized_email: string;
+					reason?: string | null;
+					revocation_reason?: string | null;
+					revoked_at?: string | null;
+					revoked_by?: string | null;
+				};
+				Update: {
+					authorized_at?: string;
+					authorized_by?: string;
+					id?: never;
+					normalized_email?: string;
+					reason?: string | null;
+					revocation_reason?: string | null;
+					revoked_at?: string | null;
+					revoked_by?: string | null;
+				};
+				Relationships: [
+					{
+						foreignKeyName: 'external_identity_preauthorizations_authorized_by_fkey';
+						columns: ['authorized_by'];
+						isOneToOne: false;
+						referencedRelation: 'profiles';
+						referencedColumns: ['user_id'];
+					},
+					{
+						foreignKeyName: 'external_identity_preauthorizations_revoked_by_fkey';
+						columns: ['revoked_by'];
+						isOneToOne: false;
+						referencedRelation: 'profiles';
+						referencedColumns: ['user_id'];
+					},
+				];
+			};
 			profiles: {
 				Row: {
 					account_status: Database['public']['Enums']['account_status'];
@@ -350,6 +398,10 @@ export type Database = {
 				Args: { comment?: string; resource_id: string };
 				Returns: number;
 			};
+			authorize_external_identity: {
+				Args: { email: string; reason?: string };
+				Returns: number;
+			};
 			finalize_resource_file_upload: {
 				Args: { comment?: string; file_id: string; sha256: string };
 				Returns: string;
@@ -382,6 +434,10 @@ export type Database = {
 			};
 			reject_academic_resource: {
 				Args: { comment?: string; resource_id: string };
+				Returns: number;
+			};
+			revoke_external_identity: {
+				Args: { email: string; reason?: string };
 				Returns: number;
 			};
 			revoke_user_role: {
