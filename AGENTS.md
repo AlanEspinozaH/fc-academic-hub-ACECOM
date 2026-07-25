@@ -2,63 +2,278 @@
 
 ## Propósito
 
-Construir una plataforma académica comunitaria para organizar cursos,
-exámenes, apuntes, sílabos y recursos de la Facultad de Ciencias.
+Construir y mantener FC Academic Hub, una plataforma académica comunitaria para organizar cursos y recursos de la Facultad de Ciencias con:
 
-El sistema será administrado por estudiantes, pero debe poder atender
-a toda la Facultad con seguridad, bajo costo y mantenimiento razonable.
+* seguridad;
+* moderación;
+* bajo costo;
+* mantenimiento simple.
 
-## Arquitectura objetivo
+## Arquitectura
 
-- Astro con TypeScript estricto.
-- Despliegue sobre Cloudflare Pages/Workers.
-- Supabase Auth y PostgreSQL para identidad, roles y metadatos.
-- Cloudflare R2 privado para archivos.
-- Autorización validada siempre en el servidor.
-- GitHub para código, documentación y revisión técnica.
+* Astro + TypeScript estricto.
+* Cloudflare Workers.
+* Supabase Auth + PostgreSQL.
+* PostgreSQL/RLS como autoridad de autorización.
+* Cloudflare R2 privado para archivos.
+* GitHub para código y revisión.
 
-Supabase y R2 se incorporarán en etapas posteriores.
+Separar dominio, aplicación, infraestructura y presentación.
 
-## Restricciones de la etapa 1
+## Fuentes normativas por área
 
-- No conectar Supabase.
-- No crear buckets R2.
-- No implementar autenticación ficticia.
-- No almacenar documentos reales.
-- No introducir secretos.
-- No usar datos personales.
-- No desplegar sin solicitar autorización.
+No es necesario leer todos los contratos para cada tarea.
 
-## Reglas de ingeniería
+Consultar únicamente las fuentes relevantes para el cambio.
 
-- TypeScript debe permanecer en modo estricto.
-- Evitar `any`, salvo justificación documentada.
-- Mantener componentes pequeños y accesibles.
-- Separar dominio, presentación e infraestructura.
-- No introducir dependencias sin justificar su necesidad.
-- No desactivar validaciones para lograr que el build pase.
-- Toda funcionalidad debe incluir pruebas razonables.
-- Ejecutar formato, lint, pruebas y build antes de finalizar.
-- Documentar decisiones arquitectónicas importantes como ADR.
-- No modificar directamente la rama main.
-- Mostrar un resumen del diff al terminar.
+### Alcance de producto
+
+```text
+docs/product/v1-product-contract.md
+```
+
+Define qué promete FC Academic Hub v1.
+
+### Decisiones arquitectónicas
+
+```text
+docs/adr/
+```
+
+Los ADR aceptados explican por qué se adoptaron decisiones arquitectónicas relevantes.
+
+### Acceso, RLS, preview y download
+
+```text
+docs/architecture/resource-access-contract.md
+```
+
+Es la fuente normativa de matrices de acceso, workflow de autorización, audiencias y acceso a recursos aprobados.
+
+### Formatos, validación y representación de archivos
+
+```text
+docs/architecture/resource-file-policy.md
+```
+
+Es la fuente normativa de formatos, extensiones, límites, validación, MIME canónico y presentación segura.
+
+### Upload y coordinación PostgreSQL/R2
+
+```text
+docs/architecture/resource-upload-contract.md
+```
+
+Es la fuente normativa del pipeline de upload, atomicidad PostgreSQL, compensación, idempotencia y tratamiento de resultados desconocidos.
+
+### Autenticación, identidad y admisión
+
+```text
+docs/architecture/authentication-and-authorization.md
+```
+
+Es la fuente normativa de autenticación, `identity_kind`, admisión externa, preautorización y `account_status`.
+
+### Roles y entitlements
+
+```text
+docs/security/role-model.md
+```
+
+Es la fuente normativa de responsabilidades de roles, capacidades y entitlements.
+
+### Gobierno y continuidad
+
+```text
+docs/operations/governance.md
+```
+
+Consultar únicamente cuando el cambio afecte designación, transferencia, continuidad institucional o custodia operativa.
+
+Cuando un documento especializado es la fuente normativa de un tema, los demás documentos pueden resumirlo o referenciarlo, pero no deben crear una política alternativa.
+
+Si implementación y contrato divergen:
+
+* el código actual describe el estado implementado;
+* los contratos aceptados describen el objetivo de la etapa;
+* el cambio debe hacer converger únicamente los artefactos correspondientes al alcance autorizado.
+
+
+## Alcance de Stage 4C
+
+Las etapas de Stage 4C tienen límites distintos.
+
+### `4C.0A`
+
+Es exclusivamente documental.
+
+Si una tarea está identificada como `4C.0A`, no implementar comportamiento nuevo ni modificar con ese propósito:
+
+```text
+src/
+supabase/migrations/
+supabase/tests/
+schema
+RLS
+RPC
+wrangler/R2 runtime configuration
+```
+
+Solo deben alinearse contratos, ADR, documentación operativa y documentación de desarrollo.
+
+### `4C.0B`
+
+Es la primera etapa autorizada para realinear de forma ejecutable:
+
+```text
+schema
+RLS
+auth/identity
+entitlements
+rights
+visibility
+storage_key_version
+RPC
+tests
+```
+
+PDF puede continuar siendo el único formato operativo de upload después de `4C.0B`.
+
+Las etapas posteriores habilitan lectura y formatos progresivamente según los contratos aceptados.
+
+No anticipar trabajo de una etapa posterior para “completar” una etapa anterior.
+
+## Reglas de producto
+
+No ampliar sin modificar primero el contrato normativo:
+
+* formatos o extensiones;
+* `file_kind`;
+* `visibility`;
+* `rights_status`;
+* roles;
+* entitlements;
+* tipos de identidad;
+* endpoints;
+* número de archivos por recurso.
+
+No inferir nuevas funcionalidades por conveniencia de implementación.
+
+## Archivos
+
+* Un recurso admite como máximo un archivo principal en v1.
+* Todo upload es contenido no confiable.
+* Validar siempre server-side.
+* R2 permanece privado.
+* Nunca ejecutar ni compilar archivos aportados por usuarios.
+* Markdown, TeX y source se presentan como texto plano en v1.
+* No aceptar HTML, SVG, archives ni formatos fuera de la allowlist.
+* No exponer `storage_key` al navegador.
+* Hasta que la migración de storage layout de Stage 4C esté implementada y verificada, preservar el layout PDF vigente de 4B.
+* Después de esa migración, todos los nuevos uploads deben utilizar `generic_v2` según `resource-file-policy.md`.
+* No modificar la derivación de storage key únicamente en TypeScript o únicamente en PostgreSQL; el cambio de layout debe mantener alineados schema, metadata, resolución server-side y pruebas.
+
+## Autorización
+
+Mantener separados:
+
+```text
+identity != role != entitlement != resource audience
+```
+
+* `restricted` depende de identidad institucional activa.
+* `privileged` depende de `privileged_material.read`.
+* Un entitlement no concede roles editoriales.
+* No autorizar mediante comparaciones runtime del email.
+* No confiar en roles o permisos enviados por navegador.
+* PostgreSQL/RLS es la autoridad de acceso.
+* `approved + public` debe conservar acceso público incluso para cuentas suspendidas/disabled.
+* Moderator no accede a drafts/rejected ajenos solo por su rol.
+* Administrator conserva capacidades administrativas excepcionales.
+
+## Moderación
+
+* Contributor propone.
+* Moderator revisa y decide la audiencia final.
+* Moderator no puede aprobar su propio recurso.
+* Administrator gestiona roles, identidades externas y entitlements.
+* El sistema admite múltiples Moderators.
+* V1 requiere una sola aprobación válida.
+
+## Upload
+
+Preservar las garantías existentes de 4B:
+
+* reserva PostgreSQL;
+* R2 privado;
+* SHA-256;
+* atomicidad PostgreSQL;
+* compensación;
+* idempotencia;
+* tratamiento explícito de resultados desconocidos;
+* auditoría;
+* un archivo por recurso.
+
+No simplificar el pipeline eliminando estas garantías.
 
 ## Seguridad
 
-- Nunca agregar claves, tokens o contraseñas al repositorio.
-- Mantener `.env*` ignorados, excepto `.env.example`.
-- No confiar en roles enviados por el navegador.
-- No exponer futuras URLs permanentes de archivos privados.
-- Validar entradas en el servidor.
-- Aplicar principio de mínimo privilegio.
+* Nunca versionar secretos, tokens o contraseñas.
+* Mantener `.env*` ignorados excepto `.env.example`.
+* No usar `service_role` en el runtime normal de Astro.
+* Aplicar mínimo privilegio.
+* Usar `SECURITY DEFINER` únicamente cuando sea necesario y con `search_path` seguro.
+* No crear URLs públicas permanentes de R2.
+* No confiar en MIME, filenames, roles o identificadores enviados por cliente como autoridad.
 
-## Criterio de finalización
+## Ingeniería
 
-Una tarea solo está terminada cuando:
+* Mantener TypeScript strict.
+* Evitar `any` salvo justificación.
+* No introducir dependencias sin necesidad clara.
+* No desactivar validaciones para hacer pasar CI.
+* Preferir cambios pequeños e incrementales.
+* Evitar refactors cosméticos fuera del alcance.
+* No modificar directamente `main`.
+* No realizar operaciones remotas o despliegues sin autorización explícita.
 
-1. La aplicación compila.
-2. Las pruebas pasan.
-3. El chequeo de tipos pasa.
-4. No existen secretos.
-5. La documentación relevante está actualizada.
-6. Codex informa archivos modificados y comandos ejecutados.
+## Tests
+
+Todo cambio de comportamiento debe incluir pruebas.
+
+Para políticas normativas, utilizar los identificadores definidos en los contratos cuando existan:
+
+```text
+RA-*  resource access
+RF-*  resource files
+RU-*  resource upload
+AA-*  authentication/authorization
+RM-*  roles/entitlements
+```
+
+Una regla normativa afectada debe tener cobertura suficiente para demostrarla.
+
+## Finalización
+
+Antes de terminar una tarea:
+
+```sh
+npm run ci
+```
+
+o ejecutar los controles equivalentes de:
+
+* format;
+* lint;
+* typecheck;
+* tests;
+* build.
+
+Además:
+
+* revisar `git diff`;
+* confirmar que no se introdujeron secretos;
+* actualizar documentación afectada;
+* informar archivos modificados;
+* informar tests/comandos ejecutados;
+* señalar cualquier contrato no implementado o riesgo restante.
