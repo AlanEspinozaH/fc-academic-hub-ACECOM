@@ -3,7 +3,7 @@ CREATE EXTENSION IF NOT EXISTS pgtap WITH SCHEMA extensions;
 
 BEGIN;
 
-SELECT plan(62);
+SELECT plan(79);
 
 CREATE OR REPLACE FUNCTION pg_temp.set_request_context(user_id uuid, jwt_role text)
 RETURNS void
@@ -197,6 +197,112 @@ SELECT ok((SELECT relrowsecurity FROM pg_class WHERE oid = 'public.allowed_email
 SELECT ok((SELECT relrowsecurity FROM pg_class WHERE oid = 'public.profiles'::regclass), 'profiles has RLS enabled');
 SELECT ok((SELECT relrowsecurity FROM pg_class WHERE oid = 'public.user_roles'::regclass), 'user_roles has RLS enabled');
 SELECT ok((SELECT relrowsecurity FROM pg_class WHERE oid = 'public.role_audit_log'::regclass), 'role_audit_log has RLS enabled');
+
+SELECT ok(
+	to_regclass('public.external_identity_preauthorizations') IS NOT NULL,
+	'external_identity_preauthorizations exists'
+);
+SELECT ok(
+	(SELECT relrowsecurity FROM pg_class WHERE oid = 'public.external_identity_preauthorizations'::regclass),
+	'external_identity_preauthorizations has RLS enabled'
+);
+
+SET LOCAL ROLE anon;
+SELECT pg_temp.set_request_context(NULL, 'anon');
+SELECT ok(
+	NOT pg_temp.try_sql('select * from public.external_identity_preauthorizations'),
+	'anon cannot query external identity preauthorizations'
+);
+
+RESET ROLE;
+SET LOCAL ROLE authenticated;
+SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000102', 'authenticated');
+SELECT is(
+	(SELECT count(*)::integer FROM public.external_identity_preauthorizations),
+	0,
+	'non-administrator cannot see external identity preauthorizations'
+);
+SELECT ok(
+	NOT pg_temp.try_sql($$select public.authorize_external_identity('persona@example.com', 'unauthorized authorize')$$),
+	'non-administrator cannot authorize an external identity'
+);
+SELECT ok(
+	NOT pg_temp.try_sql($$select public.revoke_external_identity('persona@example.com', 'unauthorized revoke')$$),
+	'non-administrator cannot revoke an external identity'
+);
+
+RESET ROLE;
+SET LOCAL ROLE authenticated;
+SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000105', 'authenticated');
+SELECT ok(
+	pg_temp.try_sql($$select public.authorize_external_identity(' Persona@Example.COM ', ' first authorization ')$$),
+	'administrator can authorize an external identity'
+);
+SELECT is(
+	(
+		SELECT normalized_email
+		FROM public.external_identity_preauthorizations
+		WHERE revoked_at IS NULL
+	),
+	'persona@example.com',
+	'external identity email is normalized'
+);
+SELECT is(
+	(SELECT count(*)::integer FROM public.external_identity_preauthorizations),
+	1,
+	'administrator can view external identity authorization history'
+);
+SELECT ok(
+	NOT pg_temp.try_sql($$select public.authorize_external_identity('persona@uni.pe', 'institutional attempt')$$),
+	'institutional email cannot be externally authorized'
+);
+SELECT ok(
+	NOT pg_temp.try_sql($$select public.authorize_external_identity('persona@example.com', 'duplicate attempt')$$),
+	'duplicate active external authorization is rejected'
+);
+SELECT ok(
+	pg_temp.try_sql($$select public.revoke_external_identity(' PERSONA@example.com ', ' no longer needed ')$$),
+	'administrator can revoke an external identity authorization'
+);
+SELECT is(
+	(
+		SELECT count(*)::integer
+		FROM public.external_identity_preauthorizations
+		WHERE normalized_email = 'persona@example.com'
+			AND revoked_at IS NOT NULL
+			AND revoked_by = '00000000-0000-0000-0000-000000000105'
+	),
+	1,
+	'revocation preserves the historical authorization row'
+);
+SELECT ok(
+	pg_temp.try_sql($$select public.authorize_external_identity('persona@example.com', 'second authorization')$$),
+	'administrator can create a new authorization after revocation'
+);
+SELECT ok(
+	NOT pg_temp.try_sql($$
+		insert into public.external_identity_preauthorizations (normalized_email, authorized_by)
+		values ('direct-insert@example.com', '00000000-0000-0000-0000-000000000105')
+	$$),
+	'authenticated cannot insert external identity preauthorizations directly'
+);
+SELECT ok(
+	NOT pg_temp.try_sql($$
+		update public.external_identity_preauthorizations
+		set reason = 'direct update'
+		where normalized_email = 'persona@example.com'
+	$$),
+	'authenticated cannot update external identity preauthorizations directly'
+);
+SELECT ok(
+	NOT pg_temp.try_sql($$
+		delete from public.external_identity_preauthorizations
+		where normalized_email = 'persona@example.com'
+	$$),
+	'authenticated cannot delete external identity preauthorizations directly'
+);
+
+RESET ROLE;
 
 SELECT is(
 	(SELECT enabled FROM public.allowed_email_domains WHERE domain = 'uni.pe'),

@@ -3,7 +3,7 @@ CREATE EXTENSION IF NOT EXISTS pgtap WITH SCHEMA extensions;
 
 BEGIN;
 
-SELECT plan(60);
+SELECT plan(77);
 
 CREATE TEMP TABLE lifecycle_test_user_ids (id uuid PRIMARY KEY);
 
@@ -21,6 +21,12 @@ VALUES
 	('00000000-0000-0000-0000-000000000334'),
 	('00000000-0000-0000-0000-000000000335'),
 	('00000000-0000-0000-0000-000000000336'),
+	('00000000-0000-0000-0000-000000000340'),
+	('00000000-0000-0000-0000-000000000341'),
+	('00000000-0000-0000-0000-000000000342'),
+	('00000000-0000-0000-0000-000000000343'),
+	('00000000-0000-0000-0000-000000000344'),
+	('00000000-0000-0000-0000-000000000345'),
 	('00000000-0000-0000-0000-000000000391'),
 	('00000000-0000-0000-0000-000000000392'),
 	('00000000-0000-0000-0000-000000000393'),
@@ -267,6 +273,282 @@ SELECT throws_ok(
 	$$
 		INSERT INTO auth.users (id, aud, role, email, email_confirmed_at, created_at, updated_at)
 		VALUES (
+			'00000000-0000-0000-0000-000000000340',
+			'authenticated',
+			'authenticated',
+			'random@example.com',
+			now(),
+			now(),
+			now()
+		)
+	$$,
+	'23514',
+	'email is not authorized',
+	'random external email without preauthorization is rejected'
+);
+
+INSERT INTO public.external_identity_preauthorizations (
+	normalized_email,
+	authorized_by,
+	reason
+)
+VALUES (
+	'persona@example.com',
+	'00000000-0000-0000-0000-000000000301',
+	'lifecycle exact-email fixture'
+);
+
+SELECT throws_ok(
+	$$
+		INSERT INTO auth.users (id, aud, role, email, email_confirmed_at, created_at, updated_at)
+		VALUES (
+			'00000000-0000-0000-0000-000000000341',
+			'authenticated',
+			'authenticated',
+			'otra@example.com',
+			now(),
+			now(),
+			now()
+		)
+	$$,
+	'23514',
+	'email is not authorized',
+	'preauthorization does not authorize another email in the same domain'
+);
+
+SELECT lives_ok(
+	$$
+		INSERT INTO auth.users (id, aud, role, email, email_confirmed_at, created_at, updated_at)
+		VALUES (
+			'00000000-0000-0000-0000-000000000342',
+			'authenticated',
+			'authenticated',
+			'PERSONA@EXAMPLE.COM',
+			now(),
+			now(),
+			now()
+		)
+	$$,
+	'exact normalized preauthorization permits external signup'
+);
+SELECT is(
+	(
+		SELECT identity_kind::text || ':' || account_status::text
+		FROM public.profiles
+		WHERE user_id = '00000000-0000-0000-0000-000000000342'
+			AND email = 'persona@example.com'
+	),
+	'external_authorized:active',
+	'preauthorized signup creates an active external_authorized profile'
+);
+SELECT is(
+	(
+		SELECT count(*)::integer
+		FROM public.user_roles
+		WHERE user_id = '00000000-0000-0000-0000-000000000342'
+	),
+	0,
+	'external signup creates no roles'
+);
+
+INSERT INTO public.external_identity_preauthorizations (
+	normalized_email,
+	authorized_by,
+	reason,
+	revoked_by,
+	revoked_at,
+	revocation_reason
+)
+VALUES (
+	'revoked-before@example.net',
+	'00000000-0000-0000-0000-000000000301',
+	'before materialization fixture',
+	'00000000-0000-0000-0000-000000000301',
+	now(),
+	'revoked before signup'
+);
+
+SELECT throws_ok(
+	$$
+		INSERT INTO auth.users (id, aud, role, email, email_confirmed_at, created_at, updated_at)
+		VALUES (
+			'00000000-0000-0000-0000-000000000343',
+			'authenticated',
+			'authenticated',
+			'revoked-before@example.net',
+			now(),
+			now(),
+			now()
+		)
+	$$,
+	'23514',
+	'email is not authorized',
+	'revocation before materialization prevents signup'
+);
+
+UPDATE public.external_identity_preauthorizations
+SET revoked_by = '00000000-0000-0000-0000-000000000301',
+	revoked_at = now(),
+	revocation_reason = 'revoked after materialization'
+WHERE normalized_email = 'persona@example.com'
+	AND revoked_at IS NULL;
+
+SELECT is(
+	(
+		SELECT identity_kind::text || ':' || account_status::text
+		FROM public.profiles
+		WHERE user_id = '00000000-0000-0000-0000-000000000342'
+	),
+	'external_authorized:active',
+	'revocation after materialization preserves profile identity and status'
+);
+SELECT lives_ok(
+	$$
+		UPDATE auth.users
+		SET email = ' persona@example.com ',
+			updated_at = now()
+		WHERE id = '00000000-0000-0000-0000-000000000342'
+	$$,
+	'same normalized external email remains valid after preauthorization revocation'
+);
+SELECT lives_ok(
+	$$ SELECT private.reconcile_auth_user_profiles() $$,
+	'reconciliation accepts a materialized external identity after preauthorization revocation'
+);
+SELECT throws_ok(
+	$$
+		UPDATE auth.users
+		SET email = 'persona@uni.pe',
+			updated_at = now()
+		WHERE id = '00000000-0000-0000-0000-000000000342'
+	$$,
+	'23514',
+	'email is not authorized',
+	'a materialized external identity cannot change to an institutional email'
+);
+SELECT is(
+	(
+		SELECT email || ':' || identity_kind::text
+		FROM public.profiles
+		WHERE user_id = '00000000-0000-0000-0000-000000000342'
+	),
+	'persona@example.com:external_authorized',
+	'rejected institutional change preserves the external profile email and identity_kind'
+);
+
+INSERT INTO public.external_identity_preauthorizations (normalized_email, authorized_by, reason)
+VALUES (
+	'persona-next@example.com',
+	'00000000-0000-0000-0000-000000000301',
+	'external email change fixture'
+);
+SELECT lives_ok(
+	$$
+		UPDATE auth.users
+		SET email = 'PERSONA-NEXT@EXAMPLE.COM',
+			updated_at = now()
+		WHERE id = '00000000-0000-0000-0000-000000000342'
+	$$,
+	'a materialized external identity can change to an exactly preauthorized external email'
+);
+SELECT is(
+	(
+		SELECT email || ':' || identity_kind::text
+		FROM public.profiles
+		WHERE user_id = '00000000-0000-0000-0000-000000000342'
+	),
+	'persona-next@example.com:external_authorized',
+	'authorized external email change updates the profile while preserving identity_kind'
+);
+
+UPDATE public.profiles
+SET email = 'persona@example.com'
+WHERE user_id = '00000000-0000-0000-0000-000000000342';
+UPDATE public.external_identity_preauthorizations
+SET revoked_by = '00000000-0000-0000-0000-000000000301',
+	revoked_at = now(),
+	revocation_reason = 'reconciliation mismatch fixture'
+WHERE normalized_email = 'persona-next@example.com'
+	AND revoked_at IS NULL;
+SELECT throws_ok(
+	$$ SELECT private.reconcile_auth_user_profiles() $$,
+	'23514',
+	'auth user profile reconciliation requires authorized emails',
+	'reconciliation rejects an external profile email mismatch without active exact preauthorization'
+);
+UPDATE public.profiles
+SET email = 'persona-next@example.com'
+WHERE user_id = '00000000-0000-0000-0000-000000000342';
+
+INSERT INTO public.external_identity_preauthorizations (normalized_email, authorized_by, reason)
+VALUES (
+	'missing-active@example.org',
+	'00000000-0000-0000-0000-000000000301',
+	'active missing-profile fixture'
+);
+INSERT INTO auth.users (id, aud, role, email, email_confirmed_at, created_at, updated_at)
+VALUES (
+	'00000000-0000-0000-0000-000000000344',
+	'authenticated',
+	'authenticated',
+	'missing-active@example.org',
+	now(),
+	now(),
+	now()
+);
+DELETE FROM public.profiles
+WHERE user_id = '00000000-0000-0000-0000-000000000344';
+SELECT lives_ok(
+	$$ SELECT private.reconcile_auth_user_profiles() $$,
+	'reconciliation recreates a missing external profile with active exact preauthorization'
+);
+SELECT is(
+	(
+		SELECT identity_kind::text
+		FROM public.profiles
+		WHERE user_id = '00000000-0000-0000-0000-000000000344'
+	),
+	'external_authorized',
+	'recreated external profile keeps external_authorized identity_kind'
+);
+
+INSERT INTO public.external_identity_preauthorizations (normalized_email, authorized_by, reason)
+VALUES (
+	'missing-revoked@example.org',
+	'00000000-0000-0000-0000-000000000301',
+	'revoked missing-profile fixture'
+);
+INSERT INTO auth.users (id, aud, role, email, email_confirmed_at, created_at, updated_at)
+VALUES (
+	'00000000-0000-0000-0000-000000000345',
+	'authenticated',
+	'authenticated',
+	'missing-revoked@example.org',
+	now(),
+	now(),
+	now()
+);
+DELETE FROM public.profiles
+WHERE user_id = '00000000-0000-0000-0000-000000000345';
+UPDATE public.external_identity_preauthorizations
+SET revoked_by = '00000000-0000-0000-0000-000000000301',
+	revoked_at = now(),
+	revocation_reason = 'revoked before reconciliation'
+WHERE normalized_email = 'missing-revoked@example.org'
+	AND revoked_at IS NULL;
+SELECT throws_ok(
+	$$ SELECT private.reconcile_auth_user_profiles() $$,
+	'23514',
+	'auth user profile reconciliation requires authorized emails',
+	'missing external profile cannot be recreated without active exact preauthorization'
+);
+DELETE FROM auth.users
+WHERE id = '00000000-0000-0000-0000-000000000345';
+
+SELECT throws_ok(
+	$$
+		INSERT INTO auth.users (id, aud, role, email, email_confirmed_at, created_at, updated_at)
+		VALUES (
 			'00000000-0000-0000-0000-000000000391',
 			'authenticated',
 			'authenticated',
@@ -277,7 +559,7 @@ SELECT throws_ok(
 		)
 	$$,
 	'23514',
-	'institutional email is required',
+	'email is not authorized',
 	'falsauni.pe is rejected'
 );
 SELECT throws_ok(
@@ -294,7 +576,7 @@ SELECT throws_ok(
 		)
 	$$,
 	'23514',
-	'institutional email is required',
+	'email is not authorized',
 	'uni.pe.example.com is rejected'
 );
 SELECT throws_ok(
@@ -311,7 +593,7 @@ SELECT throws_ok(
 		)
 	$$,
 	'23514',
-	'institutional email is required',
+	'email is not authorized',
 	'exampleuni.pe is rejected'
 );
 SELECT throws_ok(
@@ -328,7 +610,7 @@ SELECT throws_ok(
 		)
 	$$,
 	'23514',
-	'institutional email is required',
+	'email is not authorized',
 	'subdominio.uni.pe is rejected'
 );
 SELECT throws_ok(
@@ -345,7 +627,7 @@ SELECT throws_ok(
 		)
 	$$,
 	'23514',
-	'institutional email is required',
+	'email is not authorized',
 	'empty email domain is rejected'
 );
 SELECT throws_ok(
@@ -362,7 +644,7 @@ SELECT throws_ok(
 		)
 	$$,
 	'23514',
-	'institutional email is required',
+	'email is not authorized',
 	'email without at sign is rejected'
 );
 SELECT throws_ok(
@@ -379,7 +661,7 @@ SELECT throws_ok(
 		)
 	$$,
 	'23514',
-	'institutional email is required',
+	'email is not authorized',
 	'null email is rejected'
 );
 SELECT throws_ok(
@@ -396,7 +678,7 @@ SELECT throws_ok(
 		)
 	$$,
 	'23514',
-	'institutional email is required',
+	'email is not authorized',
 	'empty literal email is rejected'
 );
 SELECT is(
@@ -465,8 +747,7 @@ VALUES (
 
 UPDATE public.profiles
 SET display_name = 'Nombre preservado',
-	account_status = 'suspended'::public.account_status,
-	identity_kind = 'external_authorized'::public.identity_kind
+	account_status = 'suspended'::public.account_status
 WHERE user_id = '00000000-0000-0000-0000-000000000310';
 
 SELECT lives_ok(
@@ -495,7 +776,7 @@ SELECT throws_ok(
 		WHERE id = '00000000-0000-0000-0000-000000000310'
 	$$,
 	'23514',
-	'institutional email is required',
+	'email is not authorized',
 	'changing auth.users email to an invalid domain is rejected'
 );
 SELECT is(
@@ -540,7 +821,7 @@ SELECT is(
 		FROM public.profiles
 		WHERE user_id = '00000000-0000-0000-0000-000000000310'
 	),
-	'external_authorized',
+	'institutional',
 	'email change preserves identity_kind'
 );
 
@@ -659,12 +940,23 @@ VALUES (
 DELETE FROM public.profiles
 WHERE user_id = '00000000-0000-0000-0000-000000000331';
 
+INSERT INTO public.external_identity_preauthorizations (
+	normalized_email,
+	authorized_by,
+	reason
+)
+VALUES (
+	'reconcile-current@example.com',
+	'00000000-0000-0000-0000-000000000301',
+	'reconciliation external identity fixture'
+);
+
 INSERT INTO auth.users (id, aud, role, email, email_confirmed_at, created_at, updated_at)
 VALUES (
 	'00000000-0000-0000-0000-000000000332',
 	'authenticated',
 	'authenticated',
-	'reconcile-current@uni.pe',
+	'reconcile-current@example.com',
 	now(),
 	now(),
 	now()
@@ -684,7 +976,7 @@ INSERT INTO public.profiles (
 )
 VALUES (
 	'00000000-0000-0000-0000-000000000332',
-	'reconcile-obsolete@uni.pe',
+	'reconcile-obsolete@example.com',
 	'Perfil reconciliado',
 	'external_authorized'::public.identity_kind,
 	'suspended'::public.account_status,
@@ -746,7 +1038,7 @@ SELECT is(
 		FROM public.profiles
 		WHERE user_id = '00000000-0000-0000-0000-000000000332'
 	),
-	'reconcile-obsolete@uni.pe',
+	'reconcile-obsolete@example.com',
 	'reconciliation setup has an obsolete profile email'
 );
 SELECT is(
@@ -787,7 +1079,7 @@ SELECT is(
 		FROM public.profiles
 		WHERE user_id = '00000000-0000-0000-0000-000000000332'
 	),
-	'reconcile-current@uni.pe',
+	'reconcile-current@example.com',
 	'reconcile_auth_user_profiles corrects an obsolete profile email'
 );
 SELECT is(
