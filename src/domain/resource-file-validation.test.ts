@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
 	RESOURCE_FILE_MAX_BYTES,
+	RESOURCE_SOURCE_NORMALIZED_EXTENSIONS,
+	RESOURCE_TEXT_MAX_BYTES,
 	ResourceFileValidationError,
 	type ResourceFileCandidate,
 	type ResourceFileValidationErrorCode,
@@ -151,19 +153,137 @@ describe('ResourceFile validation dispatcher', () => {
 	);
 
 	it.each([
-		'notes.md',
-		'formula.tex',
-		'notes.txt',
-		'Main.java',
-		'solution.py',
-		'main.c',
-		'app.js',
-		'types.ts',
+		['README.MD', 'markdown', '.md'],
+		['formula.TeX', 'tex', '.tex'],
+		['notes.TXT', 'text', '.txt'],
+		...RESOURCE_SOURCE_NORMALIZED_EXTENSIONS.map(
+			(extension) => [`solution${extension.toUpperCase()}`, 'source', extension] as const,
+		),
+	] as const)(
+		'accepts canonical UTF-8 text metadata for %s',
+		async (filename, fileKind, normalizedExtension) => {
+			const bytes = encoder.encode('Árbol\r\nlínea\n');
+			const result = await validateResourceFile(
+				makeCandidate({
+					bytes,
+					declaredContentType: 'application/octet-stream',
+					filename,
+				}),
+			);
+
+			expect(result).toMatchObject({
+				byteSize: bytes.byteLength,
+				contentType: 'text/plain',
+				fileKind,
+				filename,
+				normalizedExtension,
+				sha256: 'dc7dd95695cd7d082e01d43c5631df855d543b89679d7f7804138aef15ce2caf',
+			});
+		},
+	);
+
+	it.each(['', 'application/octet-stream', 'text/html', 'application/javascript'])(
+		'ignores client-declared MIME %j for an allowlisted textual file',
+		async (declaredContentType) => {
+			const result = await validateResourceFile(
+				makeCandidate({
+					bytes: encoder.encode('# safe markdown\n'),
+					declaredContentType,
+					filename: 'notes.md',
+				}),
+			);
+
+			expect(result.contentType).toBe('text/plain');
+			expect(result.fileKind).toBe('markdown');
+		},
+	);
+
+	it.each([
 		'icon.svg',
 		'page.html',
+		'page.htm',
+		'page.xhtml',
+		'data.xml',
+		'data.json',
+		'config.yaml',
+		'config.yml',
+		'style.css',
+		'Program.cs',
+		'Main.kt',
+		'script.rb',
+		'index.php',
+		'app.swift',
+		'notebook.ipynb',
 		'bundle.zip',
-	])('rejects the not-yet-enabled or forbidden extension in %j', async (filename) => {
-		await expectValidationError(makeCandidate({ filename }), 'UNSUPPORTED_FILE_TYPE');
+		'program.exe',
+		'library.jar',
+		'module.wasm',
+	])('rejects the forbidden or unspecified extension in %j', async (filename) => {
+		await expectValidationError(
+			makeCandidate({ bytes: encoder.encode('safe text'), filename }),
+			'UNSUPPORTED_FILE_TYPE',
+		);
+	});
+
+	it('preserves a UTF-8 BOM, CRLF, LF, exact bytes, and the exact-byte SHA', async () => {
+		const sourceBytes = new Uint8Array([
+			0xef, 0xbb, 0xbf, 0x6c, 0x69, 0x6e, 0x65, 0x20, 0x31, 0x0d, 0x0a, 0x6c, 0x69, 0x6e, 0x65,
+			0x20, 0x32, 0x0a,
+		]);
+		const expectedBytes = Uint8Array.from(sourceBytes);
+		const result = await validateResourceFile(
+			makeCandidate({ bytes: sourceBytes, filename: 'notes.txt' }),
+		);
+
+		expect(result.bytes).not.toBe(sourceBytes);
+		expect(result.bytes).toEqual(expectedBytes);
+		expect(result.sha256).toBe('eccb0cfcd5680c420373910706abddc875676fd1bcca4fd8af156757a6e21c3b');
+
+		sourceBytes.fill(0);
+		expect(result.bytes).toEqual(expectedBytes);
+	});
+
+	it('accepts textual content at exactly 2,000,000 bytes', async () => {
+		const result = await validateResourceFile(
+			makeCandidate({
+				bytes: new Uint8Array(RESOURCE_TEXT_MAX_BYTES).fill(0x61),
+				filename: 'boundary.py',
+			}),
+		);
+
+		expect(result.byteSize).toBe(RESOURCE_TEXT_MAX_BYTES);
+		expect(result.sha256).toMatch(/^[0-9a-f]{64}$/);
+	});
+
+	it('rejects textual content above 2,000,000 bytes', async () => {
+		await expectValidationError(
+			makeCandidate({
+				bytes: new Uint8Array(RESOURCE_TEXT_MAX_BYTES + 1).fill(0x61),
+				filename: 'oversized.md',
+			}),
+			'FILE_TOO_LARGE',
+		);
+	});
+
+	it('rejects empty textual files', async () => {
+		await expectValidationError(
+			makeCandidate({ bytes: new Uint8Array(), filename: 'empty.tex' }),
+			'EMPTY_FILE',
+		);
+	});
+
+	it('rejects invalid UTF-8 without attempting to rewrite it', async () => {
+		await expectValidationError(
+			makeCandidate({ bytes: new Uint8Array([0xc3, 0x28]), filename: 'invalid.txt' }),
+			'INVALID_UTF8_TEXT',
+		);
+	});
+
+	it('rejects a NUL byte in otherwise valid UTF-8 text', async () => {
+		await expectValidationError(
+			makeCandidate({ bytes: encoder.encode('before\u0000after'), filename: 'nul.java' }),
+			'TEXT_CONTAINS_NUL',
+		);
 	});
 
 	it.each([
@@ -173,7 +293,13 @@ describe('ResourceFile validation dispatcher', () => {
 		['.png', 'INVALID_FILENAME'],
 		['.jpg', 'INVALID_FILENAME'],
 		['.jpeg', 'INVALID_FILENAME'],
+		...['.md', '.tex', '.txt', ...RESOURCE_SOURCE_NORMALIZED_EXTENSIONS].map(
+			(filename) => [filename, 'INVALID_FILENAME'] as const,
+		),
 		['folder/exam.pdf', 'INVALID_FILENAME'],
+		['folder/notes.md', 'INVALID_FILENAME'],
+		['folder\\solution.py', 'INVALID_FILENAME'],
+		['notes\r\n.md', 'INVALID_FILENAME'],
 		['folder\\photo.png', 'INVALID_FILENAME'],
 		['photo\r\n.png', 'INVALID_FILENAME'],
 		['photo\u007f.jpeg', 'INVALID_FILENAME'],
@@ -288,7 +414,7 @@ describe('ResourceFile validation dispatcher', () => {
 
 	it('uses the generic ResourceFile validation error type', async () => {
 		await expect(
-			validateResourceFile(makeCandidate({ filename: 'future.md' })),
+			validateResourceFile(makeCandidate({ filename: 'future.json' })),
 		).rejects.toBeInstanceOf(ResourceFileValidationError);
 	});
 });

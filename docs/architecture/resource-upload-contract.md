@@ -12,7 +12,7 @@ Evolución hacia `ResourceFile` genérico:
 
 **Implementada en aplicación, dominio y HTTP por Stage 4C.2.**
 
-Stage 4C.3 habilita operacionalmente los validadores y la metadata canónica de PDF, PNG y JPEG. Las familias de texto/source permanecen pendientes de 4C.4 y PostgreSQL continúa rechazándolas.
+Stage 4C.4 habilita operacionalmente la allowlist v1 completa: PDF, PNG, JPEG, Markdown, TeX, TXT y las extensiones source expresamente permitidas.
 
 ---
 
@@ -285,9 +285,7 @@ El path ya es genérico y no necesita cambiar al incorporar nuevos formatos.
 
 # 7. Estado actual del endpoint
 
-El contrato del handler y del orquestador es `ResourceFile` genérico. Stage 4C.3 registra operacionalmente PDF, PNG y JPEG en el mismo endpoint y PostgreSQL impone su matriz canónica.
-
-La activación restante de la allowlist definida por `resource-file-policy.md` corresponde a Stage 4C.4 para texto/source, que continúa rechazado.
+El contrato del handler y del orquestador es `ResourceFile` genérico. Stage 4C.4 registra operacionalmente la allowlist v1 completa en el mismo endpoint y PostgreSQL impone su matriz canónica cerrada y los límites por familia.
 
 ---
 
@@ -1952,7 +1950,7 @@ con las validaciones ya definidas en la política de archivos.
 
 ## Stage 4C.4 — texto y source
 
-Habilitar operacionalmente:
+Habilita operacionalmente:
 
 ```text
 Markdown

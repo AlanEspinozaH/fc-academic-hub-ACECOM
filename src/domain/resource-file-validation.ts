@@ -1,4 +1,5 @@
 export const RESOURCE_FILE_MAX_BYTES = 10_000_000;
+export const RESOURCE_TEXT_MAX_BYTES = 2_000_000;
 export const RESOURCE_PDF_CONTENT_TYPE = 'application/pdf' as const;
 export const RESOURCE_PDF_FILE_KIND = 'pdf' as const;
 export const RESOURCE_PDF_NORMALIZED_EXTENSION = '.pdf' as const;
@@ -7,6 +8,27 @@ export const RESOURCE_PNG_NORMALIZED_EXTENSION = '.png' as const;
 export const RESOURCE_JPEG_CONTENT_TYPE = 'image/jpeg' as const;
 export const RESOURCE_JPEG_NORMALIZED_EXTENSIONS = ['.jpg', '.jpeg'] as const;
 export const RESOURCE_IMAGE_FILE_KIND = 'image' as const;
+export const RESOURCE_TEXT_CONTENT_TYPE = 'text/plain' as const;
+export const RESOURCE_MARKDOWN_NORMALIZED_EXTENSION = '.md' as const;
+export const RESOURCE_TEX_NORMALIZED_EXTENSION = '.tex' as const;
+export const RESOURCE_PLAIN_TEXT_NORMALIZED_EXTENSION = '.txt' as const;
+export const RESOURCE_SOURCE_NORMALIZED_EXTENSIONS = [
+	'.java',
+	'.py',
+	'.c',
+	'.h',
+	'.cpp',
+	'.hpp',
+	'.js',
+	'.ts',
+	'.rs',
+	'.go',
+	'.sql',
+	'.sh',
+] as const;
+
+export type ResourceSourceNormalizedExtension =
+	(typeof RESOURCE_SOURCE_NORMALIZED_EXTENSIONS)[number];
 
 export type ResourceFileKind = 'pdf' | 'image' | 'markdown' | 'tex' | 'text' | 'source';
 
@@ -34,7 +56,9 @@ export type ResourceFileValidationErrorCode =
 	| 'INVALID_PDF_HEADER'
 	| 'INVALID_PDF_TRAILER'
 	| 'INVALID_PNG_SIGNATURE'
+	| 'INVALID_UTF8_TEXT'
 	| 'MISSING_FILENAME'
+	| 'TEXT_CONTAINS_NUL'
 	| 'UNSUPPORTED_FILE_TYPE';
 
 export class ResourceFileValidationError extends Error {
@@ -55,7 +79,15 @@ const REGISTERED_EXTENSION_ONLY_FILENAMES = new Set<string>([
 	RESOURCE_PDF_NORMALIZED_EXTENSION,
 	RESOURCE_PNG_NORMALIZED_EXTENSION,
 	...RESOURCE_JPEG_NORMALIZED_EXTENSIONS,
+	RESOURCE_MARKDOWN_NORMALIZED_EXTENSION,
+	RESOURCE_TEX_NORMALIZED_EXTENSION,
+	RESOURCE_PLAIN_TEXT_NORMALIZED_EXTENSION,
+	...RESOURCE_SOURCE_NORMALIZED_EXTENSIONS,
 ]);
+const SOURCE_EXTENSION_SET = new Set<string>(RESOURCE_SOURCE_NORMALIZED_EXTENSIONS);
+const isResourceSourceNormalizedExtension = (
+	value: string,
+): value is ResourceSourceNormalizedExtension => SOURCE_EXTENSION_SET.has(value);
 
 const fail = (code: ResourceFileValidationErrorCode, message: string): never => {
 	throw new ResourceFileValidationError(code, message);
@@ -163,6 +195,7 @@ const toLowercaseHex = (buffer: ArrayBuffer): string =>
 const snapshotCandidateBytes = (
 	candidate: ResourceFileCandidate,
 	formatLabel: string,
+	maximumBytes = RESOURCE_FILE_MAX_BYTES,
 ): Uint8Array<ArrayBuffer> => {
 	const byteSize = candidate.bytes.byteLength;
 
@@ -170,11 +203,8 @@ const snapshotCandidateBytes = (
 		fail('EMPTY_FILE', 'resource file cannot be empty');
 	}
 
-	if (byteSize > RESOURCE_FILE_MAX_BYTES) {
-		fail(
-			'FILE_TOO_LARGE',
-			`resource ${formatLabel} cannot exceed ${RESOURCE_FILE_MAX_BYTES} bytes`,
-		);
+	if (byteSize > maximumBytes) {
+		fail('FILE_TOO_LARGE', `resource ${formatLabel} cannot exceed ${maximumBytes} bytes`);
 	}
 
 	return Uint8Array.from(candidate.bytes);
@@ -184,6 +214,40 @@ const sha256 = async (bytes: Uint8Array<ArrayBuffer>): Promise<string> => {
 	const digest = await globalThis.crypto.subtle.digest('SHA-256', bytes);
 
 	return toLowercaseHex(digest);
+};
+
+const validateText = async (
+	candidate: ResourceFileCandidate,
+	filename: string,
+	fileKind: Extract<ResourceFileKind, 'markdown' | 'tex' | 'text' | 'source'>,
+	normalizedExtension:
+		| typeof RESOURCE_MARKDOWN_NORMALIZED_EXTENSION
+		| typeof RESOURCE_TEX_NORMALIZED_EXTENSION
+		| typeof RESOURCE_PLAIN_TEXT_NORMALIZED_EXTENSION
+		| ResourceSourceNormalizedExtension,
+): Promise<ValidatedResourceFile> => {
+	const byteSize = candidate.bytes.byteLength;
+	const bytes = snapshotCandidateBytes(candidate, 'text file', RESOURCE_TEXT_MAX_BYTES);
+
+	if (bytes.includes(0x00)) {
+		fail('TEXT_CONTAINS_NUL', 'resource text file cannot contain NUL bytes');
+	}
+
+	try {
+		new TextDecoder('utf-8', { fatal: true }).decode(bytes);
+	} catch {
+		fail('INVALID_UTF8_TEXT', 'resource text file must contain valid UTF-8');
+	}
+
+	return Object.freeze({
+		bytes,
+		byteSize,
+		contentType: RESOURCE_TEXT_CONTENT_TYPE,
+		fileKind,
+		filename,
+		normalizedExtension,
+		sha256: await sha256(bytes),
+	});
 };
 
 const validatePdf = async (
@@ -285,6 +349,22 @@ export const validateResourceFile = async (
 		normalizedExtension === RESOURCE_JPEG_NORMALIZED_EXTENSIONS[1]
 	) {
 		return validateJpeg(candidate, filename, normalizedExtension);
+	}
+
+	if (normalizedExtension === RESOURCE_MARKDOWN_NORMALIZED_EXTENSION) {
+		return validateText(candidate, filename, 'markdown', normalizedExtension);
+	}
+
+	if (normalizedExtension === RESOURCE_TEX_NORMALIZED_EXTENSION) {
+		return validateText(candidate, filename, 'tex', normalizedExtension);
+	}
+
+	if (normalizedExtension === RESOURCE_PLAIN_TEXT_NORMALIZED_EXTENSION) {
+		return validateText(candidate, filename, 'text', normalizedExtension);
+	}
+
+	if (isResourceSourceNormalizedExtension(normalizedExtension)) {
+		return validateText(candidate, filename, 'source', normalizedExtension);
 	}
 
 	return fail('UNSUPPORTED_FILE_TYPE', 'submitted file type is not currently supported');

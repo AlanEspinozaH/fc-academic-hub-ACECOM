@@ -67,6 +67,53 @@ const IMAGE_DESCRIPTORS = [
 	},
 ] satisfies readonly ResourceFileReadDescriptor[];
 
+const TEXT_DESCRIPTORS = [
+	{
+		resourceId: RESOURCE_ID,
+		fileId: FILE_ID,
+		displayFilename: 'Notas.md',
+		fileKind: 'markdown',
+		normalizedExtension: '.md',
+		contentType: 'text/plain',
+		byteSize: BYTES.byteLength,
+		sha256: 'e'.repeat(64),
+		storageKeyVersion: 'generic_v2',
+	},
+	{
+		resourceId: RESOURCE_ID,
+		fileId: FILE_ID,
+		displayFilename: 'Fórmula.tex',
+		fileKind: 'tex',
+		normalizedExtension: '.tex',
+		contentType: 'text/plain',
+		byteSize: BYTES.byteLength,
+		sha256: 'f'.repeat(64),
+		storageKeyVersion: 'generic_v2',
+	},
+	{
+		resourceId: RESOURCE_ID,
+		fileId: FILE_ID,
+		displayFilename: 'Notas.txt',
+		fileKind: 'text',
+		normalizedExtension: '.txt',
+		contentType: 'text/plain',
+		byteSize: BYTES.byteLength,
+		sha256: '0'.repeat(64),
+		storageKeyVersion: 'generic_v2',
+	},
+	{
+		resourceId: RESOURCE_ID,
+		fileId: FILE_ID,
+		displayFilename: 'solution.py',
+		fileKind: 'source',
+		normalizedExtension: '.py',
+		contentType: 'text/plain',
+		byteSize: BYTES.byteLength,
+		sha256: '1'.repeat(64),
+		storageKeyVersion: 'generic_v2',
+	},
+] satisfies readonly ResourceFileReadDescriptor[];
+
 const makeDependencies = () => {
 	const getDescriptor = vi.fn(async (): Promise<ResourceFileReadDescriptor> => makeDescriptor());
 	const persistence = { getDescriptor } as ResourceFileReadPersistence;
@@ -98,6 +145,24 @@ describe('resource file reader', () => {
 	});
 
 	it.each(IMAGE_DESCRIPTORS)(
+		'reads an authorized $normalizedExtension descriptor from the suffixless generic_v2 key',
+		async (descriptor) => {
+			const dependencies = makeDependencies();
+			dependencies.getDescriptor.mockResolvedValueOnce(descriptor);
+			const reader = createResourceFileReader(dependencies.persistence, dependencies.objectStore);
+
+			await expect(reader.read({ resourceId: RESOURCE_ID, fileId: FILE_ID })).resolves.toEqual({
+				...descriptor,
+				bytes: BYTES,
+			});
+			expect(dependencies.read).toHaveBeenCalledWith(`resources/${RESOURCE_ID}/${FILE_ID}`);
+			expect(dependencies.getDescriptor.mock.invocationCallOrder[0]).toBeLessThan(
+				dependencies.read.mock.invocationCallOrder[0] ?? 0,
+			);
+		},
+	);
+
+	it.each(TEXT_DESCRIPTORS)(
 		'reads an authorized $normalizedExtension descriptor from the suffixless generic_v2 key',
 		async (descriptor) => {
 			const dependencies = makeDependencies();

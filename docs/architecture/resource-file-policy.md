@@ -4,7 +4,7 @@
 
 Decisión: **Aceptada**
 
-Implementación: **parcial hasta Stage 4C.3**
+Implementación: **allowlist v1 completa hasta Stage 4C.4**
 
 Este documento define el contrato normativo de archivos aceptados por FC Academic Hub v1.
 
@@ -24,9 +24,7 @@ Describe:
 - almacenamiento privado;
 - compatibilidad de `storage_key`.
 
-Stage 4C.3 habilita operacionalmente PDF, PNG y JPEG. Markdown, TeX, TXT y source permanecen pendientes de Stage 4C.4, por lo que todavía existen diferencias entre esta política v1 completa y el comportamiento productivo.
-
-Las implementaciones futuras deben hacer converger código, migraciones, pruebas y documentación hacia este contrato.
+Stage 4C.4 habilita operacionalmente la allowlist v1 completa: PDF, PNG, JPEG, Markdown, TeX, TXT y las extensiones source expresamente permitidas.
 
 ---
 
