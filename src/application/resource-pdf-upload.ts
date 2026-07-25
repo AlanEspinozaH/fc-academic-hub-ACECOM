@@ -3,7 +3,10 @@ import {
 	type ResourceFileCandidate,
 } from '../domain/resource-file-validation';
 import type { ResourceObjectStore } from '../infrastructure/r2/resource-object-store';
-import { derivePrivateResourceStorageKey } from '../infrastructure/r2/resource-storage-key';
+import {
+	CURRENT_RESOURCE_STORAGE_KEY_VERSION,
+	derivePrivateResourceStorageKey,
+} from '../infrastructure/r2/resource-storage-key';
 import {
 	ResourceUploadPersistenceError,
 	type ResourceUploadPersistence,
@@ -67,6 +70,8 @@ export const createResourcePdfUploadOrchestrator = (
 				fileId = await persistence.reserve({
 					resourceId: input.resourceId,
 					displayFilename: validatedPdf.filename,
+					fileKind: validatedPdf.fileKind,
+					normalizedExtension: validatedPdf.normalizedExtension,
 					contentType: validatedPdf.contentType,
 					byteSize: validatedPdf.byteSize,
 					sha256: validatedPdf.sha256,
@@ -85,7 +90,11 @@ export const createResourcePdfUploadOrchestrator = (
 			let storageKey: string;
 
 			try {
-				storageKey = derivePrivateResourceStorageKey(input.resourceId, fileId);
+				storageKey = derivePrivateResourceStorageKey(
+					CURRENT_RESOURCE_STORAGE_KEY_VERSION,
+					input.resourceId,
+					fileId,
+				);
 			} catch {
 				try {
 					await persistence.abort({

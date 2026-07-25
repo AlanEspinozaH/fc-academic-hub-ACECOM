@@ -8,7 +8,7 @@ import { ResourcePdfUploadError, createResourcePdfUploadOrchestrator } from './r
 
 const RESOURCE_ID = '11111111-2222-3333-4444-555555555555';
 const FILE_ID = 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee';
-const STORAGE_KEY = `resources/${RESOURCE_ID}/${FILE_ID}.pdf`;
+const STORAGE_KEY = `resources/${RESOURCE_ID}/${FILE_ID}`;
 const SHA256 = '1e7313ace78f0fb481a486939b4885902663102818090805515553d84e0bbfd3';
 
 const makeCandidate = () => ({
@@ -71,6 +71,8 @@ describe('resource PDF upload orchestrator', () => {
 		expect(dependencies.reserve).toHaveBeenCalledWith({
 			resourceId: RESOURCE_ID,
 			displayFilename: 'exam.pdf',
+			fileKind: 'pdf',
+			normalizedExtension: '.pdf',
 			contentType: 'application/pdf',
 			byteSize: 15,
 			sha256: SHA256,

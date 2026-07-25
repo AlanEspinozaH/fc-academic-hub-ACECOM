@@ -30,6 +30,13 @@ type ResourceVisibility = SupabaseDatabase['public']['Enums']['resource_visibili
 
 type ResourceRightsStatus = SupabaseDatabase['public']['Enums']['resource_rights_status'];
 
+type ResourceFileKind = SupabaseDatabase['public']['Enums']['resource_file_kind'];
+
+type ResourceStorageKeyVersion =
+	SupabaseDatabase['public']['Enums']['resource_storage_key_version'];
+
+type ResourceFileRow = SupabaseDatabase['public']['Tables']['resource_files']['Row'];
+
 type GrantEntitlementArgs =
 	SupabaseDatabase['public']['Functions']['grant_user_entitlement']['Args'];
 
@@ -46,10 +53,14 @@ type HasPrivateSchema = 'private' extends keyof SupabaseDatabase ? true : false;
 
 type RegisterAcceptsStorageKey = 'storage_key' extends keyof RegisterUploadArgs ? true : false;
 
+type RegisterAcceptsStorageKeyVersion = 'storage_key_version' extends keyof RegisterUploadArgs
+	? true
+	: false;
+
 describe('generated Supabase database types', () => {
 	it('contains only the public database contract', () => {
 		expect(generatedTypesSource).not.toMatch(/^[\t ]*private:/m);
-		expect(generatedTypesSource).not.toContain('storage_key');
+		expect(generatedTypesSource).not.toMatch(/^[\t ]*storage_key:/m);
 		expect(generatedTypesSource).not.toContain('service_role');
 
 		expect(generatedTypesSource).toContain('register_resource_file_upload');
@@ -61,9 +72,16 @@ describe('generated Supabase database types', () => {
 	it('exposes the atomic upload RPC signatures without a caller-controlled storage key', () => {
 		expectTypeOf<HasPrivateSchema>().toEqualTypeOf<false>();
 		expectTypeOf<RegisterAcceptsStorageKey>().toEqualTypeOf<false>();
+		expectTypeOf<RegisterAcceptsStorageKeyVersion>().toEqualTypeOf<false>();
 
 		expectTypeOf<keyof RegisterUploadArgs>().toEqualTypeOf<
-			'byte_size' | 'content_type' | 'display_filename' | 'resource_id' | 'sha256'
+			| 'byte_size'
+			| 'content_type'
+			| 'display_filename'
+			| 'file_kind'
+			| 'normalized_extension'
+			| 'resource_id'
+			| 'sha256'
 		>();
 
 		expectTypeOf<keyof FinalizeUploadArgs>().toEqualTypeOf<'comment' | 'file_id' | 'sha256'>();
@@ -75,6 +93,18 @@ describe('generated Supabase database types', () => {
 	it('exposes identity_kind consistently on profiles', () => {
 		expectTypeOf<IdentityKind>().toEqualTypeOf<'institutional' | 'external_authorized'>();
 		expectTypeOf<ProfileIdentityKind>().toEqualTypeOf<IdentityKind>();
+	});
+
+	it('exposes canonical ResourceFile metadata and explicit storage layouts', () => {
+		expectTypeOf<ResourceFileKind>().toEqualTypeOf<
+			'pdf' | 'image' | 'markdown' | 'tex' | 'text' | 'source'
+		>();
+		expectTypeOf<ResourceStorageKeyVersion>().toEqualTypeOf<'legacy_pdf_v1' | 'generic_v2'>();
+		expectTypeOf<ResourceFileRow['file_kind']>().toEqualTypeOf<ResourceFileKind>();
+		expectTypeOf<ResourceFileRow['normalized_extension']>().toEqualTypeOf<string>();
+		expectTypeOf<
+			ResourceFileRow['storage_key_version']
+		>().toEqualTypeOf<ResourceStorageKeyVersion>();
 	});
 
 	it('exposes the v1 entitlement and resource audience contracts', () => {

@@ -1,4 +1,6 @@
 export const RESOURCE_PDF_CONTENT_TYPE = 'application/pdf' as const;
+export const RESOURCE_PDF_FILE_KIND = 'pdf' as const;
+export const RESOURCE_PDF_NORMALIZED_EXTENSION = '.pdf' as const;
 export const RESOURCE_PDF_MAX_BYTES = 10_000_000;
 
 const PDF_HEADER = new Uint8Array([0x25, 0x50, 0x44, 0x46, 0x2d]);
@@ -29,7 +31,9 @@ export interface ValidatedResourcePdf {
 	readonly bytes: Uint8Array;
 	readonly byteSize: number;
 	readonly contentType: typeof RESOURCE_PDF_CONTENT_TYPE;
+	readonly fileKind: typeof RESOURCE_PDF_FILE_KIND;
 	readonly filename: string;
+	readonly normalizedExtension: typeof RESOURCE_PDF_NORMALIZED_EXTENSION;
 	readonly sha256: string;
 }
 
@@ -163,7 +167,9 @@ export const validateResourcePdf = async (
 		bytes,
 		byteSize,
 		contentType: RESOURCE_PDF_CONTENT_TYPE,
+		fileKind: RESOURCE_PDF_FILE_KIND,
 		filename,
+		normalizedExtension: RESOURCE_PDF_NORMALIZED_EXTENSION,
 		sha256: toLowercaseHex(digest),
 	});
 };

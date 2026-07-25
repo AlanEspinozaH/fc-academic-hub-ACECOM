@@ -33,6 +33,8 @@ describe('Supabase resource upload persistence', () => {
 			persistence.reserve({
 				resourceId: RESOURCE_ID,
 				displayFilename: 'exam.pdf',
+				fileKind: 'pdf',
+				normalizedExtension: '.pdf',
 				contentType: 'application/pdf',
 				byteSize: 1234,
 				sha256: SHA256,
@@ -43,10 +45,14 @@ describe('Supabase resource upload persistence', () => {
 		expect(rpc).toHaveBeenCalledWith('register_resource_file_upload', {
 			resource_id: RESOURCE_ID,
 			display_filename: 'exam.pdf',
+			file_kind: 'pdf',
+			normalized_extension: '.pdf',
 			content_type: 'application/pdf',
 			byte_size: 1234,
 			sha256: SHA256,
 		});
+		expect(rpc.mock.calls[0]?.[1]).not.toHaveProperty('storage_key');
+		expect(rpc.mock.calls[0]?.[1]).not.toHaveProperty('storage_key_version');
 	});
 
 	it('retries finalization once after a status-zero transport response', async () => {
@@ -133,6 +139,8 @@ describe('Supabase resource upload persistence', () => {
 		const operation = persistence.reserve({
 			resourceId: RESOURCE_ID,
 			displayFilename: 'exam.pdf',
+			fileKind: 'pdf',
+			normalizedExtension: '.pdf',
 			contentType: 'application/pdf',
 			byteSize: 1234,
 			sha256: SHA256,
@@ -161,6 +169,8 @@ describe('Supabase resource upload persistence', () => {
 		const operation = persistence.reserve({
 			resourceId: RESOURCE_ID,
 			displayFilename: 'exam.pdf',
+			fileKind: 'pdf',
+			normalizedExtension: '.pdf',
 			contentType: 'application/pdf',
 			byteSize: 1234,
 			sha256: SHA256,
@@ -337,6 +347,8 @@ describe('Supabase resource upload persistence', () => {
 			persistence.reserve({
 				resourceId: RESOURCE_ID,
 				displayFilename: 'exam.pdf',
+				fileKind: 'pdf',
+				normalizedExtension: '.pdf',
 				contentType: 'application/pdf',
 				byteSize: 1234,
 				sha256: SHA256,
@@ -427,6 +439,8 @@ describe('Supabase resource upload persistence', () => {
 			persistence.reserve({
 				resourceId: RESOURCE_ID,
 				displayFilename: 'exam.pdf',
+				fileKind: 'pdf',
+				normalizedExtension: '.pdf',
 				contentType: 'application/pdf',
 				byteSize: 1234,
 				sha256: SHA256,

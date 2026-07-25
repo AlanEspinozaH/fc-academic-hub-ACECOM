@@ -378,6 +378,8 @@ SELECT lives_ok(
 		SELECT public.register_resource_file_upload(
 			'10000000-0000-0000-0000-000000000010',
 			'exam.pdf',
+			'pdf'::public.resource_file_kind,
+			'.pdf',
 			'application/pdf',
 			1024,
 			NULL
@@ -554,6 +556,8 @@ SELECT ok(
 		SELECT public.register_resource_file_upload(
 			'10000000-0000-0000-0000-000000000021',
 			'reference.pdf',
+			'pdf'::public.resource_file_kind,
+			'.pdf',
 			'application/pdf',
 			256,
 			NULL
@@ -614,6 +618,8 @@ VALUES (
 SELECT public.register_resource_file_upload(
 	'10000000-0000-0000-0000-000000000023',
 	'pending-rights.pdf',
+	'pdf'::public.resource_file_kind,
+	'.pdf',
 	'application/pdf',
 	512,
 	NULL

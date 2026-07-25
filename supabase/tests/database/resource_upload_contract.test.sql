@@ -3,13 +3,39 @@ CREATE EXTENSION IF NOT EXISTS pgtap WITH SCHEMA extensions;
 
 BEGIN;
 
-SELECT plan(66);
+SELECT plan(75);
+
+SELECT ok(
+	to_regprocedure(
+		'public.register_resource_file_upload(uuid,text,public.resource_file_kind,text,text,bigint,text)'
+	) IS NOT NULL,
+	'canonical seven-argument upload reservation RPC exists'
+);
 
 SELECT ok(
 	to_regprocedure(
 		'public.register_resource_file_upload(uuid,text,text,bigint,text)'
-	) IS NOT NULL,
-	'five-argument upload reservation RPC exists'
+	) IS NULL,
+	'previous five-argument reservation RPC was removed'
+);
+
+SELECT ok(
+	(
+		SELECT pg_proc.proargnames = ARRAY[
+			'resource_id',
+			'display_filename',
+			'file_kind',
+			'normalized_extension',
+			'content_type',
+			'byte_size',
+			'sha256'
+		]::text[]
+		FROM pg_proc
+		WHERE pg_proc.oid = to_regprocedure(
+			'public.register_resource_file_upload(uuid,text,public.resource_file_kind,text,text,bigint,text)'
+		)
+	),
+	'reservation caller can provide canonical metadata but not storage key or version'
 );
 
 SELECT ok(
@@ -22,7 +48,7 @@ SELECT ok(
 SELECT ok(
 	has_function_privilege(
 		'authenticated',
-		'public.register_resource_file_upload(uuid,text,text,bigint,text)',
+		'public.register_resource_file_upload(uuid,text,public.resource_file_kind,text,text,bigint,text)',
 		'EXECUTE'
 	),
 	'authenticated can reserve an upload'
@@ -67,7 +93,7 @@ SELECT ok(
 SELECT ok(
 	NOT has_function_privilege(
 		'anon',
-		'public.register_resource_file_upload(uuid,text,text,bigint,text)',
+		'public.register_resource_file_upload(uuid,text,public.resource_file_kind,text,text,bigint,text)',
 		'EXECUTE'
 	)
 	AND NOT has_function_privilege(
@@ -86,6 +112,44 @@ SELECT ok(
 		'EXECUTE'
 	),
 	'anon cannot execute upload lifecycle RPCs'
+);
+
+
+SELECT is(
+	(
+		SELECT array_agg(pg_enum.enumlabel::text ORDER BY pg_enum.enumsortorder)
+		FROM pg_enum
+		WHERE pg_enum.enumtypid = 'public.resource_file_kind'::regtype
+	),
+	ARRAY['pdf', 'image', 'markdown', 'tex', 'text', 'source']::text[],
+	'resource_file_kind contains the exact canonical file kinds'
+);
+
+SELECT is(
+	(
+		SELECT array_agg(pg_enum.enumlabel::text ORDER BY pg_enum.enumsortorder)
+		FROM pg_enum
+		WHERE pg_enum.enumtypid = 'public.resource_storage_key_version'::regtype
+	),
+	ARRAY['legacy_pdf_v1', 'generic_v2']::text[],
+	'resource_storage_key_version contains both explicit layouts'
+);
+
+SELECT ok(
+	(
+		SELECT count(*) = 3
+			AND bool_and(information_schema.columns.is_nullable = 'NO')
+			AND bool_and(information_schema.columns.column_default IS NULL)
+		FROM information_schema.columns
+		WHERE table_schema = 'public'
+			AND table_name = 'resource_files'
+			AND column_name IN (
+				'file_kind',
+				'normalized_extension',
+				'storage_key_version'
+			)
+	),
+	'canonical ResourceFile columns are required and have no legacy defaults'
 );
 
 SELECT ok(
@@ -364,6 +428,8 @@ SELECT lives_ok(
 		SELECT public.register_resource_file_upload(
 			'20000000-0000-0000-0000-000000000001',
 			'boundary.pdf',
+			'pdf'::public.resource_file_kind,
+			'.pdf',
 			'application/pdf',
 			10000000,
 			NULL
@@ -387,19 +453,23 @@ SELECT is(
 
 SELECT ok(
 	(
-		SELECT storage_object.storage_key =
-			'resources/'
-			|| resource_file.resource_id::text
-			|| '/'
-			|| resource_file.id::text
-			|| '.pdf'
+		SELECT resource_file.file_kind = 'pdf'::public.resource_file_kind
+			AND resource_file.normalized_extension = '.pdf'
+			AND resource_file.content_type = 'application/pdf'
+			AND resource_file.storage_key_version =
+				'generic_v2'::public.resource_storage_key_version
+			AND storage_object.storage_key =
+				'resources/'
+				|| resource_file.resource_id::text
+				|| '/'
+				|| resource_file.id::text
 		FROM public.resource_files AS resource_file
 		INNER JOIN private.resource_storage_objects AS storage_object
 			ON storage_object.file_id = resource_file.id
 		WHERE resource_file.resource_id =
 			'20000000-0000-0000-0000-000000000001'
 	),
-	'storage key is derived from trusted resource and file identifiers'
+	'new reservation stores canonical PDF metadata and derives a suffixless generic_v2 key'
 );
 
 SET LOCAL ROLE authenticated;
@@ -413,6 +483,8 @@ SELECT ok(
 		SELECT public.register_resource_file_upload(
 			'20000000-0000-0000-0000-000000000001',
 			'second.pdf',
+			'pdf'::public.resource_file_kind,
+			'.pdf',
 			'application/pdf',
 			512,
 			NULL
@@ -426,12 +498,29 @@ SELECT ok(
 		SELECT public.register_resource_file_upload(
 			'20000000-0000-0000-0000-000000000002',
 			'oversized.pdf',
+			'pdf'::public.resource_file_kind,
+			'.pdf',
 			'application/pdf',
 			10000001,
 			NULL
 		)
 	$$),
 	'10000001 bytes is rejected'
+);
+
+SELECT ok(
+	NOT pg_temp.try_sql($$
+		SELECT public.register_resource_file_upload(
+			'20000000-0000-0000-0000-000000000002',
+			'preview.png',
+			'image'::public.resource_file_kind,
+			'.png',
+			'image/png',
+			512,
+			NULL
+		)
+	$$),
+	'non-PDF canonical metadata remains operationally rejected in Stage 4C.0B.5'
 );
 
 RESET ROLE;
@@ -458,6 +547,8 @@ SELECT lives_ok(
 		SELECT public.register_resource_file_upload(
 			'20000000-0000-0000-0000-000000000003',
 			'atomic.pdf',
+			'pdf'::public.resource_file_kind,
+			'.pdf',
 			'application/pdf',
 			2048,
 			NULL
@@ -609,6 +700,8 @@ SELECT lives_ok(
 		SELECT public.register_resource_file_upload(
 			'20000000-0000-0000-0000-000000000004',
 			'reserved-hash.pdf',
+			'pdf'::public.resource_file_kind,
+			'.pdf',
 			'application/pdf',
 			4096,
 			'dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd'
@@ -752,6 +845,8 @@ SELECT lives_ok(
 		SELECT public.register_resource_file_upload(
 			'20000000-0000-0000-0000-000000000005',
 			'abort-uploading.pdf',
+			'pdf'::public.resource_file_kind,
+			'.pdf',
 			'application/pdf',
 			1024,
 			NULL
@@ -855,6 +950,8 @@ SELECT lives_ok(
 		SELECT public.register_resource_file_upload(
 			'20000000-0000-0000-0000-000000000006',
 			'failed-storage.pdf',
+			'pdf'::public.resource_file_kind,
+			'.pdf',
 			'application/pdf',
 			2048,
 			NULL
@@ -1042,6 +1139,8 @@ SELECT lives_ok(
 		SELECT public.register_resource_file_upload(
 			'20000000-0000-0000-0000-000000000007',
 			'stored.pdf',
+			'pdf'::public.resource_file_kind,
+			'.pdf',
 			'application/pdf',
 			4096,
 			NULL
@@ -1137,6 +1236,8 @@ SELECT ok(
 		SELECT public.register_resource_file_upload(
 			'20000000-0000-0000-0000-000000000008',
 			'wrong-owner.pdf',
+			'pdf'::public.resource_file_kind,
+			'.pdf',
 			'application/pdf',
 			512,
 			NULL
@@ -1169,6 +1270,8 @@ SELECT ok(
 		SELECT public.register_resource_file_upload(
 			'20000000-0000-0000-0000-000000000009',
 			'student.pdf',
+			'pdf'::public.resource_file_kind,
+			'.pdf',
 			'application/pdf',
 			512,
 			NULL
@@ -1258,6 +1361,8 @@ SELECT lives_ok(
 		SELECT public.register_resource_file_upload(
 			'20000000-0000-0000-0000-000000000010',
 			'open-license.pdf',
+			'pdf'::public.resource_file_kind,
+			'.pdf',
 			'application/pdf',
 			4096,
 			'1111111111111111111111111111111111111111111111111111111111111111'
@@ -1288,7 +1393,7 @@ SELECT ok(
 			AND resource_file.sha256 = '1111111111111111111111111111111111111111111111111111111111111111'
 			AND storage_object.storage_status = 'stored'
 			AND storage_object.storage_key =
-				'resources/' || resource_file.resource_id::text || '/' || resource_file.id::text || '.pdf'
+				'resources/' || resource_file.resource_id::text || '/' || resource_file.id::text
 			AND academic_resource.review_status = 'pending'
 		FROM public.resource_files AS resource_file
 		INNER JOIN private.resource_storage_objects AS storage_object
@@ -1310,6 +1415,8 @@ SELECT lives_ok(
 		SELECT public.register_resource_file_upload(
 			'20000000-0000-0000-0000-000000000011',
 			'public-domain.pdf',
+			'pdf'::public.resource_file_kind,
+			'.pdf',
 			'application/pdf',
 			8192,
 			NULL
@@ -1340,7 +1447,7 @@ SELECT ok(
 			AND resource_file.sha256 = '2222222222222222222222222222222222222222222222222222222222222222'
 			AND storage_object.storage_status = 'stored'
 			AND storage_object.storage_key =
-				'resources/' || resource_file.resource_id::text || '/' || resource_file.id::text || '.pdf'
+				'resources/' || resource_file.resource_id::text || '/' || resource_file.id::text
 			AND academic_resource.review_status = 'pending'
 		FROM public.resource_files AS resource_file
 		INNER JOIN private.resource_storage_objects AS storage_object
@@ -1362,6 +1469,8 @@ SELECT ok(
 		SELECT public.register_resource_file_upload(
 			'20000000-0000-0000-0000-000000000012',
 			'bibliographic.pdf',
+			'pdf'::public.resource_file_kind,
+			'.pdf',
 			'application/pdf',
 			512,
 			NULL
@@ -1374,12 +1483,140 @@ SELECT ok(
 		SELECT public.register_resource_file_upload(
 			'20000000-0000-0000-0000-000000000013',
 			'copyright.pdf',
+			'pdf'::public.resource_file_kind,
+			'.pdf',
 			'application/pdf',
 			512,
 			NULL
 		)
 	$$),
 	'copyright-restricted remains forbidden for stored files'
+);
+
+RESET ROLE;
+
+INSERT INTO public.academic_resources (
+	id,
+	owner_user_id,
+	course_id,
+	academic_term_id,
+	resource_type,
+	title,
+	description,
+	visibility,
+	rights_status
+)
+VALUES
+	(
+		'20000000-0000-0000-0000-000000000014',
+		'00000000-0000-0000-0000-000000000802',
+		'course:rights',
+		'2026-1',
+		'notes',
+		'Legacy layout fixture',
+		'Represents an existing PDF object without rewriting its key.',
+		'restricted',
+		'own-work'
+	),
+	(
+		'20000000-0000-0000-0000-000000000015',
+		'00000000-0000-0000-0000-000000000802',
+		'course:rights',
+		'2026-1',
+		'notes',
+		'Mismatched layout fixture',
+		'Rejects a storage key that contradicts canonical metadata.',
+		'restricted',
+		'own-work'
+	);
+
+SELECT lives_ok(
+	$$
+		WITH legacy_file AS (
+			INSERT INTO public.resource_files (
+				id,
+				resource_id,
+				uploaded_by,
+				display_filename,
+				file_kind,
+				normalized_extension,
+				content_type,
+				byte_size,
+				storage_key_version
+			)
+			VALUES (
+				'30000000-0000-0000-0000-000000000014',
+				'20000000-0000-0000-0000-000000000014',
+				'00000000-0000-0000-0000-000000000802',
+				'legacy.pdf',
+				'pdf'::public.resource_file_kind,
+				'.pdf',
+				'application/pdf',
+				1024,
+				'legacy_pdf_v1'::public.resource_storage_key_version
+			)
+			RETURNING id
+		)
+		INSERT INTO private.resource_storage_objects (file_id, storage_key)
+		SELECT
+			legacy_file.id,
+			'resources/20000000-0000-0000-0000-000000000014/'
+				|| legacy_file.id::text
+				|| '.pdf'
+		FROM legacy_file
+	$$,
+	'a valid legacy_pdf_v1 ResourceFile and private key remain representable'
+);
+
+SELECT ok(
+	(
+		SELECT resource_file.storage_key_version =
+				'legacy_pdf_v1'::public.resource_storage_key_version
+			AND storage_object.storage_key =
+				'resources/20000000-0000-0000-0000-000000000014/'
+				|| resource_file.id::text
+				|| '.pdf'
+		FROM public.resource_files AS resource_file
+		INNER JOIN private.resource_storage_objects AS storage_object
+			ON storage_object.file_id = resource_file.id
+		WHERE resource_file.id = '30000000-0000-0000-0000-000000000014'
+	),
+	'legacy metadata retains its explicit version and suffixed storage key'
+);
+
+INSERT INTO public.resource_files (
+	id,
+	resource_id,
+	uploaded_by,
+	display_filename,
+	file_kind,
+	normalized_extension,
+	content_type,
+	byte_size,
+	storage_key_version
+)
+VALUES (
+	'30000000-0000-0000-0000-000000000015',
+	'20000000-0000-0000-0000-000000000015',
+	'00000000-0000-0000-0000-000000000802',
+	'mismatch.pdf',
+	'pdf'::public.resource_file_kind,
+	'.pdf',
+	'application/pdf',
+	1024,
+	'generic_v2'::public.resource_storage_key_version
+);
+
+SELECT ok(
+	NOT pg_temp.try_sql($$
+		INSERT INTO private.resource_storage_objects (file_id, storage_key)
+		VALUES (
+			'30000000-0000-0000-0000-000000000015',
+			'resources/20000000-0000-0000-0000-000000000015/'
+				|| '30000000-0000-0000-0000-000000000015.pdf'
+		)
+	$$),
+	'a storage key that contradicts generic_v2 metadata is rejected'
 );
 
 SELECT * FROM finish();
