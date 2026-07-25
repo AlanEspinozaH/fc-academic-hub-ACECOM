@@ -51,11 +51,14 @@ export {
 	type RightsStatus,
 } from './resource';
 export {
+	RESOURCE_FILE_MAX_BYTES,
 	RESOURCE_PDF_CONTENT_TYPE,
-	RESOURCE_PDF_MAX_BYTES,
-	ResourcePdfValidationError,
-	validateResourcePdf,
+	RESOURCE_PDF_FILE_KIND,
+	RESOURCE_PDF_NORMALIZED_EXTENSION,
+	ResourceFileValidationError,
+	validateResourceFile,
 	type ResourceFileCandidate,
-	type ResourcePdfValidationErrorCode,
-	type ValidatedResourcePdf,
+	type ResourceFileKind,
+	type ResourceFileValidationErrorCode,
+	type ValidatedResourceFile,
 } from './resource-file-validation';

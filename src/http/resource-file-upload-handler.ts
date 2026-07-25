@@ -1,27 +1,27 @@
 import {
-	ResourcePdfUploadError,
-	type ResourcePdfUploadOrchestrator,
-} from '../application/resource-pdf-upload';
+	ResourceFileUploadError,
+	type ResourceFileUploadOrchestrator,
+} from '../application/resource-file-upload';
 import {
-	RESOURCE_PDF_MAX_BYTES,
-	ResourcePdfValidationError,
+	RESOURCE_FILE_MAX_BYTES,
+	ResourceFileValidationError,
 } from '../domain/resource-file-validation';
 import { hasValidSameOriginHeader } from '../infrastructure/auth/http';
 import type { SupabaseServerClient } from '../infrastructure/supabase/server';
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-const RESOURCE_PDF_UPLOAD_MULTIPART_OVERHEAD_BYTES = 64 * 1024;
+const RESOURCE_FILE_UPLOAD_MULTIPART_OVERHEAD_BYTES = 64 * 1024;
 
-export const RESOURCE_PDF_UPLOAD_MAX_BODY_BYTES =
-	RESOURCE_PDF_MAX_BYTES + RESOURCE_PDF_UPLOAD_MULTIPART_OVERHEAD_BYTES;
+export const RESOURCE_FILE_UPLOAD_MAX_BODY_BYTES =
+	RESOURCE_FILE_MAX_BYTES + RESOURCE_FILE_UPLOAD_MULTIPART_OVERHEAD_BYTES;
 
-class ResourcePdfUploadBodyTooLargeError extends Error {}
+class ResourceFileUploadBodyTooLargeError extends Error {}
 
-export interface ResourcePdfUploadHttpDependencies {
-	createUploader(supabase: SupabaseServerClient): ResourcePdfUploadOrchestrator;
+export interface ResourceFileUploadHttpDependencies {
+	createUploader(supabase: SupabaseServerClient): ResourceFileUploadOrchestrator;
 }
 
-export interface ResourcePdfUploadHttpInput {
+export interface ResourceFileUploadHttpInput {
 	readonly request: Request;
 	readonly resourceId: string | undefined;
 	readonly auth: App.Locals['auth'];
@@ -95,9 +95,9 @@ const readRequestBodyWithLimit = async (request: Request): Promise<Uint8Array<Ar
 
 			totalBytes += value.byteLength;
 
-			if (totalBytes > RESOURCE_PDF_UPLOAD_MAX_BODY_BYTES) {
+			if (totalBytes > RESOURCE_FILE_UPLOAD_MAX_BODY_BYTES) {
 				await reader.cancel();
-				throw new ResourcePdfUploadBodyTooLargeError();
+				throw new ResourceFileUploadBodyTooLargeError();
 			}
 
 			chunks.push(value);
@@ -117,10 +117,10 @@ const readRequestBodyWithLimit = async (request: Request): Promise<Uint8Array<Ar
 	return body;
 };
 
-const validationErrorResponse = (error: ResourcePdfValidationError): Response =>
+const validationErrorResponse = (error: ResourceFileValidationError): Response =>
 	errorResponse(error.code, error.message, error.code === 'FILE_TOO_LARGE' ? 413 : 400);
 
-const uploadErrorResponse = (error: ResourcePdfUploadError): Response => {
+const uploadErrorResponse = (error: ResourceFileUploadError): Response => {
 	switch (error.code) {
 		case 'RESERVATION_FAILED':
 		case 'FINALIZATION_FAILED':
@@ -139,9 +139,9 @@ const uploadErrorResponse = (error: ResourcePdfUploadError): Response => {
 	}
 };
 
-export const handleResourcePdfUploadRequest = async (
-	input: ResourcePdfUploadHttpInput,
-	dependencies: ResourcePdfUploadHttpDependencies,
+export const handleResourceFileUploadRequest = async (
+	input: ResourceFileUploadHttpInput,
+	dependencies: ResourceFileUploadHttpDependencies,
 ): Promise<Response> => {
 	if (!hasValidSameOriginHeader(input.request)) {
 		return errorResponse('FORBIDDEN_ORIGIN', 'Request origin is not allowed', 403);
@@ -178,7 +178,7 @@ export const handleResourcePdfUploadRequest = async (
 	try {
 		requestBody = await readRequestBodyWithLimit(input.request);
 	} catch (error) {
-		if (error instanceof ResourcePdfUploadBodyTooLargeError) {
+		if (error instanceof ResourceFileUploadBodyTooLargeError) {
 			return errorResponse('REQUEST_TOO_LARGE', 'Multipart request body is too large', 413);
 		}
 
@@ -199,16 +199,17 @@ export const handleResourcePdfUploadRequest = async (
 		return errorResponse('INVALID_MULTIPART_BODY', 'Multipart request body is invalid', 400);
 	}
 
-	const fileEntry = formData.get('file');
+	const fileEntries = formData.getAll('file');
+	const fileEntry = fileEntries[0];
 
-	if (!(fileEntry instanceof File)) {
-		return errorResponse('MISSING_FILE', 'A PDF file is required', 400);
+	if (fileEntries.length !== 1 || !(fileEntry instanceof File)) {
+		return errorResponse('MISSING_FILE', 'Exactly one resource file is required', 400);
 	}
 
-	if (fileEntry.size > RESOURCE_PDF_MAX_BYTES) {
+	if (fileEntry.size > RESOURCE_FILE_MAX_BYTES) {
 		return errorResponse(
 			'FILE_TOO_LARGE',
-			`Resource PDF cannot exceed ${RESOURCE_PDF_MAX_BYTES} bytes`,
+			`Resource file cannot exceed ${RESOURCE_FILE_MAX_BYTES} bytes`,
 			413,
 		);
 	}
@@ -229,7 +230,7 @@ export const handleResourcePdfUploadRequest = async (
 		return errorResponse('INVALID_FILE_BODY', 'Resource file body could not be read', 400);
 	}
 
-	let uploader: ResourcePdfUploadOrchestrator;
+	let uploader: ResourceFileUploadOrchestrator;
 
 	try {
 		uploader = dependencies.createUploader(input.auth.supabase);
@@ -246,7 +247,7 @@ export const handleResourcePdfUploadRequest = async (
 			resourceId,
 			candidate: {
 				filename: fileEntry.name,
-				contentType: fileEntry.type,
+				declaredContentType: fileEntry.type,
 				bytes,
 			},
 			comment,
@@ -259,11 +260,11 @@ export const handleResourcePdfUploadRequest = async (
 			201,
 		);
 	} catch (error) {
-		if (error instanceof ResourcePdfValidationError) {
+		if (error instanceof ResourceFileValidationError) {
 			return validationErrorResponse(error);
 		}
 
-		if (error instanceof ResourcePdfUploadError) {
+		if (error instanceof ResourceFileUploadError) {
 			return uploadErrorResponse(error);
 		}
 

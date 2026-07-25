@@ -1,5 +1,5 @@
 import {
-	validateResourcePdf,
+	validateResourceFile,
 	type ResourceFileCandidate,
 } from '../domain/resource-file-validation';
 import type { ResourceObjectStore } from '../infrastructure/r2/resource-object-store';
@@ -12,7 +12,7 @@ import {
 	type ResourceUploadPersistence,
 } from '../infrastructure/supabase/resource-upload-persistence';
 
-export type ResourcePdfUploadErrorCode =
+export type ResourceFileUploadErrorCode =
 	| 'RESERVATION_FAILED'
 	| 'RESERVATION_OUTCOME_UNKNOWN'
 	| 'STORAGE_KEY_FAILED'
@@ -21,34 +21,36 @@ export type ResourcePdfUploadErrorCode =
 	| 'FINALIZATION_OUTCOME_UNKNOWN'
 	| 'COMPENSATION_FAILED';
 
-export class ResourcePdfUploadError extends Error {
-	public readonly code: ResourcePdfUploadErrorCode;
+export class ResourceFileUploadError extends Error {
+	public readonly code: ResourceFileUploadErrorCode;
 
-	public constructor(code: ResourcePdfUploadErrorCode, message: string) {
+	public constructor(code: ResourceFileUploadErrorCode, message: string) {
 		super(message);
-		this.name = 'ResourcePdfUploadError';
+		this.name = 'ResourceFileUploadError';
 		this.code = code;
 	}
 }
 
-export interface ResourcePdfUploadInput {
+export interface ResourceFileUploadInput {
 	readonly resourceId: string;
 	readonly candidate: ResourceFileCandidate;
 	readonly comment?: string;
 }
 
-export interface ResourcePdfUploadResult {
+export interface ResourceFileUploadResult {
 	readonly fileId: string;
 }
 
-export interface ResourcePdfUploadOrchestrator {
-	upload(input: ResourcePdfUploadInput): Promise<ResourcePdfUploadResult>;
+export interface ResourceFileUploadOrchestrator {
+	upload(input: ResourceFileUploadInput): Promise<ResourceFileUploadResult>;
 }
 
-const uploadFailure = (code: ResourcePdfUploadErrorCode, message: string): ResourcePdfUploadError =>
-	new ResourcePdfUploadError(code, message);
+const uploadFailure = (
+	code: ResourceFileUploadErrorCode,
+	message: string,
+): ResourceFileUploadError => new ResourceFileUploadError(code, message);
 
-const compensationFailed = (): ResourcePdfUploadError =>
+const compensationFailed = (): ResourceFileUploadError =>
 	uploadFailure('COMPENSATION_FAILED', 'Resource upload compensation failed');
 
 const isPersistenceError = (
@@ -56,25 +58,25 @@ const isPersistenceError = (
 	code: ResourceUploadPersistenceError['code'],
 ): boolean => error instanceof ResourceUploadPersistenceError && error.code === code;
 
-export const createResourcePdfUploadOrchestrator = (
+export const createResourceFileUploadOrchestrator = (
 	persistence: ResourceUploadPersistence,
 	objectStore: ResourceObjectStore,
-): ResourcePdfUploadOrchestrator =>
+): ResourceFileUploadOrchestrator =>
 	Object.freeze({
-		async upload(input: ResourcePdfUploadInput): Promise<ResourcePdfUploadResult> {
-			const validatedPdf = await validateResourcePdf(input.candidate);
+		async upload(input: ResourceFileUploadInput): Promise<ResourceFileUploadResult> {
+			const validatedFile = await validateResourceFile(input.candidate);
 
 			let fileId: string;
 
 			try {
 				fileId = await persistence.reserve({
 					resourceId: input.resourceId,
-					displayFilename: validatedPdf.filename,
-					fileKind: validatedPdf.fileKind,
-					normalizedExtension: validatedPdf.normalizedExtension,
-					contentType: validatedPdf.contentType,
-					byteSize: validatedPdf.byteSize,
-					sha256: validatedPdf.sha256,
+					displayFilename: validatedFile.filename,
+					fileKind: validatedFile.fileKind,
+					normalizedExtension: validatedFile.normalizedExtension,
+					contentType: validatedFile.contentType,
+					byteSize: validatedFile.byteSize,
+					sha256: validatedFile.sha256,
 				});
 			} catch (error) {
 				if (isPersistenceError(error, 'RESERVE_FAILED')) {
@@ -111,8 +113,8 @@ export const createResourcePdfUploadOrchestrator = (
 			try {
 				await objectStore.write({
 					storageKey,
-					bytes: validatedPdf.bytes,
-					contentType: validatedPdf.contentType,
+					bytes: validatedFile.bytes,
+					contentType: validatedFile.contentType,
 				});
 			} catch {
 				try {
@@ -136,7 +138,7 @@ export const createResourcePdfUploadOrchestrator = (
 			try {
 				await persistence.finalize({
 					fileId,
-					sha256: validatedPdf.sha256,
+					sha256: validatedFile.sha256,
 					comment: input.comment,
 				});
 			} catch (error) {
@@ -174,8 +176,6 @@ export const createResourcePdfUploadOrchestrator = (
 				throw uploadFailure('FINALIZATION_FAILED', 'Resource upload finalization failed');
 			}
 
-			return Object.freeze({
-				fileId,
-			});
+			return Object.freeze({ fileId });
 		},
 	});

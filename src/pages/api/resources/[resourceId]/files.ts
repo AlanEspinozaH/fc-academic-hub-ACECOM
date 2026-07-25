@@ -1,7 +1,7 @@
 import { env } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
-import { createResourcePdfUploadOrchestrator } from '../../../../application/resource-pdf-upload';
-import { handleResourcePdfUploadRequest } from '../../../../http/resource-pdf-upload-handler';
+import { createResourceFileUploadOrchestrator } from '../../../../application/resource-file-upload';
+import { handleResourceFileUploadRequest } from '../../../../http/resource-file-upload-handler';
 import { createMethodNotAllowedResponse } from '../../../../infrastructure/auth/http';
 import { createR2ResourceObjectStore } from '../../../../infrastructure/r2/resource-object-store';
 import { createSupabaseResourceUploadPersistence } from '../../../../infrastructure/supabase/resource-upload-persistence';
@@ -10,13 +10,13 @@ import type { SupabaseServerClient } from '../../../../infrastructure/supabase/s
 export const prerender = false;
 
 const createUploader = (supabase: SupabaseServerClient) =>
-	createResourcePdfUploadOrchestrator(
+	createResourceFileUploadOrchestrator(
 		createSupabaseResourceUploadPersistence(supabase),
 		createR2ResourceObjectStore(env.ACADEMIC_RESOURCES),
 	);
 
 export const POST: APIRoute = ({ locals, params, request }) =>
-	handleResourcePdfUploadRequest(
+	handleResourceFileUploadRequest(
 		{
 			request,
 			resourceId: params.resourceId,

@@ -10,9 +10,9 @@ Baseline implementado:
 
 Evolución hacia `ResourceFile` genérico:
 
-**Aceptada para Stage 4C, pendiente de implementación.**
+**Implementada en aplicación, dominio y HTTP por Stage 4C.2.**
 
-La implementación actualmente presente en `main` continúa siendo especializada en PDF hasta que una etapa posterior de 4C generalice explícitamente el pipeline.
+El único validador operativo registrado en esta etapa continúa siendo PDF. PNG/JPEG permanecen pendientes de 4C.3 y las familias de texto/source de 4C.4. La guarda PostgreSQL PDF-only se conserva intencionalmente hasta que cada familia se active junto con sus validadores.
 
 ---
 
@@ -187,15 +187,15 @@ No debe presentarse una capacidad de Stage 4C como implementada antes de que su 
 
 ---
 
-# 3. Baseline 4B actualmente implementado
+# 3. Baseline 4B preservado
 
-El pipeline actualmente implementado admite:
+El pipeline genérico de Stage 4C.2 preserva el límite v1 de:
 
 ```text
-máximo un PDF por recurso
+máximo un archivo principal por recurso
 ```
 
-con:
+y mantiene PDF como el único formato operativo habilitado en esta etapa, con:
 
 ```text
 maximum byte size = 10 000 000
@@ -285,15 +285,9 @@ El path ya es genérico y no necesita cambiar al incorporar nuevos formatos.
 
 # 7. Estado actual del endpoint
 
-Mientras el pipeline 4B siga siendo el implementado, el endpoint acepta únicamente PDF.
+El contrato del handler y del orquestador es `ResourceFile` genérico, pero Stage 4C.2 registra únicamente el validador PDF. Por tanto, el endpoint acepta operacionalmente sólo PDF.
 
-Stage 4C deberá convertir esa restricción en la allowlist definida por:
-
-```text
-resource-file-policy.md
-```
-
-La documentación y los mensajes HTTP deben actualizarse conjuntamente con esa implementación.
+La activación progresiva de la allowlist definida por `resource-file-policy.md` queda dividida entre Stage 4C.3 para PNG/JPEG y Stage 4C.4 para texto/source. La guarda PostgreSQL PDF-only permanece como segunda barrera defensiva hasta esas activaciones.
 
 ---
 
@@ -1935,7 +1929,7 @@ ResourceFile
 
 preservando todas las invariantes `RU-*`.
 
-La allowlist continúa siendo la definida por:
+En esta etapa el dispatcher, el orquestador y el handler adoptan el contrato genérico, pero sólo el validador PDF queda registrado operacionalmente. La guarda PostgreSQL PDF-only permanece intencionalmente activa. PNG/JPEG se habilitan en 4C.3 y las familias de texto/source en 4C.4, conforme a:
 
 ```text
 docs/architecture/resource-file-policy.md
