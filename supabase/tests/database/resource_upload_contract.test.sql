@@ -3,7 +3,7 @@ CREATE EXTENSION IF NOT EXISTS pgtap WITH SCHEMA extensions;
 
 BEGIN;
 
-SELECT plan(89);
+SELECT plan(111);
 
 SELECT ok(
 	to_regprocedure(
@@ -191,12 +191,25 @@ SELECT ok(
 		SELECT 1
 		FROM pg_constraint
 		WHERE conrelid = 'public.resource_files'::regclass
-			AND conname = 'resource_files_stage_4c3_canonical_metadata_check'
+			AND conname = 'resource_files_stage_4c4_canonical_metadata_check'
 			AND pg_get_constraintdef(oid) LIKE '%application/pdf%'
 			AND pg_get_constraintdef(oid) LIKE '%image/png%'
 			AND pg_get_constraintdef(oid) LIKE '%image/jpeg%'
+			AND pg_get_constraintdef(oid) LIKE '%markdown%'
+			AND pg_get_constraintdef(oid) LIKE '%source%'
 	),
-	'Stage 4C.3 canonical PDF/PNG/JPEG table constraint exists'
+	'Stage 4C.4 closed v1 canonical metadata table constraint exists'
+);
+
+SELECT ok(
+	EXISTS (
+		SELECT 1
+		FROM pg_constraint
+		WHERE conrelid = 'public.resource_files'::regclass
+			AND conname = 'resource_files_stage_4c4_text_size_check'
+			AND pg_get_constraintdef(oid) LIKE '%2000000%'
+	),
+	'Stage 4C.4 textual-family 2 MB database constraint exists'
 );
 
 SELECT ok(
@@ -460,6 +473,39 @@ VALUES
 		'Rejected canonical metadata fixture.', 'restricted', 'own-work'
 	);
 
+INSERT INTO public.academic_resources (
+	id, owner_user_id, course_id, academic_term_id, resource_type,
+	title, description, visibility, rights_status
+)
+SELECT
+	fixture.id,
+	'00000000-0000-0000-0000-000000000802',
+	'course:text-files',
+	'2026-1',
+	'notes',
+	fixture.title,
+	'Canonical Stage 4C.4 textual reservation fixture.',
+	'restricted',
+	'own-work'
+FROM (
+	VALUES
+		('20000000-0000-0000-0000-000000000020'::uuid, 'Markdown upload'),
+		('20000000-0000-0000-0000-000000000021'::uuid, 'TeX upload'),
+		('20000000-0000-0000-0000-000000000022'::uuid, 'TXT upload'),
+		('20000000-0000-0000-0000-000000000023'::uuid, 'Java upload'),
+		('20000000-0000-0000-0000-000000000024'::uuid, 'Python upload'),
+		('20000000-0000-0000-0000-000000000025'::uuid, 'C upload'),
+		('20000000-0000-0000-0000-000000000026'::uuid, 'H upload'),
+		('20000000-0000-0000-0000-000000000027'::uuid, 'CPP upload'),
+		('20000000-0000-0000-0000-000000000028'::uuid, 'HPP upload'),
+		('20000000-0000-0000-0000-000000000029'::uuid, 'JavaScript upload'),
+		('20000000-0000-0000-0000-000000000030'::uuid, 'TypeScript upload'),
+		('20000000-0000-0000-0000-000000000031'::uuid, 'Rust upload'),
+		('20000000-0000-0000-0000-000000000032'::uuid, 'Go upload'),
+		('20000000-0000-0000-0000-000000000033'::uuid, 'SQL upload'),
+		('20000000-0000-0000-0000-000000000034'::uuid, 'Shell upload')
+) AS fixture(id, title);
+
 RESET ROLE;
 SET LOCAL ROLE authenticated;
 SELECT pg_temp.set_request_context(
@@ -575,10 +621,10 @@ SELECT lives_ok(
 	$$
 		SELECT public.register_resource_file_upload(
 			'20000000-0000-0000-0000-000000000016',
-			'Diagram.PNG', 'image', '.png', 'image/png', 2048, NULL
+			'Diagram.PNG', 'image', '.png', 'image/png', 10000000, NULL
 		)
 	$$,
-	'uppercase PNG filename with canonical metadata reserves successfully'
+	'uppercase PNG filename with canonical metadata is accepted at 10000000 bytes'
 );
 SELECT lives_ok(
 	$$
@@ -699,41 +745,273 @@ SELECT ok(
 	$$),
 	'filename suffix contradicting normalized extension is rejected'
 );
-SELECT ok(
-	NOT pg_temp.try_sql($$
+SELECT lives_ok(
+	$$
 		SELECT public.register_resource_file_upload(
-			'20000000-0000-0000-0000-000000000019',
-			'future.md', 'markdown', '.md', 'text/plain', 512, NULL
+			'20000000-0000-0000-0000-000000000020',
+			'README.MD', 'markdown', '.md', 'text/plain', 512, NULL
 		)
-	$$),
-	'Markdown metadata remains rejected in Stage 4C.3'
+	$$,
+	'canonical .md textual metadata reserves successfully'
+);
+SELECT lives_ok(
+	$$
+		SELECT public.register_resource_file_upload(
+			'20000000-0000-0000-0000-000000000021',
+			'formula.TEX', 'tex', '.tex', 'text/plain', 1024, NULL
+		)
+	$$,
+	'canonical .tex textual metadata reserves successfully'
+);
+SELECT lives_ok(
+	$$
+		SELECT public.register_resource_file_upload(
+			'20000000-0000-0000-0000-000000000022',
+			'notes.TXT', 'text', '.txt', 'text/plain', 2000000, NULL
+		)
+	$$,
+	'canonical .txt textual metadata reserves successfully'
+);
+SELECT lives_ok(
+	$$
+		SELECT public.register_resource_file_upload(
+			'20000000-0000-0000-0000-000000000023',
+			'Main.JAVA', 'source', '.java', 'text/plain', 512, NULL
+		)
+	$$,
+	'canonical .java textual metadata reserves successfully'
+);
+SELECT lives_ok(
+	$$
+		SELECT public.register_resource_file_upload(
+			'20000000-0000-0000-0000-000000000024',
+			'solution.PY', 'source', '.py', 'text/plain', 512, NULL
+		)
+	$$,
+	'canonical .py textual metadata reserves successfully'
+);
+SELECT lives_ok(
+	$$
+		SELECT public.register_resource_file_upload(
+			'20000000-0000-0000-0000-000000000025',
+			'main.C', 'source', '.c', 'text/plain', 512, NULL
+		)
+	$$,
+	'canonical .c textual metadata reserves successfully'
+);
+SELECT lives_ok(
+	$$
+		SELECT public.register_resource_file_upload(
+			'20000000-0000-0000-0000-000000000026',
+			'header.H', 'source', '.h', 'text/plain', 512, NULL
+		)
+	$$,
+	'canonical .h textual metadata reserves successfully'
+);
+SELECT lives_ok(
+	$$
+		SELECT public.register_resource_file_upload(
+			'20000000-0000-0000-0000-000000000027',
+			'main.CPP', 'source', '.cpp', 'text/plain', 512, NULL
+		)
+	$$,
+	'canonical .cpp textual metadata reserves successfully'
+);
+SELECT lives_ok(
+	$$
+		SELECT public.register_resource_file_upload(
+			'20000000-0000-0000-0000-000000000028',
+			'header.HPP', 'source', '.hpp', 'text/plain', 512, NULL
+		)
+	$$,
+	'canonical .hpp textual metadata reserves successfully'
+);
+SELECT lives_ok(
+	$$
+		SELECT public.register_resource_file_upload(
+			'20000000-0000-0000-0000-000000000029',
+			'app.JS', 'source', '.js', 'text/plain', 512, NULL
+		)
+	$$,
+	'canonical .js textual metadata reserves successfully'
+);
+SELECT lives_ok(
+	$$
+		SELECT public.register_resource_file_upload(
+			'20000000-0000-0000-0000-000000000030',
+			'types.TS', 'source', '.ts', 'text/plain', 512, NULL
+		)
+	$$,
+	'canonical .ts textual metadata reserves successfully'
+);
+SELECT lives_ok(
+	$$
+		SELECT public.register_resource_file_upload(
+			'20000000-0000-0000-0000-000000000031',
+			'main.RS', 'source', '.rs', 'text/plain', 512, NULL
+		)
+	$$,
+	'canonical .rs textual metadata reserves successfully'
+);
+SELECT lives_ok(
+	$$
+		SELECT public.register_resource_file_upload(
+			'20000000-0000-0000-0000-000000000032',
+			'main.GO', 'source', '.go', 'text/plain', 512, NULL
+		)
+	$$,
+	'canonical .go textual metadata reserves successfully'
+);
+SELECT lives_ok(
+	$$
+		SELECT public.register_resource_file_upload(
+			'20000000-0000-0000-0000-000000000033',
+			'query.SQL', 'source', '.sql', 'text/plain', 512, NULL
+		)
+	$$,
+	'canonical .sql textual metadata reserves successfully'
+);
+SELECT lives_ok(
+	$$
+		SELECT public.register_resource_file_upload(
+			'20000000-0000-0000-0000-000000000034',
+			'run.SH', 'source', '.sh', 'text/plain', 512, NULL
+		)
+	$$,
+	'canonical .sh textual metadata reserves successfully'
+);
+
+RESET ROLE;
+SELECT is(
+	(
+		SELECT array_agg(
+			resource_file.file_kind::text || '|' || resource_file.normalized_extension
+				|| '|' || resource_file.content_type
+			ORDER BY resource_file.resource_id
+		)
+		FROM public.resource_files AS resource_file
+		WHERE resource_file.resource_id BETWEEN
+			'20000000-0000-0000-0000-000000000020' AND
+			'20000000-0000-0000-0000-000000000034'
+	),
+	ARRAY[
+		'markdown|.md|text/plain',
+		'tex|.tex|text/plain',
+		'text|.txt|text/plain',
+		'source|.java|text/plain',
+		'source|.py|text/plain',
+		'source|.c|text/plain',
+		'source|.h|text/plain',
+		'source|.cpp|text/plain',
+		'source|.hpp|text/plain',
+		'source|.js|text/plain',
+		'source|.ts|text/plain',
+		'source|.rs|text/plain',
+		'source|.go|text/plain',
+		'source|.sql|text/plain',
+		'source|.sh|text/plain'
+	]::text[],
+	'all v1 textual extensions store their exact canonical kind, extension, and text/plain MIME'
+);
+
+SELECT ok(
+	(
+		SELECT count(*) = 15
+			AND bool_and(resource_file.storage_key_version = 'generic_v2')
+			AND bool_and(
+				storage_object.storage_key =
+					'resources/' || resource_file.resource_id::text || '/' || resource_file.id::text
+			)
+			AND bool_or(
+				resource_file.resource_id = '20000000-0000-0000-0000-000000000022'
+				AND resource_file.byte_size = 2000000
+			)
+		FROM public.resource_files AS resource_file
+		INNER JOIN private.resource_storage_objects AS storage_object
+			ON storage_object.file_id = resource_file.id
+		WHERE resource_file.resource_id BETWEEN
+			'20000000-0000-0000-0000-000000000020' AND
+			'20000000-0000-0000-0000-000000000034'
+	),
+	'textual reservations use suffixless generic_v2 keys and accept exactly 2000000 bytes'
+);
+
+SET LOCAL ROLE authenticated;
+SELECT pg_temp.set_request_context(
+	'00000000-0000-0000-0000-000000000802',
+	'authenticated'
 );
 SELECT ok(
 	NOT pg_temp.try_sql($$
 		SELECT public.register_resource_file_upload(
 			'20000000-0000-0000-0000-000000000019',
-			'future.tex', 'tex', '.tex', 'text/plain', 512, NULL
+			'oversized.md', 'markdown', '.md', 'text/plain', 2000001, NULL
 		)
 	$$),
-	'TeX metadata remains rejected in Stage 4C.3'
+	'textual metadata above 2000000 bytes is rejected'
 );
 SELECT ok(
 	NOT pg_temp.try_sql($$
 		SELECT public.register_resource_file_upload(
 			'20000000-0000-0000-0000-000000000019',
-			'future.txt', 'text', '.txt', 'text/plain', 512, NULL
+			'bad.json', 'source', '.json', 'text/plain', 512, NULL
 		)
 	$$),
-	'text metadata remains rejected in Stage 4C.3'
+	'source plus JSON is rejected'
 );
 SELECT ok(
 	NOT pg_temp.try_sql($$
 		SELECT public.register_resource_file_upload(
 			'20000000-0000-0000-0000-000000000019',
-			'future.py', 'source', '.py', 'text/plain', 512, NULL
+			'bad.html', 'source', '.html', 'text/plain', 512, NULL
 		)
 	$$),
-	'source metadata remains rejected in Stage 4C.3'
+	'source plus HTML is rejected'
+);
+SELECT ok(
+	NOT pg_temp.try_sql($$
+		SELECT public.register_resource_file_upload(
+			'20000000-0000-0000-0000-000000000019',
+			'bad.md', 'text', '.md', 'text/plain', 512, NULL
+		)
+	$$),
+	'text kind plus Markdown extension is rejected'
+);
+SELECT ok(
+	NOT pg_temp.try_sql($$
+		SELECT public.register_resource_file_upload(
+			'20000000-0000-0000-0000-000000000019',
+			'bad.txt', 'markdown', '.txt', 'text/plain', 512, NULL
+		)
+	$$),
+	'Markdown kind plus TXT extension is rejected'
+);
+SELECT ok(
+	NOT pg_temp.try_sql($$
+		SELECT public.register_resource_file_upload(
+			'20000000-0000-0000-0000-000000000019',
+			'bad.py', 'tex', '.py', 'text/plain', 512, NULL
+		)
+	$$),
+	'TeX kind plus source extension is rejected'
+);
+SELECT ok(
+	NOT pg_temp.try_sql($$
+		SELECT public.register_resource_file_upload(
+			'20000000-0000-0000-0000-000000000019',
+			'bad.swift', 'source', '.swift', 'text/plain', 512, NULL
+		)
+	$$),
+	'source cannot use an arbitrary non-allowlisted extension'
+);
+SELECT ok(
+	NOT pg_temp.try_sql($$
+		SELECT public.register_resource_file_upload(
+			'20000000-0000-0000-0000-000000000019',
+			'bad.md', 'markdown', '.md', 'application/javascript', 512, NULL
+		)
+	$$),
+	'textual metadata with non-canonical content type is rejected'
 );
 RESET ROLE;
 

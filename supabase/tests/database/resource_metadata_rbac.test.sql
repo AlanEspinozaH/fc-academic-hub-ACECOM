@@ -3,7 +3,7 @@ CREATE EXTENSION IF NOT EXISTS pgtap WITH SCHEMA extensions;
 
 BEGIN;
 
-SELECT plan(106);
+SELECT plan(107);
 
 CREATE OR REPLACE FUNCTION pg_temp.set_request_context(user_id uuid, jwt_role text)
 RETURNS void
@@ -956,6 +956,20 @@ VALUES (
 	now()
 );
 
+INSERT INTO public.academic_resources (
+	id, owner_user_id, course_id, academic_term_id, resource_type,
+	title, description, visibility, review_status, rights_status,
+	submitted_at, reviewed_by, reviewed_at
+)
+VALUES (
+	'10000000-0000-0000-0000-000000000040',
+	'00000000-0000-0000-0000-000000000502',
+	'course:text-files', '2026-1', 'notes',
+	'Public Markdown resource', 'Stored textual read descriptor fixture.',
+	'public', 'approved', 'open-license', now(),
+	'00000000-0000-0000-0000-000000000504', now()
+);
+
 SELECT throws_ok(
 	$$
 		INSERT INTO public.academic_resources (
@@ -1067,6 +1081,14 @@ VALUES
 		'Failed public.pdf', 'pdf', '.pdf', 'application/pdf', 1039,
 		'3939393939393939393939393939393939393939393939393939393939393939',
 		'generic_v2'
+	),
+	(
+		'20000000-0000-0000-0000-000000000040',
+		'10000000-0000-0000-0000-000000000040',
+		'00000000-0000-0000-0000-000000000502',
+		'Public notes.MD', 'markdown', '.md', 'text/plain', 1040,
+		'4040404040404040404040404040404040404040404040404040404040404040',
+		'generic_v2'
 	);
 
 INSERT INTO private.resource_storage_objects (
@@ -1116,6 +1138,11 @@ VALUES
 		'20000000-0000-0000-0000-000000000039',
 		'resources/10000000-0000-0000-0000-000000000039/20000000-0000-0000-0000-000000000039',
 		'failed', 'fixture failure', NULL
+	),
+	(
+		'20000000-0000-0000-0000-000000000040',
+		'resources/10000000-0000-0000-0000-000000000040/20000000-0000-0000-0000-000000000040',
+		'stored', NULL, now()
 	);
 
 
@@ -1466,6 +1493,20 @@ SELECT ok(
 		) AS descriptor
 	),
 	'RF-04 authorized stored PNG descriptor exposes canonical public metadata'
+);
+SELECT ok(
+	(
+		SELECT descriptor.file_kind = 'markdown'::public.resource_file_kind
+			AND descriptor.normalized_extension = '.md'
+			AND descriptor.content_type = 'text/plain'
+			AND descriptor.display_filename = 'Public notes.MD'
+			AND descriptor.storage_key_version = 'generic_v2'
+		FROM public.get_resource_file_read_descriptor(
+			'10000000-0000-0000-0000-000000000040',
+			'20000000-0000-0000-0000-000000000040'
+		) AS descriptor
+	),
+	'RF-06 authorized stored Markdown descriptor uses the existing public access matrix'
 );
 SELECT is(
 	(SELECT count(*)::integer FROM public.get_resource_file_read_descriptor(

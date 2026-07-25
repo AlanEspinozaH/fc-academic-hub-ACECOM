@@ -126,6 +126,26 @@ describe('resource file upload HTTP handler', () => {
 			bytes: new Uint8Array([0xff, 0xd8, 0xff, 0xe0, 0xff, 0xd9]),
 			declaredContentType: 'image/png',
 		},
+		{
+			filename: 'notes.md',
+			bytes: new TextEncoder().encode('# notes\n'),
+			declaredContentType: 'text/html',
+		},
+		{
+			filename: 'formula.tex',
+			bytes: new TextEncoder().encode('\\section{Intro}\n'),
+			declaredContentType: 'application/octet-stream',
+		},
+		{
+			filename: 'notes.txt',
+			bytes: new TextEncoder().encode('plain text\n'),
+			declaredContentType: 'application/pdf',
+		},
+		{
+			filename: 'solution.py',
+			bytes: new TextEncoder().encode('print("ok")\n'),
+			declaredContentType: 'application/javascript',
+		},
 	])(
 		'passes $filename bytes and non-authoritative MIME to the generic uploader',
 		async ({ filename, bytes, declaredContentType }) => {
@@ -455,14 +475,14 @@ describe('resource file upload HTTP handler', () => {
 		});
 	});
 
-	it('maps an unsupported future extension to a safe 400', async () => {
+	it('maps a forbidden extension to a safe 400', async () => {
 		const { dependencies, upload } = makeDependencies();
 		const formData = new FormData();
 
 		formData.set(
 			'file',
-			new File([new TextEncoder().encode('future bytes')], 'future.md', {
-				type: 'text/markdown',
+			new File([new TextEncoder().encode('future bytes')], 'future.json', {
+				type: 'application/json',
 			}),
 		);
 		upload.mockRejectedValueOnce(

@@ -165,6 +165,71 @@ describe('resource file upload orchestrator', () => {
 		},
 	);
 
+	it.each([
+		[
+			'notes.md',
+			'# notes\n',
+			'markdown',
+			'.md',
+			'4a28fc250c09e1f28c9f37486fca6db3c7a4ee707373216f6f7bd62ade5d9330',
+		],
+		[
+			'formula.tex',
+			'\\section{Intro}\n',
+			'tex',
+			'.tex',
+			'ec15dc9d813375a667593e6d5036037d0f3a227322ebce7842ee31483de7ae0b',
+		],
+		[
+			'notes.txt',
+			'plain text\n',
+			'text',
+			'.txt',
+			'c30a92f9ef889c07c781a7cf99f5b71415d4d1289e84473d1b9e6f01feffc62d',
+		],
+		[
+			'solution.py',
+			'print("ok")\n',
+			'source',
+			'.py',
+			'3a66aebdedbad3cf107d24e72a07d4b735819b1cf4020fdd922f63c064708172',
+		],
+	] as const)(
+		'uploads canonical textual metadata and exact %s bytes through the unchanged saga',
+		async (filename, content, fileKind, normalizedExtension, sha256) => {
+			const dependencies = makeDependencies();
+			const orchestrator = createResourceFileUploadOrchestrator(
+				dependencies.persistence,
+				dependencies.objectStore,
+			);
+			const bytes = new TextEncoder().encode(content);
+
+			await expect(
+				orchestrator.upload({
+					resourceId: RESOURCE_ID,
+					candidate: { filename, bytes, declaredContentType: 'text/html' },
+				}),
+			).resolves.toEqual({ fileId: FILE_ID });
+
+			expect(dependencies.reserve).toHaveBeenCalledWith({
+				resourceId: RESOURCE_ID,
+				displayFilename: filename,
+				fileKind,
+				normalizedExtension,
+				contentType: 'text/plain',
+				byteSize: bytes.byteLength,
+				sha256,
+			});
+			expect(dependencies.write).toHaveBeenCalledWith({
+				storageKey: STORAGE_KEY,
+				bytes: expect.any(Uint8Array),
+				contentType: 'text/plain',
+			});
+			expect(dependencies.write.mock.calls[0]?.[0].bytes).toEqual(bytes);
+			expect(dependencies.finalize).toHaveBeenCalledWith({ fileId: FILE_ID, sha256 });
+		},
+	);
+
 	it('does not reserve or write when generic validation fails', async () => {
 		const dependencies = makeDependencies();
 		const orchestrator = createResourceFileUploadOrchestrator(

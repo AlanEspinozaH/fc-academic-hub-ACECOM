@@ -97,6 +97,42 @@ describe('Supabase resource upload persistence', () => {
 		},
 	);
 
+	it.each([
+		['README.MD', 'markdown', '.md'],
+		['formula.tex', 'tex', '.tex'],
+		['notes.txt', 'text', '.txt'],
+		['solution.py', 'source', '.py'],
+	] as const)(
+		'reserves canonical textual metadata for %s through the unchanged RPC',
+		async (displayFilename, fileKind, normalizedExtension) => {
+			const { client, rpc } = makeClient();
+			const persistence = createSupabaseResourceUploadPersistence(client);
+			rpc.mockResolvedValueOnce({ data: FILE_ID, error: null });
+
+			await expect(
+				persistence.reserve({
+					resourceId: RESOURCE_ID,
+					displayFilename,
+					fileKind,
+					normalizedExtension,
+					contentType: 'text/plain',
+					byteSize: 4321,
+					sha256: SHA256,
+				}),
+			).resolves.toBe(FILE_ID);
+
+			expect(rpc).toHaveBeenCalledWith('register_resource_file_upload', {
+				resource_id: RESOURCE_ID,
+				display_filename: displayFilename,
+				file_kind: fileKind,
+				normalized_extension: normalizedExtension,
+				content_type: 'text/plain',
+				byte_size: 4321,
+				sha256: SHA256,
+			});
+		},
+	);
+
 	it('retries finalization once after a status-zero transport response', async () => {
 		const { client, rpc } = makeClient();
 		const persistence = createSupabaseResourceUploadPersistence(client);

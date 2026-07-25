@@ -52,13 +52,20 @@ export {
 } from './resource';
 export {
 	RESOURCE_FILE_MAX_BYTES,
+	RESOURCE_MARKDOWN_NORMALIZED_EXTENSION,
 	RESOURCE_PDF_CONTENT_TYPE,
 	RESOURCE_PDF_FILE_KIND,
 	RESOURCE_PDF_NORMALIZED_EXTENSION,
+	RESOURCE_PLAIN_TEXT_NORMALIZED_EXTENSION,
+	RESOURCE_SOURCE_NORMALIZED_EXTENSIONS,
+	RESOURCE_TEX_NORMALIZED_EXTENSION,
+	RESOURCE_TEXT_CONTENT_TYPE,
+	RESOURCE_TEXT_MAX_BYTES,
 	ResourceFileValidationError,
 	validateResourceFile,
 	type ResourceFileCandidate,
 	type ResourceFileKind,
 	type ResourceFileValidationErrorCode,
+	type ResourceSourceNormalizedExtension,
 	type ValidatedResourceFile,
 } from './resource-file-validation';

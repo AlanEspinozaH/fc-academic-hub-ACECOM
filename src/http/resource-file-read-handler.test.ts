@@ -59,6 +59,54 @@ const IMAGE_RESULTS = [
 	},
 ] satisfies readonly ResourceFileReadResult[];
 
+const TEXT_RESULTS = [
+	{
+		...PDF_RESULT,
+		displayFilename: 'Notas.md',
+		fileKind: 'markdown',
+		normalizedExtension: '.md',
+		contentType: 'text/plain',
+		storageKeyVersion: 'generic_v2',
+		bytes: new TextEncoder().encode('# título\r\ncontenido\n'),
+	},
+	{
+		...PDF_RESULT,
+		displayFilename: 'Fórmula.tex',
+		fileKind: 'tex',
+		normalizedExtension: '.tex',
+		contentType: 'text/plain',
+		storageKeyVersion: 'generic_v2',
+		bytes: new TextEncoder().encode('\\section{Seguro}\n'),
+	},
+	{
+		...PDF_RESULT,
+		displayFilename: 'Notas.txt',
+		fileKind: 'text',
+		normalizedExtension: '.txt',
+		contentType: 'text/plain',
+		storageKeyVersion: 'generic_v2',
+		bytes: new TextEncoder().encode('texto plano\n'),
+	},
+	{
+		...PDF_RESULT,
+		displayFilename: 'solution.py',
+		fileKind: 'source',
+		normalizedExtension: '.py',
+		contentType: 'text/plain',
+		storageKeyVersion: 'generic_v2',
+		bytes: new TextEncoder().encode('print("seguro")\n'),
+	},
+	{
+		...PDF_RESULT,
+		displayFilename: 'query.sql',
+		fileKind: 'source',
+		normalizedExtension: '.sql',
+		contentType: 'text/plain',
+		storageKeyVersion: 'generic_v2',
+		bytes: new TextEncoder().encode('select 1;\n'),
+	},
+] satisfies readonly ResourceFileReadResult[];
+
 const makeDependencies = (result: ResourceFileReadResult = PDF_RESULT) => {
 	const read = vi.fn<ResourceFileReader['read']>(async () => result);
 	const reader = { read } as ResourceFileReader;
@@ -133,6 +181,33 @@ describe('resource file read HTTP handler', () => {
 			expect(response.headers.get('x-content-type-options')).toBe('nosniff');
 		},
 	);
+
+	it.each(TEXT_RESULTS)(
+		'previews $normalizedExtension as exact inert UTF-8 text',
+		async (result) => {
+			const { dependencies } = makeDependencies(result);
+			const response = await handleResourceFileReadRequest(makeInput('inline'), dependencies);
+
+			expect(response.status).toBe(200);
+			expect(response.headers.get('content-type')).toBe('text/plain; charset=utf-8');
+			expect(response.headers.get('content-disposition')).toMatch(/^inline;/);
+			expect(response.headers.get('x-content-type-options')).toBe('nosniff');
+			expect(response.headers.get('cache-control')).toBe('private, no-store');
+			expect(new Uint8Array(await response.arrayBuffer())).toEqual(result.bytes);
+		},
+	);
+
+	it('downloads exact textual bytes with attachment disposition and UTF-8 text MIME', async () => {
+		const result = TEXT_RESULTS[0];
+		const { dependencies } = makeDependencies(result);
+		const response = await handleResourceFileReadRequest(makeInput('attachment'), dependencies);
+
+		expect(response.status).toBe(200);
+		expect(response.headers.get('content-type')).toBe('text/plain; charset=utf-8');
+		expect(response.headers.get('content-disposition')).toMatch(/^attachment;/);
+		expect(response.headers.get('x-content-type-options')).toBe('nosniff');
+		expect(new Uint8Array(await response.arrayBuffer())).toEqual(result.bytes);
+	});
 
 	it('uses the anonymous Supabase client so PostgreSQL can authorize public resources', async () => {
 		const { dependencies, createReader } = makeDependencies();

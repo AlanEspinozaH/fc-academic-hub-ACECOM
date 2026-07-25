@@ -1,3 +1,7 @@
+import {
+	RESOURCE_SOURCE_NORMALIZED_EXTENSIONS,
+	type ResourceSourceNormalizedExtension,
+} from '../../domain/resource-file-validation';
 import type { ResourceStorageKeyVersion } from '../r2/resource-storage-key';
 import type { SupabaseServerClient } from './server';
 import type { SupabaseDatabase } from './types';
@@ -40,6 +44,30 @@ export type ResourceFileReadDescriptor =
 			readonly normalizedExtension: '.jpg' | '.jpeg';
 			readonly contentType: 'image/jpeg';
 			readonly storageKeyVersion: 'generic_v2';
+	  })
+	| (ResourceFileReadDescriptorBase & {
+			readonly fileKind: 'markdown';
+			readonly normalizedExtension: '.md';
+			readonly contentType: 'text/plain';
+			readonly storageKeyVersion: 'generic_v2';
+	  })
+	| (ResourceFileReadDescriptorBase & {
+			readonly fileKind: 'tex';
+			readonly normalizedExtension: '.tex';
+			readonly contentType: 'text/plain';
+			readonly storageKeyVersion: 'generic_v2';
+	  })
+	| (ResourceFileReadDescriptorBase & {
+			readonly fileKind: 'text';
+			readonly normalizedExtension: '.txt';
+			readonly contentType: 'text/plain';
+			readonly storageKeyVersion: 'generic_v2';
+	  })
+	| (ResourceFileReadDescriptorBase & {
+			readonly fileKind: 'source';
+			readonly normalizedExtension: ResourceSourceNormalizedExtension;
+			readonly contentType: 'text/plain';
+			readonly storageKeyVersion: 'generic_v2';
 	  });
 
 export interface ResourceFileReadPersistence {
@@ -64,6 +92,12 @@ const readFailed = (): ResourceFileReadPersistenceError =>
 
 const isStorageKeyVersion = (value: unknown): value is ResourceStorageKeyVersion =>
 	value === 'legacy_pdf_v1' || value === 'generic_v2';
+
+const SOURCE_EXTENSION_SET = new Set<string>(RESOURCE_SOURCE_NORMALIZED_EXTENSIONS);
+const isResourceSourceNormalizedExtension = (
+	value: unknown,
+): value is ResourceSourceNormalizedExtension =>
+	typeof value === 'string' && SOURCE_EXTENSION_SET.has(value);
 
 const toDescriptor = (row: ResourceFileReadRpcRow): ResourceFileReadDescriptor | null => {
 	if (
@@ -101,29 +135,87 @@ const toDescriptor = (row: ResourceFileReadRpcRow): ResourceFileReadDescriptor |
 		});
 	}
 
-	if (row.file_kind !== 'image' || row.storage_key_version !== 'generic_v2') {
+	if (row.storage_key_version !== 'generic_v2') {
 		return null;
 	}
 
-	if (row.normalized_extension === '.png' && row.content_type === 'image/png') {
+	if (row.file_kind === 'image') {
+		if (row.normalized_extension === '.png' && row.content_type === 'image/png') {
+			return Object.freeze({
+				...base,
+				fileKind: 'image',
+				normalizedExtension: '.png',
+				contentType: 'image/png',
+				storageKeyVersion: 'generic_v2',
+			});
+		}
+
+		if (
+			(row.normalized_extension === '.jpg' || row.normalized_extension === '.jpeg') &&
+			row.content_type === 'image/jpeg'
+		) {
+			return Object.freeze({
+				...base,
+				fileKind: 'image',
+				normalizedExtension: row.normalized_extension,
+				contentType: 'image/jpeg',
+				storageKeyVersion: 'generic_v2',
+			});
+		}
+	}
+
+	if (
+		row.file_kind === 'markdown' &&
+		row.normalized_extension === '.md' &&
+		row.content_type === 'text/plain'
+	) {
 		return Object.freeze({
 			...base,
-			fileKind: 'image',
-			normalizedExtension: '.png',
-			contentType: 'image/png',
+			fileKind: 'markdown',
+			normalizedExtension: '.md',
+			contentType: 'text/plain',
 			storageKeyVersion: 'generic_v2',
 		});
 	}
 
 	if (
-		(row.normalized_extension === '.jpg' || row.normalized_extension === '.jpeg') &&
-		row.content_type === 'image/jpeg'
+		row.file_kind === 'tex' &&
+		row.normalized_extension === '.tex' &&
+		row.content_type === 'text/plain'
 	) {
 		return Object.freeze({
 			...base,
-			fileKind: 'image',
+			fileKind: 'tex',
+			normalizedExtension: '.tex',
+			contentType: 'text/plain',
+			storageKeyVersion: 'generic_v2',
+		});
+	}
+
+	if (
+		row.file_kind === 'text' &&
+		row.normalized_extension === '.txt' &&
+		row.content_type === 'text/plain'
+	) {
+		return Object.freeze({
+			...base,
+			fileKind: 'text',
+			normalizedExtension: '.txt',
+			contentType: 'text/plain',
+			storageKeyVersion: 'generic_v2',
+		});
+	}
+
+	if (
+		row.file_kind === 'source' &&
+		isResourceSourceNormalizedExtension(row.normalized_extension) &&
+		row.content_type === 'text/plain'
+	) {
+		return Object.freeze({
+			...base,
+			fileKind: 'source',
 			normalizedExtension: row.normalized_extension,
-			contentType: 'image/jpeg',
+			contentType: 'text/plain',
 			storageKeyVersion: 'generic_v2',
 		});
 	}

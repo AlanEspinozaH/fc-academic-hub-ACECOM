@@ -104,6 +104,55 @@ describe('Supabase resource file read persistence', () => {
 		},
 	);
 
+	it.each([
+		['README.MD', 'markdown', '.md'],
+		['formula.tex', 'tex', '.tex'],
+		['notes.txt', 'text', '.txt'],
+		['Main.java', 'source', '.java'],
+		['solution.py', 'source', '.py'],
+		['main.c', 'source', '.c'],
+		['header.h', 'source', '.h'],
+		['main.cpp', 'source', '.cpp'],
+		['header.hpp', 'source', '.hpp'],
+		['app.js', 'source', '.js'],
+		['types.ts', 'source', '.ts'],
+		['main.rs', 'source', '.rs'],
+		['main.go', 'source', '.go'],
+		['query.sql', 'source', '.sql'],
+		['run.sh', 'source', '.sh'],
+	] as const)(
+		'returns the canonical generic_v2 textual descriptor for %s',
+		async (displayFilename, fileKind, normalizedExtension) => {
+			const { client, rpc } = makeClient();
+			const persistence = createSupabaseResourceFileReadPersistence(client);
+			rpc.mockResolvedValueOnce({
+				data: [
+					{
+						...descriptorRow,
+						display_filename: displayFilename,
+						file_kind: fileKind,
+						normalized_extension: normalizedExtension,
+						content_type: 'text/plain',
+						storage_key_version: 'generic_v2',
+					},
+				],
+				error: null,
+			});
+
+			await expect(persistence.getDescriptor(RESOURCE_ID, FILE_ID)).resolves.toEqual({
+				resourceId: RESOURCE_ID,
+				fileId: FILE_ID,
+				displayFilename,
+				fileKind,
+				normalizedExtension,
+				contentType: 'text/plain',
+				byteSize: 1234,
+				sha256: 'a'.repeat(64),
+				storageKeyVersion: 'generic_v2',
+			});
+		},
+	);
+
 	it.each([null, []])('maps a zero-row result to NOT_FOUND', async (data) => {
 		const { client, rpc } = makeClient();
 		const persistence = createSupabaseResourceFileReadPersistence(client);
@@ -179,30 +228,66 @@ describe('Supabase resource file read persistence', () => {
 			storage_key_version: 'legacy_pdf_v1',
 		},
 		{
+			file_kind: 'source',
+			normalized_extension: '.json',
+			content_type: 'text/plain',
+			storage_key_version: 'generic_v2',
+		},
+		{
 			file_kind: 'markdown',
-			normalized_extension: '.md',
-			content_type: 'text/plain',
-			storage_key_version: 'generic_v2',
-		},
-		{
-			file_kind: 'tex',
-			normalized_extension: '.tex',
-			content_type: 'text/plain',
-			storage_key_version: 'generic_v2',
-		},
-		{
-			file_kind: 'text',
 			normalized_extension: '.txt',
 			content_type: 'text/plain',
 			storage_key_version: 'generic_v2',
 		},
 		{
-			file_kind: 'source',
+			file_kind: 'tex',
 			normalized_extension: '.py',
 			content_type: 'text/plain',
 			storage_key_version: 'generic_v2',
 		},
-	])('rejects malformed or not-yet-operational descriptor metadata %#', async (overrides) => {
+		{
+			file_kind: 'text',
+			normalized_extension: '.md',
+			content_type: 'text/plain',
+			storage_key_version: 'generic_v2',
+		},
+		{
+			file_kind: 'source',
+			normalized_extension: '.js',
+			content_type: 'application/javascript',
+			storage_key_version: 'generic_v2',
+		},
+		{
+			file_kind: 'markdown',
+			normalized_extension: '.md',
+			content_type: 'text/html',
+			storage_key_version: 'generic_v2',
+		},
+		{
+			file_kind: 'markdown',
+			normalized_extension: '.md',
+			content_type: 'text/plain',
+			storage_key_version: 'legacy_pdf_v1',
+		},
+		{
+			file_kind: 'tex',
+			normalized_extension: '.tex',
+			content_type: 'text/plain',
+			storage_key_version: 'legacy_pdf_v1',
+		},
+		{
+			file_kind: 'text',
+			normalized_extension: '.txt',
+			content_type: 'text/plain',
+			storage_key_version: 'legacy_pdf_v1',
+		},
+		{
+			file_kind: 'source',
+			normalized_extension: '.py',
+			content_type: 'text/plain',
+			storage_key_version: 'legacy_pdf_v1',
+		},
+	])('rejects malformed or unsupported descriptor metadata %#', async (overrides) => {
 		const { client, rpc } = makeClient();
 		const persistence = createSupabaseResourceFileReadPersistence(client);
 		rpc.mockResolvedValueOnce({

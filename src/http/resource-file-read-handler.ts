@@ -43,6 +43,9 @@ const unavailableResponse = (): Response =>
 		headers: privateNoStoreHeaders,
 	});
 
+const responseContentType = (canonicalContentType: string): string =>
+	canonicalContentType === 'text/plain' ? 'text/plain; charset=utf-8' : canonicalContentType;
+
 export const handleResourceFileReadRequest = async (
 	input: ResourceFileReadHttpInput,
 	dependencies: ResourceFileReadHttpDependencies,
@@ -82,7 +85,7 @@ export const handleResourceFileReadRequest = async (
 				'cache-control': 'private, no-store',
 				'content-disposition': buildContentDisposition(input.disposition, result.displayFilename),
 				'content-length': result.bytes.byteLength.toString(),
-				'content-type': result.contentType,
+				'content-type': responseContentType(result.contentType),
 				'x-content-type-options': 'nosniff',
 			},
 		});
