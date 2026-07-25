@@ -1,50 +1,142 @@
 # FC Academic Hub
 
-FC Academic Hub es la base de una plataforma academica comunitaria de la Facultad de Ciencias. El objetivo es organizar cursos, examenes, apuntes, silabos y recursos relacionados con seguridad y bajo costo operativo.
+FC Academic Hub es una plataforma académica comunitaria para organizar cursos, exámenes, apuntes, sílabos y otros recursos de la Facultad de Ciencias.
 
-La etapa actual mantiene un catalogo academico publico y estatico con los cinco planes de estudios 2018 importados desde un paquete normalizado. La etapa 4B.0 alinea Astro SSR con Cloudflare Workers antes de incorporar R2; la etapa 3B.2B ya conecto Google OAuth con un proyecto Supabase remoto, valida el dominio institucional en PostgreSQL y mantiene sesiones SSR en desarrollo local. Las credenciales reales permanecen fuera de Git. Todavia no existen rutas privadas, proteccion del catalogo, subida de documentos, bucket R2 remoto, descarga de archivos ni despliegue publico. Existe un binding R2 para desarrollo exclusivamente local con Miniflare; no accede a recursos remotos.
+El proyecto prioriza:
 
-## Alcance actual
+* seguridad;
+* moderación;
+* derechos sobre los recursos;
+* bajo costo operativo;
+* mantenimiento simple.
 
-- Astro con TypeScript estricto.
-- Adaptador de Cloudflare configurado para un futuro despliegue en Cloudflare Workers, con `output: 'server'`.
-- Binding R2 `ACADEMIC_RESOURCES` configurado para almacenamiento local de desarrollo; la suscripcion y el bucket remoto permanecen sin activar.
-- Content Collections con datos JSON versionados en Git.
-- Catalogo activo con 386 cursos, 556 relaciones curso-plan, 5 planes curriculares y 11 unidades academicas.
-- Capa de consulta en `src/domain/catalog.ts` para aislar paginas y componentes del almacenamiento.
-- Validaciones de integridad para duplicados, relaciones cruzadas, prerrequisitos, ciclos, silabos, fuentes y restricciones de storage.
-- Paginas publicas para `/`, `/schools`, `/schools/[slug]`, `/courses`, `/courses/[slug]`, `/resources`, `/about` y 404.
-- Endpoint JSON GET `/api/health` con version tomada de `package.json`.
-- Migraciones locales de Supabase/PostgreSQL para RBAC, dominios de correo, perfiles, auditoria, RLS y sincronizacion Auth -> profiles.
-- Matriz TypeScript explicita de roles y permisos en `src/domain/auth/`.
-- Configuracion validada de `PUBLIC_SUPABASE_URL` y `PUBLIC_SUPABASE_PUBLISHABLE_KEY`.
-- Fabricas Supabase SSR en `src/infrastructure/supabase/` para navegador y servidor, sin ejecutar login ni consultas al importar.
-- Middleware SSR que valida identidad con `auth.getUser()` por request y expone `Astro.locals.auth` sin tokens ni roles.
-- Triggers PostgreSQL que validan dominios institucionales exactos en `auth.users` y crean/sincronizan `public.profiles` sin asignar roles.
-- Pagina GET `/auth/sign-in`, endpoint POST `/auth/google`, callback GET `/auth/callback` y endpoint POST `/auth/sign-out` conectados con Google OAuth y Supabase remoto mediante configuracion privada externa al repositorio.
-- Redaccion previa de `provider_token` y `provider_refresh_token` en respuestas del endpoint Supabase Auth de intercambio de token, antes de que `auth-js` procese y persista la sesion.
+## Estado actual
+
+El proyecto utiliza:
+
+* Astro con TypeScript estricto;
+* Cloudflare Workers como runtime SSR;
+* Supabase Auth con Google OAuth;
+* PostgreSQL y RLS para identidad, roles, metadatos y autorización;
+* Cloudflare R2 privado para almacenamiento de archivos;
+* Content Collections/JSON para el catálogo académico actual.
+
+La infraestructura implementada incluye:
+
+* catálogo académico público;
+* autenticación Google OAuth;
+* sesiones SSR;
+* perfiles y roles PostgreSQL;
+* RLS y RPC transaccionales;
+* metadatos de recursos académicos;
+* workflow `draft -> pending -> approved | rejected`;
+* almacenamiento privado de archivos;
+* endpoint server-side de subida PDF;
+* SHA-256;
+* compensación PostgreSQL/R2;
+* auditoría de operaciones relevantes.
+
+El endpoint de subida actual es:
+
+```text
+POST /api/resources/:resourceId/files
+```
+
+La implementación operativa de 4B continúa siendo PDF-only.
+
+Stage 4C está siendo diseñado para incorporar:
+
+* acceso `public`, `restricted` y `privileged`;
+* lectura, preview y download server-side;
+* `ResourceFile` genérico;
+* PNG/JPEG;
+* Markdown, TeX, TXT y source code allowlisted;
+* identidades externas preautorizadas;
+* entitlements de acceso privilegiado.
+
+Estas capacidades no deben considerarse implementadas hasta que sus respectivas etapas de 4C hayan sido completadas.
+
+## Arquitectura
+
+```text
+Browser
+   │
+   ▼
+Astro / Cloudflare Worker
+   │
+   ├── Supabase Auth
+   │
+   ▼
+PostgreSQL / RLS
+   │
+   └── autorización y metadatos
+   │
+   ▼
+private Cloudflare R2
+```
+
+PostgreSQL es la autoridad de autorización.
+
+R2 almacena objetos privados y no decide:
+
+* roles;
+* ownership;
+* revisión;
+* audiencia;
+* derechos.
+
+## Documentación normativa
+
+Antes de modificar recursos académicos, consultar:
+
+* `docs/product/v1-product-contract.md`
+* `docs/architecture/resource-access-contract.md`
+* `docs/architecture/resource-file-policy.md`
+* `docs/architecture/resource-upload-contract.md`
+* `docs/architecture/authentication-and-authorization.md`
+* `docs/security/role-model.md`
+* `docs/adr/`
+
+`AGENTS.md` contiene las instrucciones de trabajo para Codex.
 
 ## Requisitos
 
-- Node.js >=22.12.0.
-- npm con instalacion basada en lockfile.
+* Node.js >= 22.12.0
+* npm
+* Docker para Supabase local cuando se ejecuten pruebas de base de datos
 
-## Instalacion
+## Instalación
 
 ```sh
 npm ci
-npm run dev
 ```
 
-Variables locales para Supabase:
+Crear configuración local:
 
 ```sh
 cp .env.example .env.local
 ```
 
-Reemplazar solo `PUBLIC_SUPABASE_URL` y `PUBLIC_SUPABASE_PUBLISHABLE_KEY` en `.env.local`. La publishable key puede llegar al navegador; las llaves secretas, passwords de base de datos, JWT secrets y credenciales remotas no deben versionarse ni usarse en el runtime de Astro. La proteccion real de datos depende de RLS y de autorizacion validada en servidor.
+Configurar únicamente los valores públicos requeridos por el entorno local.
 
-Supabase local para pruebas de base de datos:
+No versionar:
+
+* Client Secrets;
+* passwords;
+* JWT secrets;
+* tokens;
+* cookies;
+* credenciales de infraestructura.
+
+Iniciar desarrollo:
+
+```sh
+npm run dev
+```
+
+## Supabase local
+
+El proyecto utiliza Supabase local para migraciones y pruebas PostgreSQL.
 
 ```sh
 npx --yes supabase@2.109.1 start
@@ -54,11 +146,11 @@ npx --yes supabase@2.109.1 db lint --local
 npx --yes supabase@2.109.1 stop
 ```
 
-La CLI validada para 3B.2B es Supabase CLI 2.109.1. Los comandos `login`, `link` y `db push` solo deben ejecutarse de forma intencional, verificando antes el proyecto remoto y revisando `db push --dry-run`.
+Las operaciones contra un proyecto remoto, incluyendo `login`, `link` o `db push`, deben realizarse únicamente de forma intencional y después de verificar el proyecto y las migraciones involucradas.
 
-## Controles de calidad
+## Calidad
 
-Ejecutar el pipeline local completo:
+Ejecutar el pipeline completo:
 
 ```sh
 npm run ci
@@ -74,50 +166,102 @@ npm run test
 npm run build
 ```
 
-El script `npm run preview` compila y ejecuta `astro preview` para validacion local del SSR. El script `npm run deploy` queda reservado para un flujo futuro de Cloudflare Workers con autorizacion explicita. No desplegar sin aprobacion.
+Antes de finalizar un cambio deben pasar los controles aplicables y revisarse:
+
+```sh
+git status
+git diff
+```
 
 ## Estructura
 
 ```text
 src/
-  components/       Componentes Astro reutilizables.
-  config/           Configuracion general del sitio.
-  content/          Datos activos del catalogo versionados en Git.
-  domain/           Tipos, filtros, consultas y validaciones del catalogo; matriz auth local.
-  infrastructure/   Helpers de servidor, health y fabricas de clientes Supabase.
-  layouts/          Shell compartido del documento y estilos globales.
-  pages/            Rutas Astro y endpoints API.
+  components/        Componentes Astro.
+  config/            Configuración de aplicación.
+  content/           Catálogo académico versionado.
+  domain/            Reglas y tipos de dominio.
+  application/       Casos de uso y orquestación.
+  infrastructure/    Supabase, R2 y adaptadores externos.
+  http/              Lógica HTTP server-side.
+  layouts/           Layouts compartidos.
+  pages/             Páginas y endpoints Astro.
+
 data/
-  import/           Paquetes staging usados para importaciones revisables.
+  import/            Datos staging para importaciones.
+
 docs/
-  adr/              Registros de decision arquitectonica.
-  architecture/     Documentos de arquitectura.
-  operations/       Procedimientos operativos sin secretos.
-  data/             Modelo y guias para contenido del catalogo.
-  security/         Modelo de roles, bootstrap administrativo y riesgos aceptados.
+  adr/               Architecture Decision Records.
+  architecture/      Contratos técnicos.
+  product/           Contratos de producto.
+  operations/        Procedimientos operativos.
+  data/              Documentación del catálogo.
+  security/          Roles y políticas de seguridad.
+
 supabase/
-  migrations/       Migraciones PostgreSQL reproducibles.
-  tests/database/   Pruebas pgTAP de RLS y autorizacion.
+  migrations/        Migraciones PostgreSQL.
+  tests/database/    Pruebas pgTAP.
 ```
 
-## Agregar contenido
+## Catálogo académico
 
-Los registros activos se agregan editando JSON en `src/content/catalog/`, no componentes. Ver `docs/data/catalog-model.md`, `docs/data/adding-catalog-content.md` y `docs/data/plan-2018-import.md` antes de cambiar datos.
+Los datos académicos actualmente versionados se mantienen en:
 
-## Limites vigentes
+```text
+src/content/catalog/
+```
 
-- No crear paginas privadas ni usar `Astro.locals.auth` para bloquear rutas del catalogo todavia.
-- No cambiar el proyecto Supabase remoto vinculado ni aplicar migraciones sin verificar `projects list`, `migration list` y `db push --dry-run`.
-- No almacenar Client Secret de Google, tokens CLI, contrasenas, cookies ni claves secretas en Git, `.env.local`, documentacion o capturas.
-- No activar suscripciones, crear recursos Cloudflare remotos ni habilitar bindings remotos sin autorizacion institucional explicita.
-- No implementar proteccion de rutas, administracion de roles ni autenticacion ficticia.
-- No asignar roles ni crear administradores automaticamente al crear perfiles.
-- No solicitar scopes ni almacenar `provider_token` o `provider_refresh_token` de Google.
-- No implementar formularios de subida.
-- No almacenar documentos, PDFs, TEX, binarios, libros comerciales ni registros reales de recursos.
-- No commitear secretos. Mantener archivos `.env*` ignorados excepto `.env.example`; los valores reales van en `.env.local`.
-- No desplegar sin autorizacion explicita.
+Antes de modificarlos consultar:
 
-## Cloudflare SESSION/KV
+* `docs/data/catalog-model.md`
+* `docs/data/adding-catalog-content.md`
+* `docs/data/plan-2018-import.md`
 
-Con `@astrojs/cloudflare@14.1.4`, Astro muestra que habilita sesiones con KV `SESSION` si no hay driver de sesion configurado. FC Academic Hub no usa sesiones de Astro en esta etapa y `wrangler.jsonc` no declara KV. La decision esta documentada en `docs/adr/0002-static-academic-catalog.md` y debe revisarse antes de desplegar una etapa futura.
+Las páginas y componentes no deben convertirse en la fuente de datos del catálogo.
+
+## Seguridad
+
+Reglas fundamentales:
+
+* no usar `service_role` en el runtime normal de Astro;
+* no confiar en roles o permisos enviados por el navegador;
+* no exponer `storage_key`;
+* mantener R2 privado;
+* validar uploads server-side;
+* no ejecutar ni compilar archivos aportados por usuarios;
+* aplicar mínimo privilegio;
+* no ampliar formatos, roles, entitlements o audiencias fuera de los contratos aceptados;
+* no desplegar ni modificar infraestructura remota sin autorización explícita.
+
+## Limitaciones actuales
+
+Mientras Stage 4C no esté implementado completamente:
+
+* la subida operativa continúa siendo PDF-only;
+* no existe todavía preview/download general de archivos;
+* los nuevos formatos definidos por el contrato todavía no están habilitados;
+* `privileged` y los entitlements asociados todavía requieren implementación;
+* las identidades externas preautorizadas forman parte del diseño objetivo, no del baseline actual;
+* no existen múltiples archivos por recurso;
+* no se ejecutan ni compilan uploads;
+* no se habilitan URLs públicas directas de R2.
+
+## Desarrollo incremental
+
+Las capacidades de 4C deben implementarse en cambios pequeños y verificables.
+
+No debe implementarse todo Stage 4C como un único cambio.
+
+Cada etapa debe mantener alineados:
+
+```text
+contracts
++
+database
++
+application
++
+tests
++
+documentation
+```

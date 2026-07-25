@@ -2,357 +2,1861 @@
 
 ## Estado
 
-Contrato de base de datos implementado en la etapa 4B.2, refinado para la
-orquestación Worker en la etapa 4B.6 y expuesto mediante un endpoint server-side
-en la etapa 4B.7.
+Baseline implementado:
+
+* Stage 4B.2 — contrato PostgreSQL de subida;
+* Stage 4B.6 — orquestación Worker;
+* Stage 4B.7 — endpoint HTTP server-side.
+
+Evolución hacia `ResourceFile` genérico:
+
+**Aceptada para Stage 4C, pendiente de implementación.**
+
+La implementación actualmente desplegada en el repositorio continúa siendo especializada en PDF hasta que una etapa posterior de 4C generalice explícitamente el pipeline.
+
+---
 
 ## Propósito
 
-Este documento define las garantías observables del flujo de subida de archivos
-académicos. No sustituye al ADR 0010 ni replica la implementación SQL.
+Este documento define las garantías observables del flujo de subida de archivos académicos.
 
-La relación entre documentos es:
+Su responsabilidad principal es definir:
 
-- `docs/adr/0010-resource-metadata-rbac.md` registra la decisión arquitectónica.
-- este documento define invariantes, estados y responsabilidades;
-- las migraciones PostgreSQL implementan el contrato;
-- las pruebas pgTAP demuestran que el contrato se conserva.
+* quién puede iniciar una subida;
+* cómo se reserva el archivo;
+* cómo se coordina PostgreSQL con R2;
+* cómo se finaliza una subida;
+* cómo se compensan fallos;
+* qué ocurre ante resultados de transporte desconocidos;
+* qué información permanece privada;
+* qué invariantes deben conservarse al generalizar de PDF a `ResourceFile`.
 
-Si existe una contradicción, la migración aplicada y sus pruebas son la fuente
-ejecutable de verdad. Este documento debe corregirse dentro del mismo pull
-request.
+Este documento **no** define:
 
-## Alcance inicial
+* qué usuarios pueden leer posteriormente un archivo;
+* qué formatos exactos se aceptan;
+* cómo debe mostrarse un archivo;
+* la audiencia final de publicación.
 
-La primera versión admite como máximo un archivo PDF privado por recurso
-académico. El archivo no puede superar 10 000 000 bytes. Este límite corresponde a 10 MB decimales, no a 10 MiB.
+Esas responsabilidades viven respectivamente en:
 
-Un examen, una solución y un anexo deben representarse como recursos separados
-hasta que exista un modelo explícito para múltiples archivos.
+```text
+docs/architecture/resource-access-contract.md
+docs/architecture/resource-file-policy.md
+docs/product/v1-product-contract.md
+```
 
-El flujo no crea URLs públicas, no habilita acceso directo a R2 y no aprueba ni
-publica recursos automáticamente.
+---
 
-## Endpoint HTTP de subida
+# 1. Relación entre documentos
 
-La etapa 4B.7 expone únicamente del lado servidor:
+Las fuentes normativas se dividen así.
+
+## Decisiones arquitectónicas
+
+```text
+docs/adr/0010-resource-metadata-rbac.md
+```
+
+documenta el baseline introducido en 4A.
+
+El ADR de Stage 4C debe documentar la evolución hacia:
+
+* `ResourceFile` genérico;
+* nuevas audiencias;
+* entitlements;
+* identidades externas autorizadas;
+* storage keys genéricas.
+
+---
+
+## Política de archivos
+
+```text
+docs/architecture/resource-file-policy.md
+```
+
+define:
+
+* allowlist;
+* `file_kind`;
+* extensiones;
+* límites;
+* validación;
+* MIME canónico;
+* preview;
+* hashing;
+* layouts de storage.
+
+---
+
+## Política de acceso
+
+```text
+docs/architecture/resource-access-contract.md
+```
+
+define:
+
+* identidad;
+* roles;
+* entitlements;
+* `review_status`;
+* `visibility`;
+* `rights_status`;
+* acceso a preview y download.
+
+---
+
+## Este contrato
+
+Este documento define exclusivamente el **flujo transaccional de upload** y la coordinación:
+
+```text
+PostgreSQL
+↕
+Astro Worker
+↕
+Cloudflare R2
+```
+
+---
+
+# 2. Fuente ejecutable y objetivo normativo
+
+Para comportamiento ya implementado:
+
+> las migraciones PostgreSQL aplicadas, las pruebas pgTAP y las pruebas TypeScript son la fuente ejecutable de verdad.
+
+Para cambios de Stage 4C todavía no implementados:
+
+> los contratos aceptados de Stage 4C representan el objetivo normativo.
+
+Una implementación de 4C debe hacer converger dentro del mismo cambio:
+
+* código;
+* migraciones;
+* RLS;
+* RPC;
+* tests;
+* documentación.
+
+No debe actualizarse la documentación afirmando que una capacidad está implementada antes de que lo esté.
+
+---
+
+# 3. Baseline 4B actualmente implementado
+
+El pipeline actualmente implementado admite:
+
+```text
+máximo un PDF por recurso
+```
+
+con:
+
+```text
+maximum byte size = 10 000 000
+```
+
+y utiliza objetos R2 privados.
+
+El baseline 4B:
+
+* valida PDF;
+* calcula SHA-256;
+* reserva metadata PostgreSQL;
+* escribe R2;
+* finaliza PostgreSQL;
+* compensa fallos conocidos;
+* preserva resultados desconocidos;
+* no devuelve `storage_key`;
+* no publica automáticamente el recurso.
+
+Este comportamiento debe mantenerse hasta que Stage 4C generalice expresamente el upload.
+
+---
+
+# 4. Objetivo Stage 4C
+
+Stage 4C generaliza:
+
+```text
+ResourcePdf
+```
+
+hacia:
+
+```text
+ResourceFile
+```
+
+sin reescribir las garantías transaccionales de 4B.
+
+El flujo objetivo admite únicamente formatos definidos en:
+
+```text
+docs/architecture/resource-file-policy.md
+```
+
+y continúa admitiendo:
+
+```text
+máximo un archivo principal por recurso
+```
+
+en v1.
+
+---
+
+# 5. Principio de preservación de 4B
+
+La generalización de formatos no debe eliminar ni debilitar:
+
+* reserva PostgreSQL previa;
+* storage privado;
+* SHA-256;
+* atomicidad PostgreSQL;
+* idempotencia de finalización;
+* compensación;
+* tratamiento de resultados desconocidos;
+* auditoría;
+* un archivo por recurso;
+* no exposición de `storage_key`;
+* ausencia de `service_role`.
+
+Stage 4C debe evolucionar el contrato de archivo, no reconstruir innecesariamente el pipeline.
+
+---
+
+# 6. Endpoint HTTP
+
+El endpoint de subida permanece:
 
 ```text
 POST /api/resources/:resourceId/files
 ```
 
-La petición usa `multipart/form-data` con:
+El path ya es genérico y no necesita cambiar al incorporar nuevos formatos.
 
-- `file`: archivo PDF obligatorio;
-- `comment`: texto opcional.
+---
 
-El endpoint:
+# 7. Estado actual del endpoint
 
-1. rechaza solicitudes cross-origin antes de iniciar la subida;
-2. exige una sesión autenticada;
-3. valida el UUID del recurso;
-4. exige exactamente el media type `multipart/form-data`;
-5. limita el body HTTP antes de parsear completamente el multipart;
-6. delega la validación del PDF y la orquestación de PostgreSQL/R2 al flujo
-   server-side existente;
-7. devuelve únicamente el `fileId` después de una finalización confirmada.
+Mientras el pipeline 4B siga siendo el implementado, el endpoint acepta únicamente PDF.
 
-El archivo PDF mantiene el límite de 10 000 000 bytes. El body multipart tiene
-un margen adicional de 65 536 bytes para boundaries, headers y campos de
-formulario.
+Stage 4C deberá convertir esa restricción en la allowlist definida por:
 
-El endpoint no devuelve `storage_key`, no crea URLs públicas o firmadas y no
-expone acceso directo a R2.
+```text
+resource-file-policy.md
+```
 
-## Responsabilidades
+La documentación y los mensajes HTTP deben actualizarse conjuntamente con esa implementación.
 
-### PostgreSQL
+---
 
-PostgreSQL:
+# 8. Request multipart objetivo
 
-- autentica al actor mediante `auth.uid()`;
-- comprueba perfil activo, rol y propiedad;
-- reserva metadatos de archivo y almacenamiento;
-- controla las transiciones de estado;
-- finaliza o aborta la reserva;
-- registra eventos append-only;
-- impide modificaciones directas de estados protegidos.
+La petición utiliza:
 
-### Worker de Astro
+```text
+multipart/form-data
+```
+
+con:
+
+```text
+file
+```
+
+como archivo principal obligatorio.
+
+Puede conservar:
+
+```text
+comment
+```
+
+como campo textual opcional cuando corresponda al workflow existente.
+
+El cliente no proporciona de forma autoritativa:
+
+* `file_kind`;
+* `normalized_extension`;
+* MIME canónico;
+* SHA-256;
+* `storage_key`;
+* `storage_key_version`;
+* `uploaded_by`;
+* estado de storage.
+
+Estos valores son determinados por componentes confiables del sistema.
+
+---
+
+# 9. Precondiciones HTTP
+
+Antes de iniciar una subida, el endpoint debe:
+
+1. rechazar requests cross-origin no permitidas;
+2. exigir una sesión autenticada;
+3. validar `resourceId`;
+4. exigir el media type HTTP esperado;
+5. limitar el body antes de procesarlo completamente;
+6. rechazar multipart malformado;
+7. exigir exactamente el archivo requerido;
+8. validar campos auxiliares antes de iniciar operaciones persistentes.
+
+---
+
+# 10. Autorización para subir
+
+Subir un archivo requiere como mínimo:
+
+```text
+authenticated
++
+account_status = active
++
+Contributor o capacidad equivalente
++
+ownership del recurso editable
+```
+
+El entitlement:
+
+```text
+privileged_material.read
+```
+
+no concede capacidad de upload.
+
+Una identidad externa autorizada tampoco obtiene capacidad de upload simplemente por haber sido admitida.
+
+Para subir deberá poseer explícitamente el rol/capacidad editorial correspondiente.
+
+---
+
+# 11. Estados editables
+
+Una nueva subida solo puede realizarse sobre un recurso propio que se encuentre en un estado editable compatible con el workflow.
+
+El baseline v1 utiliza:
+
+```text
+draft
+rejected
+```
+
+como estados desde los que puede iniciarse o corregirse una contribución.
+
+Una subida no puede utilizarse para modificar directamente un recurso:
+
+```text
+approved
+```
+
+ni para saltarse el workflow de revisión.
+
+---
+
+# 12. Derechos antes del almacenamiento
+
+Un archivo no debe almacenarse definitivamente mientras el recurso carezca de una base de derechos que permita conservar ese archivo.
+
+En v1, los estados que pueden permitir archivo almacenado son:
+
+```text
+own-work
+authorized
+institutional
+open-license
+public-domain
+```
+
+según sus respectivas condiciones.
+
+No permiten almacenar el archivo principal:
+
+```text
+pending
+bibliographic-reference-only
+copyright-restricted
+```
+
+---
+
+## `pending`
+
+`rights_status = pending` significa que la base de derechos todavía no ha sido establecida.
+
+El recurso puede existir como metadata dentro del workflow, pero no debe completar una subida binaria almacenada hasta disponer de un estado de derechos compatible.
+
+---
+
+## `bibliographic-reference-only`
+
+Permite representar metadata o una referencia bibliográfica.
+
+No permite almacenar el archivo principal.
+
+---
+
+## `copyright-restricted`
+
+No permite almacenar el archivo principal bajo la política v1.
+
+---
+
+# 13. `authorized`
+
+`authorized` permite almacenar el archivo cuando existe una autorización explícita documentada.
+
+Esto no significa automáticamente que posteriormente pueda publicarse como:
+
+```text
+public
+```
+
+El alcance final de publicación se revisa durante moderación según:
+
+```text
+resource-access-contract.md
+```
+
+Upload y publication son decisiones diferentes.
+
+---
+
+# 14. Validación del archivo
+
+El Worker valida el archivo antes de escribirlo en R2.
+
+La validación debe cumplir:
+
+```text
+docs/architecture/resource-file-policy.md
+```
+
+La operación conceptual es:
+
+```text
+validateResourceFile(...)
+```
+
+que puede delegar en validadores especializados.
+
+Ejemplo:
+
+```text
+ResourceFile dispatcher
+        │
+        ├── PDF validator
+        ├── PNG validator
+        ├── JPEG validator
+        └── UTF-8 text validator
+```
+
+La implementación especializada existente para PDF debe conservarse siempre que siga cumpliendo el nuevo contrato.
+
+---
+
+# 15. Metadata canónica
+
+Después de validar un archivo, el servidor dispone conceptualmente de metadata confiable:
+
+```text
+display_filename
+file_kind
+normalized_extension
+content_type
+byte_size
+sha256
+```
+
+Estos valores no deben aceptarse como autoridad simplemente porque los proporcione el navegador.
+
+---
+
+# 16. MIME del cliente
+
+El MIME declarado por el cliente es información no confiable.
+
+Puede utilizarse como señal diagnóstica cuando sea útil, pero no debe determinar la clasificación final.
+
+Por ejemplo:
+
+```text
+dijkstra.py
+client MIME = application/octet-stream
+```
+
+puede ser aceptado si satisface la política de source code.
+
+El servidor almacena posteriormente:
+
+```text
+file_kind = source
+content_type = text/plain
+```
+
+---
+
+# 17. SHA-256
+
+SHA-256 debe calcularse sobre:
+
+```text
+los bytes exactos que serán escritos en R2
+```
+
+La aplicación no debe:
+
+* normalizar line endings antes de hash;
+* eliminar BOM antes de hash;
+* transformar el archivo antes de hash.
+
+Conceptualmente:
+
+```text
+uploaded bytes
+=
+validated bytes
+=
+hashed bytes
+=
+stored bytes
+```
+
+---
+
+# 18. Límite HTTP
+
+El archivo individual más grande admitido en v1 es:
+
+```text
+10 000 000 bytes
+```
+
+para:
+
+* PDF;
+* PNG;
+* JPEG.
+
+Por ello, el endpoint puede conservar un límite HTTP global basado en:
+
+```text
+10 000 000 bytes
++
+multipart overhead acotado
+```
+
+El baseline actual utiliza:
+
+```text
+65 536 bytes
+```
+
+de margen multipart.
+
+Stage 4C puede conservar este margen mientras siga siendo suficiente y esté cubierto por pruebas.
+
+---
+
+# 19. Límites por familia
+
+El límite HTTP global no determina la validez final del archivo.
+
+Después del parsing, se aplican los límites específicos definidos en la política de archivos.
+
+Actualmente aceptados:
+
+```text
+PDF        10 000 000
+PNG        10 000 000
+JPEG       10 000 000
+text-like   2 000 000
+```
+
+Por tanto:
+
+```text
+source.py = 8 000 000 bytes
+```
+
+puede encontrarse por debajo del máximo HTTP global y aun así debe ser rechazado.
+
+---
+
+# 20. Responsabilidades PostgreSQL
+
+PostgreSQL es responsable de:
+
+* identificar al actor mediante `auth.uid()`;
+* comprobar account status;
+* comprobar roles/capacidades;
+* comprobar ownership;
+* comprobar estado editable;
+* comprobar derechos requeridos;
+* reservar metadata;
+* reservar estado de almacenamiento;
+* controlar transiciones;
+* finalizar;
+* abortar;
+* registrar eventos;
+* mantener invariantes;
+* proteger metadata privada.
+
+PostgreSQL no valida magic bytes ni UTF-8 del archivo.
+
+Esas validaciones pertenecen al Worker antes de escribir R2.
+
+---
+
+# 21. Responsabilidades del Worker
 
 El Worker:
 
-- valida el archivo antes de almacenarlo;
-- calcula SHA-256;
-- escribe el objeto privado en R2;
-- llama a las RPC PostgreSQL;
-- distingue un fallo confirmado de un resultado de transporte desconocido;
-- reintenta una vez la finalización cuando el resultado de transporte es
-  desconocido, usando el mismo `file_id` y SHA-256;
-- realiza compensación destructiva únicamente cuando la finalización PostgreSQL
-  falló de forma conocida;
-- conserva R2 y los metadatos PostgreSQL cuando el resultado de la finalización
-  sigue siendo desconocido;
-- no usa `service_role`.
+1. valida HTTP;
+2. obtiene el archivo;
+3. valida formato y contenido;
+4. calcula SHA-256;
+5. solicita reserva PostgreSQL;
+6. deriva la clave R2 correspondiente;
+7. escribe el objeto privado;
+8. solicita finalización PostgreSQL;
+9. compensa únicamente cuando el resultado es suficientemente conocido;
+10. preserva estados ambiguos cuando la operación remota puede haberse completado.
 
-### Cloudflare R2
+El Worker no utiliza:
 
-R2 almacena el objeto binario privado. No decide roles, propiedad, revisión ni
-publicación.
+```text
+service_role
+```
 
-PostgreSQL no puede comprobar directamente que un objeto exista en R2. El estado
-`stored` significa que el Worker recibió confirmación de R2 antes de solicitar
-la finalización.
+para ejecutar este flujo.
 
-## Estados involucrados
+---
 
-### Recurso académico
+# 22. Responsabilidades de R2
+
+Cloudflare R2:
+
+* almacena bytes;
+* devuelve éxito/fallo de operaciones de object storage.
+
+R2 no determina:
+
+* identidad;
+* roles;
+* ownership;
+* `review_status`;
+* `visibility`;
+* derechos;
+* audiencia.
+
+R2 permanece privado.
+
+---
+
+# 23. Estados del recurso durante upload
 
 Para una subida nueva:
 
 ```text
 draft o rejected
-        |
-        | finalize_resource_file_upload
-        v
+        │
+        │ finalize_resource_file_upload
+        ▼
       pending
 ```
 
-La finalización no puede producir `approved`.
+La finalización de upload:
 
-### Objeto de almacenamiento
+```text
+NO
+```
+
+puede producir directamente:
+
+```text
+approved
+```
+
+La publicación es un proceso editorial posterior.
+
+---
+
+# 24. Estado del objeto
+
+El flujo principal de storage conserva:
 
 ```text
 uploading
-   | \
-   |  \ abort_resource_file_upload
-   |   \
-   v    v
-stored  reserva eliminada
+   │
+   ├── successful finalization
+   │        ↓
+   │      stored
+   │
+   └── abort
+            ↓
+      reservation removed
 ```
 
-Una reserva histórica en `failed` también puede ser abortada.
+Los estados adicionales necesarios para fallos y reconciliación deben conservar la semántica ya introducida por 4B.
 
-## Invariantes
+---
 
-1. Solo un usuario autenticado con perfil activo y rol `contributor` o superior
-   puede operar sobre un recurso propio editable.
-2. Un recurso admite como máximo un archivo en esta etapa.
-3. `storage_key` permanece exclusivamente en
-   `private.resource_storage_objects`.
-4. Los clientes no cambian directamente `review_status` ni `storage_status`.
-5. La finalización cambia archivo, storage, recurso y auditoría dentro de una
-   sola transacción PostgreSQL.
-6. Si la finalización falla, PostgreSQL no puede quedar parcialmente actualizado.
-7. El aborto elimina los metadatos de archivo y storage, pero conserva el recurso
-   académico editable.
-8. Los eventos de revisión y almacenamiento son append-only.
-9. Finalizar una segunda vez con el mismo hash puede ser idempotente.
-10. Finalizar con un hash diferente al ya confirmado debe fallar.
-11. Las operaciones concurrentes usan el orden de bloqueo:
-    recurso, archivo y objeto de almacenamiento.
-12. Ninguna operación de subida aprueba o publica el recurso.
-13. Un error de transporte no implica que la operación remota no haya sido
-    confirmada; el Worker distingue fallos conocidos de resultados desconocidos.
-14. Si el resultado de `finalize_resource_file_upload` permanece desconocido,
-    el Worker no elimina el objeto R2 ni aborta la reserva PostgreSQL.
-15. El reintento automático de finalización reutiliza exactamente el mismo
-    `file_id` y SHA-256 y depende de la idempotencia definida por este contrato.
+# 25. Invariantes principales
 
-## Reserva
+1. Solo un actor autorizado puede subir a un recurso propio editable.
+2. Un recurso admite como máximo un archivo principal.
+3. El archivo debe cumplir la allowlist antes de R2.
+4. Los derechos deben permitir almacenamiento.
+5. `storage_key` permanece privado.
+6. El navegador no decide metadata canónica.
+7. El cliente no modifica directamente estados protegidos.
+8. PostgreSQL finaliza metadata, storage, resource y auditoría atómicamente.
+9. Una finalización fallida no puede dejar una transacción PostgreSQL parcialmente aplicada.
+10. Los eventos de auditoría relevantes son append-only.
+11. La segunda finalización con el mismo identificador/hash puede ser idempotente.
+12. Un hash distinto del ya confirmado debe producir fallo.
+13. Las operaciones concurrentes deben mantener un orden de locking estable.
+14. Upload nunca aprueba ni publica.
+15. Un timeout no demuestra que la operación remota haya fallado.
+16. Una operación ambigua no debe provocar compensación destructiva automáticamente.
+17. Un nuevo objeto posterior a la migración de layout usa `generic_v2`.
+18. Los objetos legacy continúan siendo compatibles.
 
-La RPC existente:
+---
+
+# 26. Reserva
+
+La operación de reserva crea de manera coordinada metadata equivalente a:
 
 ```text
-register_resource_file_upload
+public.resource_files
 ```
 
-crea conjuntamente:
+y:
 
-- `public.resource_files`;
-- `private.resource_storage_objects` en estado `uploading`.
+```text
+private.resource_storage_objects
+```
 
-La implementación 4B.2 debe bloquear primero el recurso y volver a comprobar que
-continúa editable antes de insertar la reserva.
+en estado:
 
-Una restricción única en `resource_files.resource_id` evita dos reservas
-simultáneas para el mismo recurso.
+```text
+uploading
+```
 
-## Finalización atómica
+La reserva debe bloquear primero el recurso y volver a comprobar:
 
-La RPC:
+* ownership;
+* estado editable;
+* permisos;
+* ausencia de un archivo ya reservado;
+* derechos compatibles.
+
+---
+
+# 27. Un archivo por recurso
+
+La restricción:
+
+```text
+one resource -> at most one resource_file
+```
+
+debe mantenerse en v1.
+
+Debe existir una garantía PostgreSQL que impida dos reservas concurrentes válidas para un mismo recurso.
+
+No basta con comprobarlo únicamente en TypeScript.
+
+---
+
+# 28. Metadata objetivo de reserva
+
+Stage 4C debe permitir persistir de manera canónica información equivalente a:
+
+```text
+resource_id
+uploaded_by
+display_filename
+file_kind
+normalized_extension
+content_type
+byte_size
+sha256
+storage_key_version
+```
+
+El diseño SQL exacto puede adaptarse durante implementación, pero la información crítica de formato no debe depender exclusivamente de volver a analizar `display_filename`.
+
+---
+
+# 29. `storage_key_version`
+
+Stage 4C introduce conceptualmente:
+
+```text
+legacy_pdf_v1
+generic_v2
+```
+
+Los nuevos uploads utilizan:
+
+```text
+generic_v2
+```
+
+La versión/layout debe quedar determinada por el servidor o PostgreSQL.
+
+Nunca por input arbitrario del usuario.
+
+---
+
+# 30. Storage key legacy
+
+Los objetos anteriores pueden usar:
+
+```text
+resources/<resource_id>/<file_id>.pdf
+```
+
+y no deben renombrarse únicamente por la generalización.
+
+Se consideran:
+
+```text
+legacy_pdf_v1
+```
+
+---
+
+# 31. Storage key genérica
+
+Nuevos archivos utilizan:
+
+```text
+resources/<resource_id>/<file_id>
+```
+
+sin extensión.
+
+Esto incluye nuevos PDFs.
+
+Por tanto:
+
+```text
+nuevo PDF
+```
+
+no necesita una key terminada en:
+
+```text
+.pdf
+```
+
+La información de formato vive en metadata canónica.
+
+---
+
+# 32. `storage_key` privado
+
+La clave concreta continúa almacenada como información privada de infraestructura.
+
+No debe:
+
+* devolverse en la respuesta HTTP;
+* exponerse en una API pública;
+* convertirse en identificador de dominio;
+* aceptarse desde el navegador;
+* utilizarse para autorización.
+
+---
+
+# 33. Resultado de reserva
+
+La operación de reserva debe devolver al Worker únicamente la información estrictamente necesaria para continuar el flujo.
+
+El contrato público del endpoint termina devolviendo:
+
+```text
+fileId
+```
+
+después de una finalización confirmada.
+
+No debe devolver:
+
+```text
+storage_key
+```
+
+al navegador.
+
+---
+
+# 34. Derivación de key
+
+Para objetos nuevos, el Worker puede derivar la key determinísticamente mediante:
+
+```text
+resource_id
+file_id
+storage_key_version
+```
+
+siguiendo:
+
+```text
+resource-file-policy.md
+```
+
+Esto evita necesitar revelar la clave privada al cliente.
+
+---
+
+# 35. Escritura R2
+
+La escritura utiliza únicamente:
+
+* storage key derivada internamente;
+* bytes ya validados;
+* content type canónico.
+
+No debe usar como autoridad:
+
+```text
+raw client MIME
+```
+
+para `httpMetadata`.
+
+---
+
+# 36. Finalización atómica
+
+La operación equivalente a:
 
 ```text
 finalize_resource_file_upload(
-  file_id uuid,
-  sha256 text,
-  comment text default null
+  file_id,
+  sha256,
+  comment
 )
 ```
 
-debe:
+debe continuar siendo atómica en PostgreSQL.
 
-1. bloquear recurso, archivo y storage;
-2. comprobar identidad, rol, propiedad, derechos y estados;
-3. validar SHA-256;
-4. guardar el hash confirmado;
-5. cambiar storage de `uploading` a `stored`;
-6. establecer `stored_at`;
-7. cambiar el recurso de `draft` o `rejected` a `pending`;
-8. establecer `submitted_at` y limpiar revisión previa;
-9. registrar `storage_stored`;
-10. registrar `submit`;
-11. confirmar todo en una sola transacción.
+Conceptualmente debe:
 
-Una repetición es idempotente solamente cuando:
+1. bloquear resource;
+2. bloquear file;
+3. bloquear storage;
+4. comprobar actor;
+5. comprobar ownership;
+6. comprobar estados;
+7. comprobar derechos;
+8. verificar SHA-256;
+9. persistir hash confirmado;
+10. cambiar storage a `stored`;
+11. establecer timestamps;
+12. mover el recurso a `pending`;
+13. registrar eventos;
+14. confirmar todo en una única transacción.
 
-- storage ya está `stored`;
-- el recurso está `pending`;
-- el hash coincide.
+La firma SQL exacta puede evolucionar si Stage 4C necesita metadata adicional.
 
-No debe repetir eventos ni timestamps.
+Las garantías no deben debilitarse.
 
-## Aborto
+---
 
-La RPC:
+# 37. Idempotencia
+
+Una repetición de finalización puede considerarse idempotente únicamente cuando:
+
+* se refiere al mismo `file_id`;
+* storage ya está confirmado;
+* resource se encuentra en el estado esperado;
+* SHA-256 coincide.
+
+No debe:
+
+* duplicar eventos;
+* cambiar timestamps innecesariamente;
+* aceptar un hash diferente.
+
+---
+
+# 38. Aborto
+
+La operación de aborto debe conservar la semántica existente.
+
+Conceptualmente:
 
 ```text
 abort_resource_file_upload(
-  file_id uuid,
-  reason text default null
+  file_id,
+  reason
 )
 ```
 
-debe:
+puede eliminar una reserva no finalizada cuando:
 
-1. bloquear recurso, archivo y storage;
-2. comprobar identidad, rol, propiedad y estado editable;
-3. aceptar storage `uploading` o `failed`;
-4. registrar `storage_aborted`;
-5. eliminar `resource_files`;
-6. eliminar el storage asociado mediante cascada;
-7. conservar el recurso en su estado editable.
+* el actor conserva autorización;
+* el recurso sigue siendo editable;
+* el storage se encuentra en un estado abortable.
 
-Un archivo `stored` no puede abortarse mediante esta RPC.
+El aborto:
 
-## RPC de almacenamiento
+* elimina metadata de la reserva;
+* elimina el registro de storage mediante la relación correspondiente;
+* conserva el recurso académico.
 
-`mark_resource_file_stored` se conserva temporalmente por compatibilidad de
-esquema, pero no es ejecutable por `authenticated`. La confirmación de un objeto
-almacenado debe realizarse exclusivamente mediante
-`finalize_resource_file_upload`, porque esa RPC actualiza atómicamente archivo,
-storage, recurso y auditoría.
+Un archivo ya:
 
-`mark_resource_file_failed` permanece ejecutable por `authenticated` para la
-compensación server-side. El Worker la utiliza únicamente cuando el objeto fue
-escrito en R2, la finalización PostgreSQL falló y la eliminación compensatoria
-del objeto también falló.
+```text
+stored
+```
 
-Esta RPC conserva el archivo y el registro privado de almacenamiento, cambia
-`uploading` a `failed`, registra `failure_reason` y emite `storage_failed`. Esto
-preserva la referencia privada necesaria para una limpieza posterior.
+no se elimina mediante esta operación ordinaria de aborto.
 
-`submit_academic_resource` permanece disponible para recursos sin archivo,
-referencias bibliográficas y reenvíos explícitos.
+---
 
-## Compensación entre PostgreSQL y R2
+# 39. PostgreSQL y R2 no comparten transacción
 
-PostgreSQL y R2 no comparten una transacción distribuida.
+No existe una transacción distribuida ACID que abarque simultáneamente:
 
-| Situación                                                                    | Acción del Worker                                                                         |
-| ---------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| La reserva PostgreSQL devuelve un fallo conocido                             | No escribir en R2                                                                         |
-| La reserva PostgreSQL termina con resultado desconocido                      | No escribir en R2 ni intentar una compensación sin `file_id` confirmado                   |
-| La escritura R2 falla o su resultado es desconocido                          | Intentar eliminar defensivamente la clave R2                                              |
-| La eliminación defensiva R2 funciona                                         | Abortar la reserva PostgreSQL                                                             |
-| La eliminación defensiva R2 también falla                                    | Conservar la reserva PostgreSQL y reportar fallo de compensación                          |
-| La finalización PostgreSQL devuelve un fallo conocido                        | Intentar eliminar el objeto R2                                                            |
-| La eliminación R2 funciona después de un fallo conocido de finalización      | Abortar la reserva PostgreSQL                                                             |
-| La eliminación R2 también falla después de un fallo conocido de finalización | Marcar el storage como `failed` y conservar sus metadatos privados                        |
-| La primera finalización termina con resultado desconocido                    | Reintentar una vez con el mismo `file_id` y SHA-256                                       |
-| El reintento confirma la finalización                                        | Considerar la subida finalizada                                                           |
-| El resultado de la finalización sigue siendo desconocido                     | No eliminar R2, no abortar PostgreSQL y preservar el estado para reconciliación posterior |
+```text
+PostgreSQL
++
+Cloudflare R2
+```
 
-La etapa 4B no implementa todavía una tarea automática de limpieza ni de
-reconciliación. Los resultados desconocidos se preservan deliberadamente para
-evitar una compensación destructiva sobre una operación que podría haberse
-confirmado remotamente.
+Por ello el Worker implementa una saga pequeña de coordinación y compensación.
 
-## Seguridad
+Este principio continúa siendo válido independientemente del formato del archivo.
 
-- No usar `service_role` en Astro.
-- No devolver `storage_key` al navegador.
-- No aceptar un `storage_key` proporcionado libremente por el cliente final.
-- No crear URLs firmadas ni públicas en esta etapa.
-- Las funciones `SECURITY DEFINER` deben usar `SET search_path = ''` y nombres
-  completamente calificados.
-- Los permisos deben concederse por firma exacta de función.
-- Los errores no deben revelar claves privadas ni datos de otros propietarios.
+---
 
-## Fuera de alcance
+# 40. Fallo conocido vs resultado desconocido
 
-Quedan fuera del alcance actual de la etapa 4B:
+El sistema debe distinguir:
 
-- activación de la suscripción R2;
-- creación del bucket remoto;
-- interfaz visual de subida;
-- descarga de archivos;
-- revisión y aprobación visual;
-- múltiples archivos por recurso;
-- limpieza programada de reservas vencidas;
-- eliminación de objetos ya almacenados;
-- URLs públicas o directas.
+```text
+known failure
+```
 
-## Verificación mínima
+de:
 
-Las pruebas pgTAP deben cubrir:
+```text
+unknown outcome
+```
 
-- existencia y privilegios de las nuevas RPC;
-- revocación de las RPC heredadas;
-- un archivo máximo por recurso;
-- finalización válida;
-- atomicidad ante error;
-- idempotencia con el mismo hash;
-- rechazo de hash conflictivo;
-- rechazo de usuario sin rol;
-- rechazo de propietario incorrecto;
-- rechazo de estado inválido;
-- aborto de `uploading`;
-- aborto de `failed`;
-- rechazo de aborto para `stored`;
-- conservación del recurso después del aborto;
-- auditoría append-only;
-- ausencia de acceso directo a `storage_key`.
+Un error de transporte como:
 
-Las pruebas unitarias de la orquestación Worker deben cubrir además:
+* timeout;
+* conexión interrumpida;
+* respuesta perdida;
 
-- reserva con fallo conocido;
-- reserva con resultado desconocido;
-- fallo o resultado desconocido de escritura R2 y eliminación defensiva;
-- finalización con fallo conocido;
-- reintento idempotente después de un resultado de transporte desconocido;
-- finalización con resultado todavía desconocido sin compensación destructiva;
-- fallo de eliminación compensatoria;
-- uso de `mark_resource_file_failed` únicamente después de un fallo conocido de
-  finalización y un fallo de eliminación R2.
+no demuestra necesariamente que la operación remota no haya ocurrido.
 
-Las pruebas de la capa HTTP deben cubrir además:
+---
 
-- sesión no autenticada;
-- origen cross-site;
-- UUID de recurso inválido;
-- media type incorrecto;
-- multipart malformado;
-- body multipart por encima del límite;
-- ausencia del campo `file`;
-- comentario no textual;
-- errores seguros de validación del PDF;
-- fallos deterministas y resultados desconocidos del orquestador;
-- ausencia de detalles internos en errores inesperados.
+# 41. Reserva PostgreSQL
 
-El smoke test local debe comprobar como mínimo:
+## Fallo conocido
 
-- `GET` al endpoint devuelve `405` con `Allow: POST`;
-- `POST` same-origin sin sesión devuelve `401`;
-- una petición cross-origin es rechazada;
-- el endpoint carga correctamente bajo el runtime local de Cloudflare.
+Si la reserva devuelve un fallo confirmado:
+
+```text
+no escribir R2
+```
+
+---
+
+## Resultado desconocido
+
+Si la reserva no confirma si ocurrió:
+
+```text
+no escribir R2
+```
+
+cuando no existe un `file_id` confirmado con el que continuar de forma segura.
+
+No debe intentarse compensación destructiva sobre una operación cuya existencia no puede identificarse.
+
+---
+
+# 42. Escritura R2
+
+Si R2 devuelve fallo conocido o resultado desconocido durante escritura:
+
+```text
+attempt defensive delete
+```
+
+sobre la key derivada.
+
+La finalidad es evitar conservar un objeto que PostgreSQL todavía considera `uploading`.
+
+---
+
+# 43. Eliminación defensiva exitosa
+
+Si la eliminación R2 se confirma:
+
+```text
+abort PostgreSQL reservation
+```
+
+---
+
+# 44. Eliminación defensiva fallida
+
+Si no puede eliminarse el objeto:
+
+```text
+preserve metadata
+report compensation failure
+```
+
+No debe perderse la única referencia que permita reconciliar posteriormente el objeto.
+
+---
+
+# 45. Fallo conocido de finalización PostgreSQL
+
+Si R2 confirmó escritura pero PostgreSQL confirma que la finalización falló:
+
+```text
+attempt R2 delete
+```
+
+---
+
+# 46. Delete R2 exitoso después de fallo de finalización
+
+Entonces:
+
+```text
+abort PostgreSQL reservation
+```
+
+---
+
+# 47. Delete R2 fallido después de fallo de finalización
+
+Debe conservarse suficiente metadata para reconciliación y marcarse el fallo de storage según el contrato existente.
+
+No debe ocultarse que puede existir un objeto huérfano.
+
+---
+
+# 48. Resultado desconocido de finalización
+
+Si la primera llamada de finalización tiene outcome desconocido:
+
+```text
+retry once
+```
+
+utilizando exactamente:
+
+```text
+same file_id
+same SHA-256
+```
+
+---
+
+# 49. Reintento confirmado
+
+Si el reintento confirma la finalización:
+
+```text
+upload successful
+```
+
+---
+
+# 50. Reintento también desconocido
+
+Si continúa sin conocerse el resultado:
+
+```text
+DO NOT delete R2
+DO NOT abort PostgreSQL
+```
+
+La operación se conserva para reconciliación posterior.
+
+Esta regla es crítica.
+
+Una compensación destructiva podría borrar un objeto correspondiente a una finalización PostgreSQL que sí se ejecutó pero cuya respuesta se perdió.
+
+---
+
+# 51. Matriz de compensación
+
+| Situación                                                               | Acción                                                   |
+| ----------------------------------------------------------------------- | -------------------------------------------------------- |
+| Reserva PostgreSQL falla de forma conocida                              | No escribir R2                                           |
+| Reserva PostgreSQL tiene resultado desconocido sin `file_id` confirmado | No escribir R2                                           |
+| Escritura R2 falla o queda desconocida                                  | Intentar delete defensivo                                |
+| Delete defensivo R2 confirma éxito                                      | Abortar reserva PostgreSQL                               |
+| Delete defensivo R2 falla                                               | Preservar reserva y reportar fallo                       |
+| Finalización PostgreSQL falla de forma conocida                         | Intentar delete R2                                       |
+| Delete R2 confirma éxito                                                | Abortar reserva PostgreSQL                               |
+| Delete R2 falla                                                         | Preservar metadata y marcar fallo                        |
+| Primera finalización queda desconocida                                  | Reintentar una vez con mismo id/hash                     |
+| Reintento confirma finalización                                         | Éxito                                                    |
+| Reintento permanece desconocido                                         | Preservar R2 y PostgreSQL; no compensar destructivamente |
+
+---
+
+# 52. `mark_resource_file_stored`
+
+La confirmación ordinaria de una subida no debe dividirse en varias operaciones públicas que permitan estados parciales.
+
+La finalización atómica sigue siendo la vía autoritativa.
+
+Si una RPC histórica como:
+
+```text
+mark_resource_file_stored
+```
+
+permanece por compatibilidad, no debe convertirse nuevamente en el camino ordinario para usuarios authenticated.
+
+---
+
+# 53. `mark_resource_file_failed`
+
+Una operación equivalente puede mantenerse para registrar un fallo de compensación que requiera reconciliación posterior.
+
+Debe utilizarse únicamente bajo condiciones claramente definidas.
+
+No debe ser una vía para que un cliente final marque arbitrariamente archivos ajenos como fallidos.
+
+Las comprobaciones internas de actor, ownership y estado siguen siendo obligatorias aunque exista `EXECUTE` para un rol PostgreSQL amplio como `authenticated`.
+
+---
+
+# 54. `submit_academic_resource`
+
+Puede continuar existiendo para recursos sin archivo cuando el producto lo permita.
+
+Ejemplos:
+
+```text
+bibliographic-reference-only
+```
+
+o workflows explícitos que no necesiten binario.
+
+No debe utilizarse para saltarse las validaciones requeridas cuando sí existe un archivo.
+
+---
+
+# 55. Respuesta HTTP exitosa
+
+Después de una finalización confirmada, el endpoint devuelve únicamente información pública mínima.
+
+Como mínimo:
+
+```text
+fileId
+```
+
+No devuelve:
+
+* `storage_key`;
+* bucket name;
+* internal R2 URL;
+* signed URL;
+* secretos;
+* detalles privados de PostgreSQL.
+
+---
+
+# 56. Errores HTTP
+
+Los errores deben permitir al usuario corregir problemas normales sin revelar detalles internos.
+
+Ejemplos aceptables:
+
+```text
+Unsupported file type
+File exceeds maximum size
+Invalid PDF file
+Invalid PNG file
+File must contain valid UTF-8
+Resource cannot accept an upload
+```
+
+No deben revelar:
+
+* storage keys;
+* SQL interno;
+* UUID de otros propietarios;
+* stack traces productivos;
+* secretos;
+* credenciales.
+
+---
+
+# 57. Seguridad
+
+El upload debe mantener:
+
+* same-origin enforcement en operaciones sensibles;
+* bounded request body;
+* server-side validation;
+* autorización PostgreSQL;
+* private R2;
+* safe filenames;
+* canonical MIME;
+* hashing;
+* mínimo privilegio;
+* auditabilidad.
+
+---
+
+# 58. No `service_role`
+
+Astro no utiliza:
+
+```text
+service_role
+```
+
+para upload.
+
+Esto se mantiene incluso si una operación sería más sencilla con acceso privilegiado.
+
+Las capacidades necesarias deben modelarse mediante:
+
+* RLS;
+* grants;
+* RPC seguras;
+* identidad real del usuario.
+
+---
+
+# 59. No storage key del cliente
+
+El endpoint nunca debe aceptar:
+
+```text
+storage_key
+```
+
+como input libre del navegador.
+
+La clave es derivada o asignada por componentes confiables.
+
+---
+
+# 60. No publicación durante upload
+
+Una subida exitosa termina como:
+
+```text
+pending
+```
+
+no:
+
+```text
+approved
+```
+
+y no convierte automáticamente un recurso en:
+
+```text
+public
+restricted
+privileged
+```
+
+como recurso consumible.
+
+La decisión editorial pertenece al Moderator durante aprobación.
+
+---
+
+# 61. Audiencia propuesta
+
+El Contributor puede haber propuesto una:
+
+```text
+visibility
+```
+
+antes del upload.
+
+Esta propuesta no determina el resultado final.
+
+Upload únicamente preserva el recurso para revisión.
+
+El Moderator selecciona la audiencia final según:
+
+```text
+resource-access-contract.md
+```
+
+---
+
+# 62. Rights vs upload
+
+La autorización para almacenar y la autorización para publicar no son equivalentes.
+
+Ejemplo:
+
+```text
+rights_status = institutional
+```
+
+puede permitir guardar y someter el archivo a revisión.
+
+Eso no autoriza posteriormente:
+
+```text
+visibility = public
+```
+
+La política de publicación se evalúa separadamente.
+
+---
+
+# 63. Fuera de alcance del upload v1
+
+Quedan fuera de este contrato:
+
+* múltiples archivos por recurso;
+* ZIP/proyectos;
+* multipart con varios documentos;
+* uploads directos navegador → R2;
+* public bucket;
+* signed URLs como flujo principal;
+* resumable uploads;
+* chunked multi-part object uploads;
+* ejecución del contenido;
+* compilación;
+* conversiones de formato;
+* thumbnails;
+* OCR;
+* antivirus server-side;
+* publicación automática;
+* ACL por archivo.
+
+---
+
+# 64. Verificación PostgreSQL
+
+Las pruebas pgTAP deben conservar y ampliar como mínimo cobertura para:
+
+* privilegios de las RPC;
+* un archivo máximo;
+* actor sin capacidad de upload;
+* owner incorrecto;
+* cuenta no activa;
+* estado no editable;
+* derechos incompatibles;
+* reserva válida;
+* finalización válida;
+* atomicidad;
+* idempotencia;
+* hash conflictivo;
+* aborto;
+* concurrencia;
+* auditoría append-only;
+* ausencia de acceso directo a `storage_key`.
+
+---
+
+# 65. Tests de derechos para upload
+
+Stage 4C debe demostrar como mínimo:
+
+```text
+own-work + valid file
+-> upload allowed
+```
+
+```text
+authorized + valid file
+-> upload allowed
+```
+
+```text
+institutional + valid file
+-> upload allowed
+```
+
+```text
+open-license + valid file
+-> upload allowed
+```
+
+```text
+public-domain + valid file
+-> upload allowed
+```
+
+```text
+pending + file upload
+-> denied
+```
+
+```text
+bibliographic-reference-only + file
+-> denied
+```
+
+```text
+copyright-restricted + file
+-> denied
+```
+
+---
+
+# 66. Tests Worker
+
+Las pruebas de orquestación deben cubrir:
+
+* validación antes de R2;
+* reserva con éxito;
+* reserva con fallo conocido;
+* reserva con outcome desconocido;
+* escritura R2 exitosa;
+* escritura R2 fallida;
+* escritura R2 con outcome desconocido;
+* delete defensivo;
+* finalización exitosa;
+* finalización con fallo conocido;
+* reintento idempotente;
+* finalización persistentemente desconocida;
+* compensación;
+* fallo de compensación;
+* preservación de estado para reconciliación.
+
+---
+
+# 67. Tests de formatos
+
+Los tests específicos de:
+
+* PDF;
+* PNG;
+* JPEG;
+* Markdown;
+* TeX;
+* TXT;
+* source;
+
+pertenecen principalmente a:
+
+```text
+resource-file-policy.md
+```
+
+El upload debe demostrar que utiliza esa política central y no una allowlist paralela.
+
+---
+
+# 68. Tests HTTP
+
+La capa HTTP debe cubrir como mínimo:
+
+```text
+GET endpoint
+-> 405 + Allow: POST
+```
+
+```text
+POST without authenticated session
+-> unauthorized
+```
+
+```text
+cross-origin request
+-> rejected
+```
+
+```text
+invalid resource UUID
+-> rejected
+```
+
+```text
+incorrect request media type
+-> rejected
+```
+
+```text
+malformed multipart
+-> rejected
+```
+
+```text
+body over global HTTP limit
+-> rejected before expensive processing
+```
+
+```text
+missing file field
+-> rejected
+```
+
+```text
+non-text comment
+-> rejected
+```
+
+y errores seguros del validador.
+
+---
+
+# 69. Tests de límites por familia
+
+Deben existir casos donde el request esté dentro del máximo HTTP global pero el archivo exceda su máximo específico.
+
+Por ejemplo:
+
+```text
+8 MB .py
+```
+
+debe producir rechazo aunque:
+
+```text
+8 MB < global multipart maximum
+```
+
+porque:
+
+```text
+source max = 2 MB
+```
+
+---
+
+# 70. Tests de metadata confiable
+
+Debe comprobarse que valores manipulados por cliente no puedan forzar:
+
+```text
+file_kind
+content_type
+normalized_extension
+storage_key
+storage_key_version
+sha256
+```
+
+La metadata final debe derivar de componentes confiables.
+
+---
+
+# 71. Tests de storage layout
+
+Stage 4C debe demostrar:
+
+```text
+new PDF
+-> generic_v2
+-> resources/<resource>/<file>
+```
+
+```text
+new PNG
+-> generic_v2
+-> resources/<resource>/<file>
+```
+
+```text
+new source
+-> generic_v2
+-> resources/<resource>/<file>
+```
+
+El formato del archivo no modifica la key v2.
+
+---
+
+# 72. Compatibilidad legacy
+
+El cambio de upload no exige mover los objetos existentes.
+
+La lectura futura debe continuar siendo compatible con:
+
+```text
+legacy_pdf_v1
+```
+
+según:
+
+```text
+resource-file-policy.md
+```
+
+---
+
+# 73. Invariantes normativas
+
+## RU-01 — Authorized uploader
+
+Solo un actor activo y autorizado puede subir a un recurso propio editable.
+
+## RU-02 — One file
+
+Un recurso admite como máximo un archivo principal.
+
+## RU-03 — Rights before storage
+
+Un archivo solo puede almacenarse cuando `rights_status` permite almacenamiento.
+
+## RU-04 — Validate before R2
+
+La validación del archivo ocurre antes de escribir el objeto.
+
+## RU-05 — Canonical metadata
+
+La metadata final del archivo se determina server-side.
+
+## RU-06 — Exact-byte hash
+
+SHA-256 representa exactamente los bytes almacenados.
+
+## RU-07 — Private R2
+
+Todos los uploads se almacenan en R2 privado.
+
+## RU-08 — Private key
+
+`storage_key` nunca se expone al cliente final.
+
+## RU-09 — Server-selected layout
+
+El cliente no selecciona el layout o storage key.
+
+## RU-10 — Generic new objects
+
+Nuevos objetos posteriores a la migración correspondiente usan `generic_v2`.
+
+## RU-11 — PostgreSQL atomicity
+
+La finalización PostgreSQL es atómica.
+
+## RU-12 — No automatic publication
+
+Upload nunca produce `approved`.
+
+## RU-13 — Known vs unknown outcome
+
+Los fallos conocidos y resultados desconocidos se tratan de forma distinta.
+
+## RU-14 — Safe compensation
+
+No se realiza compensación destructiva cuando una finalización puede haber ocurrido.
+
+## RU-15 — Idempotent retry
+
+El reintento de finalización reutiliza el mismo `file_id` y SHA-256.
+
+## RU-16 — Auditability
+
+Las transiciones relevantes quedan auditadas.
+
+## RU-17 — No service role
+
+El runtime ordinario de Astro no utiliza `service_role`.
+
+## RU-18 — File policy authority
+
+Los formatos y límites proceden de `resource-file-policy.md`; upload no inventa una allowlist independiente.
+
+---
+
+# 74. Relación con Stage 4C
+
+La evolución recomendada es incremental.
+
+## Stage 4C.0
+
+Alinear:
+
+* contratos;
+* schema;
+* rights;
+* `file_kind`;
+* storage layout metadata;
+* RLS relacionado.
+
+El pipeline operativo puede continuar temporalmente aceptando únicamente PDF.
+
+---
+
+## Stage 4C.1
+
+Añadir lectura/preview/download de PDF sin alterar innecesariamente upload.
+
+---
+
+## Stage 4C.2
+
+Generalizar el pipeline de upload desde:
+
+```text
+PDF-only
+```
+
+hacia:
+
+```text
+ResourceFile allowlist
+```
+
+preservando todas las invariantes RU-*.
+
+---
+
+## Stages posteriores
+
+Agregar progresivamente:
+
+* PNG/JPEG;
+* text/source;
+
+sin reescribir la arquitectura transaccional.
+
+---
+
+# 75. Regla para implementación
+
+Codex debe tratar las garantías de 4B como inversión que se preserva.
+
+No debe sustituir la orquestación existente por un flujo más simple que elimine:
+
+* reserva;
+* compensación;
+* idempotencia;
+* unknown-outcome handling;
+* privacidad de storage;
+* atomicidad;
+* auditoría.
+
+La generalización de formatos debe producir el menor cambio estructural posible compatible con:
+
+```text
+ResourceFile
+```
+
+y con las políticas normativas aceptadas para Stage 4C.
