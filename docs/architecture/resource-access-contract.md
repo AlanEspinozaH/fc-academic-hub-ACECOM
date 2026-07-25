@@ -111,6 +111,26 @@ Una identidad externa no obtiene automáticamente permisos especiales.
 
 Su admisión al sistema y sus privilegios runtime son decisiones diferentes.
 
+En v1, una identidad `external_authorized` es exclusivamente lectora.
+
+No puede recibir roles internos:
+
+```text
+student
+contributor
+reviewer
+moderator
+administrator
+```
+
+Puede recibir el entitlement:
+
+```text
+privileged_material.read
+```
+
+cuando sea concedido por Administrator.
+
 ---
 
 ## Estado de cuenta
@@ -574,7 +594,7 @@ El Moderator puede:
 * reducirla;
 * cambiarla;
 
-siempre dentro de los límites permitidos por `rights_status`.
+siempre dentro de los derechos aplicables al recurso, incluidas las restricciones estructurales y, cuando corresponda, el alcance de la evidencia documental.
 
 ---
 
@@ -721,6 +741,15 @@ entitlements
 
 y no comparaciones repetidas del email.
 
+La revocación de una preautorización externa impide nuevas admisiones basadas en dicha autorización.
+
+Si la cuenta externa ya fue materializada, revocar la preautorización no suspende ni deshabilita automáticamente la cuenta existente.
+
+Para retirar acceso a una cuenta existente deben utilizarse explícitamente:
+
+- revocación de `privileged_material.read`;
+- `suspended` o `disabled`, cuando corresponda.
+
 ---
 
 # 16. Cambio de tipo de identidad
@@ -751,7 +780,9 @@ En v1 no se implementa linking complejo de múltiples identidades para una misma
 
 > ¿A qué audiencia decide publicar FC Academic Hub este recurso?
 
-La segunda nunca puede superar a la primera.
+La segunda nunca puede superar a la primera. Parte de este límite puede imponerse estructuralmente en PostgreSQL y parte depende de revisión documental humana.
+
+PostgreSQL debe aplicar todas las restricciones que puedan determinarse a partir de datos estructurados. Cuando el alcance permitido dependa de evidencia documental que v1 no modele estructuralmente, el Moderator es responsable de verificar dicha evidencia antes de aprobar.
 
 ---
 
@@ -776,7 +807,7 @@ copyright-restricted
 
 | `rights_status`                |              Archivo almacenado |            `public` |        `restricted` |                                                 `privileged` |
 | ------------------------------ | ------------------------------: | ------------------: | ------------------: | -----------------------------------------------------------: |
-| `pending`                      |  Puede existir durante workflow |          No aprobar |          No aprobar |                                                   No aprobar |
+| `pending`                      |  No archivo principal almacenado |          No aprobar |          No aprobar |                                                   No aprobar |
 | `own-work`                     |                              Sí |                  Sí |                  Sí |                                                           Sí |
 | `authorized`                   |                              Sí |  Según autorización |  Según autorización |                                           Según autorización |
 | `institutional`                |                              Sí |                  No |                  Sí | Sí, cuando la autorización institucional cubra esa audiencia |
@@ -784,6 +815,10 @@ copyright-restricted
 | `public-domain`                |                              Sí |                  Sí |                  Sí |                                                           Sí |
 | `bibliographic-reference-only` | No archivo principal almacenado | Metadatos solamente | Metadatos solamente |                                          Metadatos solamente |
 | `copyright-restricted`         |            No según política v1 |                  No |                  No |                                                           No |
+
+Para `pending`, puede existir la metadata del recurso mientras se resuelven los derechos, pero una subida no puede finalizar con un archivo principal almacenado.
+
+`bibliographic-reference-only` también permite conservar metadata del recurso, pero no un archivo principal.
 
 Esta matriz representa el máximo potencial permitido.
 
@@ -797,6 +832,12 @@ visibility = restricted
 ```
 
 es válido.
+
+La columna de audiencia representa el máximo potencial permitido por cada categoría, pero no todas las combinaciones pueden validarse completamente de forma automática.
+
+Las restricciones estructuradas deben ser aplicadas por PostgreSQL.
+
+Las restricciones cuyo alcance dependa de evidencia documental no estructurada deben ser verificadas por el Moderator durante la revisión.
 
 ---
 
@@ -828,7 +869,9 @@ institutional + privileged
 
 únicamente cuando la audiencia privilegiada esté incluida dentro de la autorización institucional aplicable.
 
-La verificación de esta última condición forma parte de la revisión editorial.
+PostgreSQL debe impedir estructuralmente `institutional + public`.
+
+La combinación `institutional + privileged` requiere además que la autorización o política institucional aplicable cubra esa audiencia. Como ese alcance no se estructura en un enum adicional en v1, su verificación corresponde al Moderator durante la revisión editorial.
 
 ---
 
@@ -861,6 +904,8 @@ public
 En v1 no se introduce un segundo enum para modelar estructuralmente el alcance jurídico exacto de cada autorización.
 
 Esta comprobación permanece como responsabilidad editorial humana documentada.
+
+PostgreSQL puede validar que `authorized` sea un estado admitido para aprobación, pero no puede inferir por sí mismo qué audiencia concreta está cubierta por la autorización documental.
 
 ---
 
@@ -918,11 +963,48 @@ restricted
 privileged
 ```
 
-PostgreSQL debe impedir que la audiencia final exceda lo permitido por:
+La aprobación combina dos niveles de validación.
+
+### Restricciones estructurales
+
+PostgreSQL debe rechazar todas las combinaciones que puedan determinarse de forma inequívoca a partir de datos estructurados.
+
+Como mínimo:
 
 ```text
-rights_status
+pending
+-> no aprobar
+
+copyright-restricted
+-> no aprobar
+
+bibliographic-reference-only
+-> no aprobar con archivo principal
+
+institutional + public
+-> no aprobar
+
+approved + private
+-> inválido
 ```
+
+### Alcance documental
+
+Cuando `rights_status` no expresa por sí solo el alcance completo de los derechos, el Moderator debe verificar la evidencia documental antes de seleccionar la audiencia final.
+
+Esto aplica especialmente a:
+
+```text
+authorized
+```
+
+y:
+
+```text
+institutional + privileged
+```
+
+V1 no introduce un segundo `rights_scope` estructurado para representar ese alcance.
 
 Conceptualmente:
 
@@ -931,11 +1013,11 @@ Contributor proposes audience
         ↓
 resource becomes pending
         ↓
-Moderator reviews rights
+Moderator reviews rights and evidence
         ↓
 Moderator selects final audience
         ↓
-PostgreSQL validates combination
+PostgreSQL enforces structural constraints
         ↓
 approved
 ```
@@ -1029,6 +1111,19 @@ Solo los actores del workflow correspondiente pueden acceder al recurso pendient
 # 28. Autorización de archivos
 
 La autorización de metadatos y la autorización del archivo deben utilizar el mismo contrato de acceso.
+
+En v1, los metadatos generales del recurso y su archivo principal comparten la misma audiencia final.
+
+Un actor que no tenga acceso al recurso no debe conocer mediante las interfaces ordinarias de consumo:
+
+* su título;
+* su existencia;
+* sus metadatos generales;
+* la existencia de su archivo principal.
+
+Por tanto, un recurso `approved + restricted` o `approved + privileged` no forma parte de un catálogo público de metadatos.
+
+Una eventual vista mínima de estado para que el propietario gestione su propia submission pertenece al workflow y constituye una proyección distinta de los metadatos generales del recurso.
 
 Un usuario que no puede acceder al recurso tampoco puede:
 
@@ -1254,7 +1349,11 @@ es inválido.
 
 ## RA-10 — Rights ceiling
 
-La audiencia final nunca puede superar la distribución permitida por `rights_status`.
+La audiencia final nunca puede superar los derechos aplicables al recurso.
+
+PostgreSQL debe imponer las restricciones que puedan determinarse mediante datos estructurados.
+
+Cuando el alcance dependa de evidencia documental no estructurada en v1, el Moderator debe verificar que la audiencia final esté cubierta antes de aprobar.
 
 ---
 
@@ -1304,15 +1403,25 @@ Solo la autoridad administrativa definida por el producto puede:
 
 En v1 esa autoridad es Administrator.
 
+## RA-15 — External identities are reader-only
+
+En v1, una identidad `external_authorized` no puede poseer roles internos.
+
+Su acceso autenticado adicional solo puede provenir de entitlements explícitos como:
+
+```text
+privileged_material.read
+```
+
 ---
 
-## RA-15 — R2 after authorization
+## RA-16 — R2 after authorization
 
 R2 no debe consultarse para recuperar un objeto antes de que la autorización haya sido confirmada.
 
 ---
 
-## RA-16 — Preview equals download authorization
+## RA-17 — Preview equals download authorization
 
 Preview y descarga requieren exactamente la misma autorización sobre el recurso.
 
@@ -1440,37 +1549,87 @@ approve -> deny
 manage roles -> deny
 ```
 
+También debe rechazarse cualquier asignación de rol interno:
+
+```text
+external_authorized + student
+-> invalid
+
+external_authorized + contributor
+-> invalid
+
+external_authorized + reviewer
+-> invalid
+
+external_authorized + moderator
+-> invalid
+
+external_authorized + administrator
+-> invalid
+
+external_authorized + privileged_material.read
+-> valid
+```
+
+La revocación de admisión y la revocación de acceso deben mantenerse separadas:
+
+```text
+revoked external preauthorization
++ account not yet materialized
+-> future admission denied
+
+revoked external preauthorization
++ existing active account
+-> account not automatically suspended
+
+revoked privileged_material.read
++ approved/privileged
+-> deny
+```
+
 ---
 
 # 39. Pruebas de derechos y audiencia
 
-Como mínimo:
+Las restricciones estructurales deben cubrir como mínimo:
 
 ```text
 institutional + public
 -> approval rejected
 
 institutional + restricted
--> approval allowed
-
-institutional + privileged
--> allowed only under documented institutional authorization
+-> structurally allowed
 
 open-license + public
--> allowed
+-> structurally allowed
 
 public-domain + public
--> allowed
+-> structurally allowed
 
-pending rights + approval
+pending + approval
 -> rejected
 
-copyright-restricted + approval with stored file
+copyright-restricted + approval
 -> rejected
 
 bibliographic-reference-only + stored file
 -> rejected
 ```
+`structurally allowed` significa únicamente que PostgreSQL no encuentra una prohibición estructural. No equivale por sí mismo a una aprobación editorial.
+
+Para combinaciones cuyo alcance depende de evidencia documental:
+
+```text
+authorized + final audience
+-> Moderator must verify documented authorization covers that audience
+
+institutional + privileged
+-> Moderator must verify institutional authorization covers privileged audience
+```
+
+Estas comprobaciones documentales no deben implementarse fingiendo que PostgreSQL conoce un alcance que v1 no almacena estructuralmente.
+
+El Moderator es responsable de verificar la evidencia antes de aprobar.
 
 ---
 

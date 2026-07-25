@@ -12,7 +12,7 @@ Evolución hacia `ResourceFile` genérico:
 
 **Aceptada para Stage 4C, pendiente de implementación.**
 
-La implementación actualmente desplegada en el repositorio continúa siendo especializada en PDF hasta que una etapa posterior de 4C generalice explícitamente el pipeline.
+La implementación actualmente presente en `main` continúa siendo especializada en PDF hasta que una etapa posterior de 4C generalice explícitamente el pipeline.
 
 ---
 
@@ -60,7 +60,14 @@ docs/adr/0010-resource-metadata-rbac.md
 
 documenta el baseline introducido en 4A.
 
-El ADR de Stage 4C debe documentar la evolución hacia:
+El ADR:
+
+```text
+
+docs/adr/0011-resource-files-access-and-external-identities.md
+
+```
+documenta las decisiones arquitectónicas de Stage 4C relativas a:
 
 * `ResourceFile` genérico;
 * nuevas audiencias;
@@ -331,9 +338,17 @@ privileged_material.read
 
 no concede capacidad de upload.
 
-Una identidad externa autorizada tampoco obtiene capacidad de upload simplemente por haber sido admitida.
+Una identidad:
 
-Para subir deberá poseer explícitamente el rol/capacidad editorial correspondiente.
+```text
+external_authorized
+```
+
+no puede subir archivos en v1.
+
+Las identidades externas son exclusivamente lectoras y no pueden recibir el rol `contributor` ni otra capacidad editorial interna.
+
+Si una persona externa necesita aportar material, debe coordinar su entrega fuera de la plataforma con un Contributor institucional, quien realiza la creación y subida del recurso.
 
 ---
 
@@ -806,11 +821,13 @@ legacy_pdf_v1
 generic_v2
 ```
 
-Los nuevos uploads utilizan:
+Una vez implementada la migración correspondiente de Stage 4C, los nuevos uploads utilizan:
 
 ```text
 generic_v2
 ```
+
+Antes de esa migración, el pipeline operativo debe preservar el comportamiento 4B existente.
 
 La versión/layout debe quedar determinada por el servidor o PostgreSQL.
 
@@ -838,7 +855,7 @@ legacy_pdf_v1
 
 # 31. Storage key genérica
 
-Nuevos archivos utilizan:
+Después de implementarse la migración `generic_v2`, los nuevos archivos utilizan:
 
 ```text
 resources/<resource_id>/<file_id>
@@ -846,7 +863,9 @@ resources/<resource_id>/<file_id>
 
 sin extensión.
 
-Esto incluye nuevos PDFs.
+Esto incluye los nuevos PDFs creados después de dicha migración.
+
+Antes de esa migración debe preservarse el layout operativo 4B existente.
 
 Por tanto:
 

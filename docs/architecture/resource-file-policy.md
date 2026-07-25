@@ -499,34 +499,75 @@ El parámetro `charset=utf-8` pertenece a la representación HTTP y no necesita 
 
 # 15. MIME enviado por el cliente
 
-El media type declarado por:
+El media type declarado mediante:
 
 ```text
 File.type
 ```
 
-o cualquier header/control del cliente es información no confiable.
+o cualquier header o campo controlado por el cliente es únicamente información diagnóstica.
 
-No debe ser la autoridad para decidir el formato.
+No participa como autoridad en la aceptación del formato.
 
-Ejemplo válido:
+La autoridad es:
+
+```text
+allowlisted extension
++
+content/signature validation
+```
+
+Después de validar el archivo, el servidor asigna el `content_type` canónico definido por esta política.
+
+Por ejemplo:
+
+```text
+filename = foto.png
+client MIME = image/jpeg
+bytes = PNG válido
+```
+
+puede aceptarse y canonicalizarse como:
+
+```text
+file_kind = image
+content_type = image/png
+```
+
+En cambio:
+
+```text
+filename = foto.png
+client MIME = image/png
+bytes = JPEG
+```
+
+debe rechazarse.
+
+La misma regla aplica a PDF y archivos textuales.
+
+Por ejemplo:
+
+```text
+filename = documento.pdf
+client MIME = application/octet-stream
+bytes = PDF válido
+```
+
+puede aceptarse y canonicalizarse como:
+
+```text
+content_type = application/pdf
+```
+
+Y:
 
 ```text
 filename = dijkstra.py
 client MIME = application/octet-stream
 ```
 
-Si el archivo cumple la política de source code:
-
-```text
-extension allowlisted
-valid UTF-8
-no NUL
-valid size
-safe filename
-```
-
-el servidor puede aceptar el archivo y canonicalizarlo a:
+puede aceptarse si cumple las reglas de source code y canonicalizarse como:
 
 ```text
 file_kind = source
@@ -613,22 +654,46 @@ Cuando exista una firma binaria conocida, también debe comprobarse.
 
 # 19. Nombre del archivo
 
-`display_filename` conserva un nombre adecuado para presentación al usuario.
+`display_filename` conserva el nombre presentado al usuario.
 
-Un nombre aportado por el cliente se considera no confiable.
+Todo filename recibido del cliente se considera no confiable.
 
-Debe rechazarse o normalizarse según una política segura que impida al menos:
+La política v1 es:
 
-* caracteres ASCII de control;
-* CR;
-* LF;
-* rutas absolutas;
-* `/`;
-* `\`;
-* segmentos de traversal;
-* nombres vacíos.
+1. eliminar whitespace únicamente de los extremos del nombre;
+2. rechazar si después de ese trim el nombre queda vacío;
+3. rechazar caracteres ASCII de control, incluidos `U+0000` a `U+001F` y `U+007F`;
+4. rechazar explícitamente CR y LF;
+5. rechazar `/`;
+6. rechazar `\`;
+7. rechazar nombres que representen rutas o componentes de traversal;
+8. conservar el nombre resultante en cualquier otro caso.
 
-La aplicación no debe aceptar un filename que permita convertir una cabecera HTTP en múltiples cabeceras.
+La aplicación no renombra automáticamente archivos para corregir nombres inválidos.
+
+Por tanto:
+
+```text
+"  tarea.pdf  "
+-> "tarea.pdf"
+```
+
+es válido después del trim.
+
+Pero:
+
+```text
+../tarea.pdf
+carpeta/tarea.pdf
+carpeta\tarea.pdf
+filename con CR/LF
+```
+
+deben rechazarse.
+
+La construcción de `Content-Disposition` es una responsabilidad separada y debe utilizar un encoder o builder seguro.
+
+Nunca debe concatenarse directamente `display_filename` dentro de una cabecera HTTP.
 
 ---
 
@@ -708,9 +773,11 @@ Un PNG debe cumplir:
 safe filename
 normalized extension = .png
 1 <= byte_size <= 10 000 000
-valid PNG signature
+PNG signature exacta en offset 0:
+89 50 4E 47 0D 0A 1A 0A
 SHA-256
 ```
+La implementación debe comparar exactamente estos ocho bytes desde el inicio del archivo.
 
 La firma PNG esperada debe validarse sobre los bytes del archivo.
 
@@ -736,11 +803,30 @@ Un JPEG debe cumplir:
 safe filename
 normalized extension = .jpg or .jpeg
 1 <= byte_size <= 10 000 000
-valid JPEG signature
+JPEG SOI/marker-prefix/EOI validation
 SHA-256
 ```
 
-La implementación no necesita realizar un parsing o decoding completo de la imagen para v1.
+El criterio binario mínimo v1 es:
+
+```text
+offset 0:
+FF D8
+
+offset 2:
+FF
+
+final del archivo:
+FF D9
+```
+
+Por tanto, el archivo debe:
+
+* comenzar con el marcador JPEG SOI `FF D8`;
+* tener `FF` como siguiente prefijo de marcador;
+* terminar con el marcador JPEG EOI `FF D9`.
+
+La implementación no necesita realizar parsing ni decoding completo de JPEG en v1.
 
 ---
 
@@ -1463,9 +1549,11 @@ El servidor determina `file_kind`, extensión normalizada y `content_type` canó
 
 ---
 
-## RF-05 — Client MIME is not authority
+## RF-05 — Client MIME is diagnostic only
 
-El MIME enviado por el cliente no determina por sí mismo la aceptación del archivo.
+El MIME enviado por el cliente es únicamente diagnóstico y nunca constituye una condición autoritativa de aceptación.
+
+El servidor determina el formato mediante extensión permitida y validación del contenido, y posteriormente asigna el `content_type` canónico.
 
 ---
 
@@ -1577,6 +1665,9 @@ wrong extension -> reject
 invalid header -> reject
 missing/invalid EOF condition -> reject
 hash generated -> expected SHA-256
+valid .pdf + client MIME application/octet-stream
+-> allow
+-> canonical content type = application/pdf
 ```
 
 ---
@@ -1589,6 +1680,9 @@ oversized PNG -> reject
 .png with JPEG bytes -> reject
 invalid PNG signature -> reject
 canonical content type -> image/png
+.png + valid PNG bytes + client MIME image/jpeg
+-> allow
+-> canonical content type = image/png
 ```
 
 ---
@@ -1602,6 +1696,9 @@ oversized JPEG -> reject
 .jpg with PNG bytes -> reject
 invalid JPEG signature -> reject
 canonical content type -> image/jpeg
+.jpg + valid JPEG bytes + client MIME application/octet-stream
+-> allow
+-> canonical content type = image/jpeg
 ```
 
 ---
@@ -1691,7 +1788,11 @@ empty filename -> reject
 path separators -> reject
 control characters -> reject
 CR/LF -> reject
-header injection attempt -> reject or safely neutralized
+header injection attempt -> reject
+outer whitespace -> trim
+filename empty after trim -> reject
+path/traversal attempt -> reject
+otherwise safe filename -> preserve
 ```
 
 ---

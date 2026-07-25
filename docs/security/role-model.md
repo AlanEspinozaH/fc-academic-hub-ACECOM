@@ -99,26 +99,42 @@ moderator
 administrator
 ```
 
-Los roles se almacenan y gestionan independientemente de la identidad institucional o externa del usuario.
+Los roles y `identity_kind` son conceptos distintos, pero su combinación está restringida en v1.
 
-Una cuenta puede tener:
+Todos los roles internos requieren:
 
 ```text
 identity_kind = institutional
+account_status = active
 ```
 
-sin ningún rol editorial.
+Una identidad:
 
-También puede existir:
+```text
+external_authorized
+```
+
+no puede recibir:
+
+```text
+student
+contributor
+reviewer
+moderator
+administrator
+```
+
+Una identidad institucional puede existir sin roles.
+
+También es válido:
 
 ```text
 identity_kind = external_authorized
 +
 privileged_material.read
 +
-sin roles
+roles = none
 ```
-
 ---
 
 # 3. Estados de cuenta
@@ -388,11 +404,7 @@ restricted
 o privileged?
 ```
 
-dentro de lo permitido por:
-
-```text
-rights_status
-```
+dentro de los derechos aplicables al recurso, incluidas las restricciones estructurales y el alcance de la evidencia documental cuando corresponda.
 
 ---
 
@@ -506,6 +518,20 @@ y de las capacidades necesarias para intervención administrativa y recuperació
 
 El modelo actual puede conservar capacidades funcionales acumulativas adicionales, pero Administrator no debe convertirse en el actor editorial ordinario del producto.
 
+El rol `administrator` representa administración dentro de FC Academic Hub.
+
+No equivale conceptualmente a la custodia de infraestructura externa como:
+
+```text
+GitHub
+Cloudflare
+Supabase
+deployment
+secrets
+```
+
+La misma persona puede ejercer ambas responsabilidades, especialmente durante la etapa inicial, pero `App Administrator` e `Infrastructure Custodian` son responsabilidades distintas y pueden separarse posteriormente sin modificar el modelo de roles.
+
 ---
 
 # 17. Responsabilidades del Administrator
@@ -549,7 +575,32 @@ Pero la interfaz y los procesos normales no deben convertir Administrator en el 
 
 ---
 
-# 19. Acceso administrativo excepcional
+# 19. Gobierno institucional de los roles superiores
+
+FC Academic Hub separa gobierno editorial y gobierno técnico/administrativo.
+
+El Centro de Estudiantes gobierna la política editorial, de contenido y derechos.
+
+Su Presidente vigente puede ejercer directamente o designar a un delegado para la función editorial operativa correspondiente a `moderator`.
+
+ACECOM gobierna el dominio técnico, de seguridad y administración de la plataforma.
+
+Su Presidente vigente puede ejercer directamente o designar a un delegado para la función operativa correspondiente a `administrator`.
+
+Todo delegado debe cumplir:
+
+```text
+identity_kind = institutional
+account_status = active
+```
+
+Las autoridades pertenecen a los cargos institucionales y no a personas concretas.
+
+Los cambios de Presidente o delegado requieren transferencia explícita y auditable de los roles correspondientes.
+
+---
+
+# 20. Acceso administrativo excepcional
 
 Administrator puede acceder a:
 
@@ -570,7 +621,7 @@ Las acciones administrativas sensibles deben ser auditables.
 
 ---
 
-# 20. Jerarquía funcional
+# 21. Jerarquía funcional
 
 V1 puede conservar la jerarquía funcional:
 
@@ -611,7 +662,7 @@ privileged access
 
 ---
 
-# 21. No usar jerarquía numérica para autorización
+# 22. No usar jerarquía numérica para autorización
 
 Aunque algunos roles acumulen capacidades, la implementación no debe asumir comparaciones numéricas como:
 
@@ -625,7 +676,7 @@ Esto evita convertir accidentalmente una jerarquía organizativa en una regla un
 
 ---
 
-# 22. Entitlements
+# 23. Entitlements
 
 Los entitlements son independientes de roles.
 
@@ -644,7 +695,7 @@ Un entitlement debe:
 
 ---
 
-# 23. `privileged_material.read`
+# 24. `privileged_material.read`
 
 Este entitlement permite consumir:
 
@@ -666,7 +717,7 @@ account.suspend
 
 ---
 
-# 24. Usuario externo privilegiado
+# 25. Usuario externo privilegiado
 
 Es válido:
 
@@ -703,7 +754,7 @@ y tampoco puede:
 
 ---
 
-# 25. Usuario institucional privilegiado
+# 26. Usuario institucional privilegiado
 
 También es válido:
 
@@ -730,7 +781,7 @@ independientemente de que posea un rol editorial.
 
 ---
 
-# 26. Moderator sin entitlement
+# 27. Moderator sin entitlement
 
 Un Moderator no necesita necesariamente:
 
@@ -756,7 +807,7 @@ autoridad editorial
 
 ---
 
-# 27. Administrator sin entitlement
+# 28. Administrator sin entitlement
 
 Administrator tampoco necesita necesariamente un entitlement para ejecutar una intervención administrativa legítima.
 
@@ -772,7 +823,7 @@ solo para poder administrar el sistema.
 
 ---
 
-# 28. Gestión de roles
+# 29. Gestión de roles
 
 Los clientes no tienen `INSERT`, `UPDATE` ni `DELETE` directo sobre las asignaciones de roles.
 
@@ -798,7 +849,7 @@ revoked_by
 
 ---
 
-# 29. Autoridad para gestionar roles
+# 30. Autoridad para gestionar roles
 
 En v1:
 
@@ -821,7 +872,7 @@ Ningún usuario puede autoasignarse un rol.
 
 ---
 
-# 30. Gestión de Moderators
+# 31. Gestión de Moderators
 
 Moderator no puede crear otro Moderator.
 
@@ -847,7 +898,7 @@ gobierno administrativo
 
 ---
 
-# 31. Gestión de entitlements
+# 32. Gestión de entitlements
 
 La gestión de:
 
@@ -874,7 +925,7 @@ y no permitan al cliente falsificar el administrador responsable.
 
 ---
 
-# 32. Historial de entitlements
+# 33. Historial de entitlements
 
 La asignación debe conservar conceptualmente:
 
@@ -892,7 +943,7 @@ No es obligatorio que la estructura SQL use exactamente esos nombres, pero debe 
 
 ---
 
-# 33. No autoentitlements
+# 34. No autoentitlements
 
 La creación de una cuenta no concede automáticamente:
 
@@ -914,31 +965,27 @@ external_authorized
 
 ---
 
-# 34. Admisión externa
+# 35. Admisión externa y roles
 
-La admisión de una identidad externa tampoco constituye un rol.
-
-Por ejemplo:
+La admisión de una identidad externa no constituye un rol.
 
 ```text
-preauthorized Gmail
+preauthorized external identity
         ↓
 external_authorized account
 ```
 
-no produce automáticamente:
+En v1, esa cuenta no puede recibir ningún rol interno, ni automáticamente ni mediante concesión administrativa.
+
+Puede recibir únicamente entitlements explícitos admitidos por el producto, actualmente:
 
 ```text
-student
-contributor
 privileged_material.read
 ```
 
-Cada grant es una decisión separada.
-
 ---
 
-# 35. Ownership
+# 36. Ownership
 
 Los roles no eliminan el concepto de ownership.
 
@@ -964,149 +1011,34 @@ review_status
 
 ---
 
-# 36. Workflow y acceso
+# 37. Workflow y acceso a recursos
 
-La matriz normativa de workflow es:
+Los roles intervienen en el workflow según sus responsabilidades, pero este documento no redefine las matrices de acceso.
 
-| Estado     |           Owner |                            Reviewer | Moderator | Administrator |   Usuario final |
-| ---------- | --------------: | ----------------------------------: | --------: | ------------: | --------------: |
-| `draft`    |              Sí |                                  No |        No |            Sí |              No |
-| `pending`  |              Sí |                                  Sí |        Sí |            Sí |              No |
-| `rejected` |              Sí |                                  No |        No |            Sí |              No |
-| `approved` | Según audiencia | Según audiencia o función editorial |        Sí |            Sí | Según audiencia |
+La fuente normativa para:
 
-La definición completa pertenece a:
+```text
+draft
+pending
+rejected
+approved
+public
+restricted
+privileged
+ownership
+```
+
+es:
 
 ```text
 docs/architecture/resource-access-contract.md
 ```
 
----
-
-# 37. Drafts
-
-Un Contributor puede acceder a sus propios drafts.
-
-Reviewer no accede a drafts ajenos por su rol.
-
-Moderator tampoco.
-
-Administrator conserva acceso administrativo excepcional.
+Los roles definidos aquí no crean excepciones adicionales a ese contrato.
 
 ---
 
-# 38. Pending
-
-Cuando el recurso pasa a:
-
-```text
-pending
-```
-
-entra formalmente al workflow de revisión.
-
-Pueden acceder:
-
-* owner;
-* Reviewer;
-* Moderator;
-* Administrator.
-
-Los usuarios de audiencia final no pueden consumirlo todavía.
-
----
-
-# 39. Rejected
-
-Un recurso `rejected` vuelve al espacio de trabajo del propietario.
-
-Reviewer y Moderator no mantienen acceso permanente a rechazados ajenos solo porque participaron en revisión.
-
-Administrator puede acceder administrativamente.
-
----
-
-# 40. Approved
-
-Cuando el recurso está:
-
-```text
-approved
-```
-
-el acceso ordinario de usuarios finales depende de:
-
-```text
-visibility
-```
-
-y no de la jerarquía de roles.
-
-Las audiencias posibles son:
-
-```text
-public
-restricted
-privileged
-```
-
----
-
-# 41. Public
-
-```text
-approved + public
-```
-
-es accesible universalmente cuando los derechos lo permiten.
-
-No requiere rol.
-
----
-
-# 42. Restricted
-
-```text
-approved + restricted
-```
-
-requiere:
-
-```text
-active
-+
-institutional
-```
-
-No requiere:
-
-```text
-student
-```
-
----
-
-# 43. Privileged
-
-```text
-approved + privileged
-```
-
-requiere:
-
-```text
-active
-+
-privileged_material.read
-```
-
-para el consumo ordinario.
-
-No requiere un rol editorial.
-
----
-
-# 44. Rights y roles
+# 38. Rights y roles
 
 Un rol editorial no puede ampliar los derechos legales o institucionales del recurso.
 
@@ -1132,7 +1064,7 @@ cuando la política de derechos lo prohíbe.
 
 ---
 
-# 45. Auditoría de roles
+# 39. Auditoría de roles
 
 El baseline existente utiliza:
 
@@ -1155,7 +1087,7 @@ El patrón append-only debe conservarse.
 
 ---
 
-# 46. Auditoría de entitlements
+# 40. Auditoría de entitlements
 
 Stage 4C debe proporcionar una capacidad equivalente de auditoría para:
 
@@ -1174,7 +1106,7 @@ Como mínimo debe poder conocerse:
 
 ---
 
-# 47. Auditoría administrativa
+# 41. Auditoría administrativa
 
 También deben poder auditarse según corresponda:
 
@@ -1188,7 +1120,7 @@ También deben poder auditarse según corresponda:
 
 ---
 
-# 48. Roles enviados por navegador
+# 42. Roles enviados por navegador
 
 Nunca se confía en datos como:
 
@@ -1208,7 +1140,7 @@ Los roles efectivos se resuelven desde PostgreSQL.
 
 ---
 
-# 49. Entitlements enviados por navegador
+# 43. Entitlements enviados por navegador
 
 La misma regla aplica a:
 
@@ -1224,7 +1156,7 @@ El entitlement debe existir como grant activo en la fuente de datos controlada.
 
 ---
 
-# 50. No roles automáticos
+# 44. No roles automáticos
 
 La creación automática de:
 
@@ -1251,9 +1183,11 @@ automatic administrator
 
 salvo que una futura política aceptada modifique expresamente esta decisión.
 
+Para `external_authorized`, la restricción es más fuerte: los roles internos no solo dejan de asignarse automáticamente, sino que son combinaciones inválidas en v1.
+
 ---
 
-# 51. No Administrator automático
+# 45. No Administrator automático
 
 En particular, no debe crearse un Administrator automáticamente:
 
@@ -1266,7 +1200,7 @@ El bootstrap administrativo debe utilizar un procedimiento explícito y controla
 
 ---
 
-# 52. Matriz conceptual objetivo
+# 46. Matriz conceptual objetivo
 
 La matriz de responsabilidades objetivo es:
 
@@ -1282,24 +1216,7 @@ La palabra `Excepcional` para Administrator indica capacidad de gobierno y recup
 
 ---
 
-# 53. Matriz de audiencia independiente
-
-La audiencia ordinaria se resuelve separadamente:
-
-| Actor                       |          `public` | `restricted` | `privileged` |
-| --------------------------- | ----------------: | -----------: | -----------: |
-| Anonymous                   |                Sí |           No |           No |
-| Institutional active        |                Sí |           Sí |           No |
-| Institutional + entitlement |                Sí |           Sí |           Sí |
-| External authorized         |                Sí |           No |           No |
-| External + entitlement      |                Sí |           No |           Sí |
-| Suspended/disabled          | Público solamente |           No |           No |
-
-Esta tabla no reemplaza las excepciones editoriales o administrativas necesarias durante workflow.
-
----
-
-# 54. Invariantes normativas
+# 47. Invariantes normativas
 
 ## RM-01 — Roles represent responsibilities
 
@@ -1407,9 +1324,25 @@ Roles y entitlements se resuelven desde fuentes server-side confiables.
 
 Grants y revocaciones sensibles deben ser auditables.
 
+## RM-19 — Internal roles require institutional identity
+
+En v1, todos los roles internos requieren una identidad institucional activa.
+
+Una identidad `external_authorized` no puede poseer roles.
+
 ---
 
-# 55. Pruebas normativas de roles
+## RM-20 — Institutional governance separation
+
+La autoridad editorial operativa corresponde a Moderator bajo el gobierno del Centro de Estudiantes.
+
+La autoridad técnica y administrativa operativa corresponde a Administrator bajo el gobierno de ACECOM.
+
+La designación de cualquiera de estas funciones requiere una identidad institucional activa.
+
+---
+
+# 48. Pruebas normativas de roles
 
 Stage 4C debe demostrar como mínimo:
 
@@ -1447,7 +1380,7 @@ moderator
 
 ---
 
-# 56. Pruebas de Administrator
+# 49. Pruebas de Administrator
 
 Debe comprobarse:
 
@@ -1477,7 +1410,27 @@ moderator
 
 ---
 
-# 57. Pruebas de independencia entre rol y audience
+# 50. Pruebas de independencia entre rol y audience
+
+```text
+external_authorized + student
+-> invalid
+
+external_authorized + contributor
+-> invalid
+
+external_authorized + reviewer
+-> invalid
+
+external_authorized + moderator
+-> invalid
+
+external_authorized + administrator
+-> invalid
+
+external_authorized + privileged_material.read
+-> valid
+```
 
 Ejemplo:
 
@@ -1518,7 +1471,7 @@ read approved/privileged -> deny
 
 ---
 
-# 58. Pruebas de Moderator y entitlement
+# 51. Pruebas de Moderator y entitlement
 
 ```text
 moderator
@@ -1534,7 +1487,7 @@ La implementación no debe resolver ese caso concediendo artificialmente un enti
 
 ---
 
-# 59. Non-goals v1
+# 52. Non-goals v1
 
 Este modelo no introduce:
 
@@ -1553,7 +1506,7 @@ Este modelo no introduce:
 
 ---
 
-# 60. Relación con otros documentos
+# 53. Relación con otros documentos
 
 La identidad y admisión se definen en:
 
@@ -1589,7 +1542,7 @@ Este documento no debe duplicar esas políticas más allá de lo necesario para 
 
 ---
 
-# 61. Regla de implementación
+# 54. Regla de implementación
 
 Codex debe preservar la separación:
 

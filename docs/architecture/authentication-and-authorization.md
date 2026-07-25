@@ -402,7 +402,7 @@ external_authorized
 sin entitlement
 ```
 
-puede acceder a contenido público pero no necesariamente a `restricted` o `privileged`.
+puede acceder a contenido público, no puede acceder a `restricted` y solo puede acceder a `privileged` si posee `privileged_material.read`.
 
 ---
 
@@ -499,15 +499,27 @@ persona@gmail.com
 
 La identidad externa no se convierte en institucional.
 
-Por defecto:
+En v1, `external_authorized` es una identidad exclusivamente lectora.
+
+No puede recibir roles internos:
 
 ```text
-external_authorized
+student
+contributor
+reviewer
+moderator
+administrator
 ```
 
-solo obtiene las capacidades públicas disponibles para cualquier usuario.
+Puede recibir el entitlement:
 
-Necesita grants adicionales para obtener capacidades especiales.
+```text
+privileged_material.read
+```
+
+cuando Administrator lo conceda explícitamente.
+
+Sin dicho entitlement, una identidad externa activa conserva únicamente las capacidades públicas disponibles para cualquier usuario.
 
 ---
 
@@ -619,6 +631,33 @@ No existe una regla general:
 → allowed
 ```
 
+La preautorización controla únicamente la admisión.
+
+Revocarla:
+
+```text
+antes de materializar la cuenta
+-> impide la admisión futura
+```
+
+Si la cuenta ya existe:
+
+```text
+revocar preautorización
+-> NO suspende ni deshabilita automáticamente la cuenta
+```
+
+El acceso de una cuenta ya materializada se controla mediante:
+
+```text
+account_status
+entitlements
+```
+
+Para retirar acceso privilegiado debe revocarse `privileged_material.read`.
+
+Cuando corresponda retirar también las capacidades autenticadas de la cuenta, Administrator debe cambiar explícitamente su estado a `suspended` o `disabled`.
+
 ---
 
 # 16. Fuente confiable del email
@@ -687,6 +726,22 @@ reviewer
 moderator
 administrator
 ```
+En v1, todos los roles internos requieren:
+
+```text
+identity_kind = institutional
+account_status = active
+```
+
+Una identidad:
+
+```text
+external_authorized
+```
+
+no puede recibir ninguno de estos roles.
+
+La admisión externa existe únicamente para permitir lectura autenticada y, cuando exista concesión explícita, acceso mediante `privileged_material.read`.
 
 Ejemplos:
 
@@ -834,6 +889,20 @@ No existe Administrator automático.
 No existe Moderator automático.
 
 No existe entitlement privilegiado automático.
+
+Además, una identidad `external_authorized` no puede recibir roles internos posteriormente mediante una concesión administrativa.
+
+Las combinaciones:
+
+```text
+external_authorized + student
+external_authorized + contributor
+external_authorized + reviewer
+external_authorized + moderator
+external_authorized + administrator
+```
+
+son inválidas en v1.
 
 ---
 
@@ -1399,6 +1468,20 @@ Administrator gestiona la admisión externa y los entitlements en v1.
 
 V1 no fusiona identidades únicamente por coincidencia de nombre, email alternativo o dominio.
 
+## AA-19 — External identities are reader-only
+
+Una identidad `external_authorized` no puede poseer roles internos en v1.
+
+Su única capacidad autenticada adicional puede provenir de entitlements explícitos como `privileged_material.read`.
+
+---
+
+## AA-20 — External preauthorization lifecycle
+
+La preautorización externa controla admisión, no el estado de una cuenta ya materializada.
+
+Revocar una preautorización impide admisiones futuras, pero no suspende automáticamente una cuenta existente.
+
 ---
 
 # 40. Pruebas normativas requeridas
@@ -1433,7 +1516,14 @@ preauthorized external email
 
 ```text
 revoked external preauthorization
--> rejected according to lifecycle policy
++ account not yet materialized
+-> admission rejected
+```
+
+```text
+revoked external preauthorization
++ existing active account
+-> account remains active until explicitly suspended/disabled
 ```
 
 ---
@@ -1558,6 +1648,26 @@ create resource
 review pending
 approve
 manage users
+```
+
+```text
+external_authorized + student
+-> invalid
+
+external_authorized + contributor
+-> invalid
+
+external_authorized + reviewer
+-> invalid
+
+external_authorized + moderator
+-> invalid
+
+external_authorized + administrator
+-> invalid
+
+external_authorized + privileged_material.read
+-> valid
 ```
 
 ---
