@@ -103,6 +103,68 @@ describe('resource file upload orchestrator', () => {
 		expect(dependencies.deleteObject).not.toHaveBeenCalled();
 	});
 
+	it.each([
+		{
+			filename: 'diagram.PNG',
+			bytes: new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
+			declaredContentType: 'image/jpeg',
+			normalizedExtension: '.png',
+			contentType: 'image/png',
+			sha256: '4c4b6a3be1314ab86138bef4314dde022e600960d8689a2c8f8631802d20dab6',
+		},
+		{
+			filename: 'photo.JPG',
+			bytes: new Uint8Array([0xff, 0xd8, 0xff, 0xe0, 0xff, 0xd9]),
+			declaredContentType: 'application/octet-stream',
+			normalizedExtension: '.jpg',
+			contentType: 'image/jpeg',
+			sha256: 'a96021502fb4a8df642108f90ae9ffc50c75d2d925e8c6c391a66cb366f0ca83',
+		},
+		{
+			filename: 'photo.jpeg',
+			bytes: new Uint8Array([0xff, 0xd8, 0xff, 0xe1, 0xff, 0xd9]),
+			declaredContentType: 'image/png',
+			normalizedExtension: '.jpeg',
+			contentType: 'image/jpeg',
+			sha256: '2c77bab3803d95f56087adf1ab233bcc6d38fb7642441433cbfcc7dd613ff47a',
+		},
+	])(
+		'uploads $filename through the unchanged generic_v2 saga',
+		async ({ filename, bytes, declaredContentType, normalizedExtension, contentType, sha256 }) => {
+			const dependencies = makeDependencies();
+			const orchestrator = createResourceFileUploadOrchestrator(
+				dependencies.persistence,
+				dependencies.objectStore,
+			);
+
+			await expect(
+				orchestrator.upload({
+					resourceId: RESOURCE_ID,
+					candidate: { filename, bytes, declaredContentType },
+				}),
+			).resolves.toEqual({ fileId: FILE_ID });
+
+			expect(dependencies.reserve).toHaveBeenCalledWith({
+				resourceId: RESOURCE_ID,
+				displayFilename: filename,
+				fileKind: 'image',
+				normalizedExtension,
+				contentType,
+				byteSize: bytes.byteLength,
+				sha256,
+			});
+			expect(dependencies.write).toHaveBeenCalledWith({
+				storageKey: STORAGE_KEY,
+				bytes: expect.any(Uint8Array),
+				contentType,
+			});
+
+			const writtenBytes = dependencies.write.mock.calls[0]?.[0].bytes;
+			expect(writtenBytes).toEqual(bytes);
+			expect(writtenBytes).not.toBe(bytes);
+		},
+	);
+
 	it('does not reserve or write when generic validation fails', async () => {
 		const dependencies = makeDependencies();
 		const orchestrator = createResourceFileUploadOrchestrator(

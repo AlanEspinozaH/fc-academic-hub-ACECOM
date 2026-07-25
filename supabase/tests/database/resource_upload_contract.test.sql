@@ -3,7 +3,7 @@ CREATE EXTENSION IF NOT EXISTS pgtap WITH SCHEMA extensions;
 
 BEGIN;
 
-SELECT plan(75);
+SELECT plan(89);
 
 SELECT ok(
 	to_regprocedure(
@@ -173,13 +173,17 @@ SELECT ok(
 );
 
 SELECT ok(
-	EXISTS (
+	NOT EXISTS (
 		SELECT 1
 		FROM pg_constraint
 		WHERE conrelid = 'public.resource_files'::regclass
-			AND conname = 'resource_files_content_type_pdf_check'
+			AND conname IN (
+				'resource_files_content_type_pdf_check',
+				'resource_files_display_filename_pdf_check',
+				'resource_files_stage_4c0b_pdf_only_check'
+			)
 	),
-	'PDF content type constraint exists'
+	'obsolete PDF-only constraints were removed'
 );
 
 SELECT ok(
@@ -187,9 +191,12 @@ SELECT ok(
 		SELECT 1
 		FROM pg_constraint
 		WHERE conrelid = 'public.resource_files'::regclass
-			AND conname = 'resource_files_display_filename_pdf_check'
+			AND conname = 'resource_files_stage_4c3_canonical_metadata_check'
+			AND pg_get_constraintdef(oid) LIKE '%application/pdf%'
+			AND pg_get_constraintdef(oid) LIKE '%image/png%'
+			AND pg_get_constraintdef(oid) LIKE '%image/jpeg%'
 	),
-	'PDF filename constraint exists'
+	'Stage 4C.3 canonical PDF/PNG/JPEG table constraint exists'
 );
 
 SELECT ok(
@@ -416,6 +423,43 @@ VALUES
 		'own-work'
 	);
 
+INSERT INTO public.academic_resources (
+	id,
+	owner_user_id,
+	course_id,
+	academic_term_id,
+	resource_type,
+	title,
+	description,
+	visibility,
+	rights_status
+)
+VALUES
+	(
+		'20000000-0000-0000-0000-000000000016',
+		'00000000-0000-0000-0000-000000000802',
+		'course:images', '2026-1', 'notes', 'PNG upload',
+		'Canonical PNG reservation fixture.', 'restricted', 'own-work'
+	),
+	(
+		'20000000-0000-0000-0000-000000000017',
+		'00000000-0000-0000-0000-000000000802',
+		'course:images', '2026-1', 'notes', 'JPG upload',
+		'Canonical JPG reservation fixture.', 'restricted', 'own-work'
+	),
+	(
+		'20000000-0000-0000-0000-000000000018',
+		'00000000-0000-0000-0000-000000000802',
+		'course:images', '2026-1', 'notes', 'JPEG upload',
+		'Canonical JPEG reservation fixture.', 'restricted', 'own-work'
+	),
+	(
+		'20000000-0000-0000-0000-000000000019',
+		'00000000-0000-0000-0000-000000000802',
+		'course:images', '2026-1', 'notes', 'Invalid image metadata',
+		'Rejected canonical metadata fixture.', 'restricted', 'own-work'
+	);
+
 RESET ROLE;
 SET LOCAL ROLE authenticated;
 SELECT pg_temp.set_request_context(
@@ -508,21 +552,6 @@ SELECT ok(
 	'10000001 bytes is rejected'
 );
 
-SELECT ok(
-	NOT pg_temp.try_sql($$
-		SELECT public.register_resource_file_upload(
-			'20000000-0000-0000-0000-000000000002',
-			'preview.png',
-			'image'::public.resource_file_kind,
-			'.png',
-			'image/png',
-			512,
-			NULL
-		)
-	$$),
-	'non-PDF canonical metadata remains operationally rejected in Stage 4C.0B.5'
-);
-
 RESET ROLE;
 
 SELECT is(
@@ -535,6 +564,178 @@ SELECT is(
 	0,
 	'oversized reservation leaves no file metadata'
 );
+
+SET LOCAL ROLE authenticated;
+SELECT pg_temp.set_request_context(
+	'00000000-0000-0000-0000-000000000802',
+	'authenticated'
+);
+
+SELECT lives_ok(
+	$$
+		SELECT public.register_resource_file_upload(
+			'20000000-0000-0000-0000-000000000016',
+			'Diagram.PNG', 'image', '.png', 'image/png', 2048, NULL
+		)
+	$$,
+	'uppercase PNG filename with canonical metadata reserves successfully'
+);
+SELECT lives_ok(
+	$$
+		SELECT public.register_resource_file_upload(
+			'20000000-0000-0000-0000-000000000017',
+			'Photo.JPG', 'image', '.jpg', 'image/jpeg', 4096, NULL
+		)
+	$$,
+	'uppercase JPG filename with canonical metadata reserves successfully'
+);
+SELECT lives_ok(
+	$$
+		SELECT public.register_resource_file_upload(
+			'20000000-0000-0000-0000-000000000018',
+			'Photo.jpeg', 'image', '.jpeg', 'image/jpeg', 8192, NULL
+		)
+	$$,
+	'JPEG filename with canonical metadata reserves successfully'
+);
+
+RESET ROLE;
+SELECT ok(
+	(
+		SELECT resource_file.file_kind = 'image'::public.resource_file_kind
+			AND resource_file.normalized_extension = '.png'
+			AND resource_file.content_type = 'image/png'
+			AND resource_file.storage_key_version = 'generic_v2'
+			AND storage_object.storage_key =
+				'resources/' || resource_file.resource_id::text || '/' || resource_file.id::text
+			AND storage_object.storage_key !~ '[.](png|jpe?g)$'
+		FROM public.resource_files AS resource_file
+		INNER JOIN private.resource_storage_objects AS storage_object
+			ON storage_object.file_id = resource_file.id
+		WHERE resource_file.resource_id = '20000000-0000-0000-0000-000000000016'
+	),
+	'PNG reservation stores canonical metadata and a suffixless generic_v2 key'
+);
+SELECT ok(
+	(
+		SELECT resource_file.file_kind = 'image'::public.resource_file_kind
+			AND resource_file.normalized_extension = '.jpg'
+			AND resource_file.content_type = 'image/jpeg'
+			AND resource_file.storage_key_version = 'generic_v2'
+			AND storage_object.storage_key =
+				'resources/' || resource_file.resource_id::text || '/' || resource_file.id::text
+			AND storage_object.storage_key !~ '[.](png|jpe?g)$'
+		FROM public.resource_files AS resource_file
+		INNER JOIN private.resource_storage_objects AS storage_object
+			ON storage_object.file_id = resource_file.id
+		WHERE resource_file.resource_id = '20000000-0000-0000-0000-000000000017'
+	),
+	'JPG reservation stores canonical metadata and a suffixless generic_v2 key'
+);
+SELECT ok(
+	(
+		SELECT resource_file.file_kind = 'image'::public.resource_file_kind
+			AND resource_file.normalized_extension = '.jpeg'
+			AND resource_file.content_type = 'image/jpeg'
+			AND resource_file.storage_key_version = 'generic_v2'
+			AND storage_object.storage_key =
+				'resources/' || resource_file.resource_id::text || '/' || resource_file.id::text
+			AND storage_object.storage_key !~ '[.](png|jpe?g)$'
+		FROM public.resource_files AS resource_file
+		INNER JOIN private.resource_storage_objects AS storage_object
+			ON storage_object.file_id = resource_file.id
+		WHERE resource_file.resource_id = '20000000-0000-0000-0000-000000000018'
+	),
+	'JPEG reservation stores canonical metadata and a suffixless generic_v2 key'
+);
+
+SET LOCAL ROLE authenticated;
+SELECT pg_temp.set_request_context(
+	'00000000-0000-0000-0000-000000000802',
+	'authenticated'
+);
+SELECT ok(
+	NOT pg_temp.try_sql($$
+		SELECT public.register_resource_file_upload(
+			'20000000-0000-0000-0000-000000000019',
+			'bad.png', 'image', '.png', 'image/jpeg', 512, NULL
+		)
+	$$),
+	'PNG metadata with image/jpeg is rejected'
+);
+SELECT ok(
+	NOT pg_temp.try_sql($$
+		SELECT public.register_resource_file_upload(
+			'20000000-0000-0000-0000-000000000019',
+			'bad.jpg', 'image', '.jpg', 'image/png', 512, NULL
+		)
+	$$),
+	'JPEG metadata with image/png is rejected'
+);
+SELECT ok(
+	NOT pg_temp.try_sql($$
+		SELECT public.register_resource_file_upload(
+			'20000000-0000-0000-0000-000000000019',
+			'bad.pdf', 'image', '.pdf', 'application/pdf', 512, NULL
+		)
+	$$),
+	'image kind with PDF extension is rejected'
+);
+SELECT ok(
+	NOT pg_temp.try_sql($$
+		SELECT public.register_resource_file_upload(
+			'20000000-0000-0000-0000-000000000019',
+			'bad.png', 'pdf', '.png', 'image/png', 512, NULL
+		)
+	$$),
+	'PDF kind with PNG extension is rejected'
+);
+SELECT ok(
+	NOT pg_temp.try_sql($$
+		SELECT public.register_resource_file_upload(
+			'20000000-0000-0000-0000-000000000019',
+			'contradiction.jpeg', 'image', '.jpg', 'image/jpeg', 512, NULL
+		)
+	$$),
+	'filename suffix contradicting normalized extension is rejected'
+);
+SELECT ok(
+	NOT pg_temp.try_sql($$
+		SELECT public.register_resource_file_upload(
+			'20000000-0000-0000-0000-000000000019',
+			'future.md', 'markdown', '.md', 'text/plain', 512, NULL
+		)
+	$$),
+	'Markdown metadata remains rejected in Stage 4C.3'
+);
+SELECT ok(
+	NOT pg_temp.try_sql($$
+		SELECT public.register_resource_file_upload(
+			'20000000-0000-0000-0000-000000000019',
+			'future.tex', 'tex', '.tex', 'text/plain', 512, NULL
+		)
+	$$),
+	'TeX metadata remains rejected in Stage 4C.3'
+);
+SELECT ok(
+	NOT pg_temp.try_sql($$
+		SELECT public.register_resource_file_upload(
+			'20000000-0000-0000-0000-000000000019',
+			'future.txt', 'text', '.txt', 'text/plain', 512, NULL
+		)
+	$$),
+	'text metadata remains rejected in Stage 4C.3'
+);
+SELECT ok(
+	NOT pg_temp.try_sql($$
+		SELECT public.register_resource_file_upload(
+			'20000000-0000-0000-0000-000000000019',
+			'future.py', 'source', '.py', 'text/plain', 512, NULL
+		)
+	$$),
+	'source metadata remains rejected in Stage 4C.3'
+);
+RESET ROLE;
 
 SET LOCAL ROLE authenticated;
 SELECT pg_temp.set_request_context(

@@ -1,5 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
-import { ResourceFileReadError, type ResourceFileReader } from '../application/resource-file-read';
+import {
+	ResourceFileReadError,
+	type ResourceFileReader,
+	type ResourceFileReadResult,
+} from '../application/resource-file-read';
 import type { SupabaseServerClient } from '../infrastructure/supabase/server';
 import {
 	handleResourceFileReadRequest,
@@ -23,19 +27,40 @@ const anonymous: App.Locals['auth'] = {
 	supabase,
 };
 
-const makeDependencies = () => {
-	const read = vi.fn<ResourceFileReader['read']>(async () => ({
-		resourceId: RESOURCE_ID,
-		fileId: FILE_ID,
-		displayFilename: 'Examen final.pdf',
-		fileKind: 'pdf',
-		normalizedExtension: '.pdf',
-		contentType: 'application/pdf',
-		byteSize: BYTES.byteLength,
-		sha256: 'a'.repeat(64),
+const PDF_RESULT: ResourceFileReadResult = {
+	resourceId: RESOURCE_ID,
+	fileId: FILE_ID,
+	displayFilename: 'Examen final.pdf',
+	fileKind: 'pdf',
+	normalizedExtension: '.pdf',
+	contentType: 'application/pdf',
+	byteSize: BYTES.byteLength,
+	sha256: 'a'.repeat(64),
+	storageKeyVersion: 'generic_v2',
+	bytes: BYTES,
+};
+
+const IMAGE_RESULTS = [
+	{
+		...PDF_RESULT,
+		displayFilename: 'Diagrama final.PNG',
+		fileKind: 'image',
+		normalizedExtension: '.png',
+		contentType: 'image/png',
 		storageKeyVersion: 'generic_v2',
-		bytes: BYTES,
-	}));
+	},
+	{
+		...PDF_RESULT,
+		displayFilename: 'Fotografía final.jpeg',
+		fileKind: 'image',
+		normalizedExtension: '.jpeg',
+		contentType: 'image/jpeg',
+		storageKeyVersion: 'generic_v2',
+	},
+] satisfies readonly ResourceFileReadResult[];
+
+const makeDependencies = (result: ResourceFileReadResult = PDF_RESULT) => {
+	const read = vi.fn<ResourceFileReader['read']>(async () => result);
 	const reader = { read } as ResourceFileReader;
 	const createReader = vi.fn(() => reader);
 	const dependencies: ResourceFileReadHttpDependencies = { createReader };
@@ -80,6 +105,34 @@ describe('resource file read HTTP handler', () => {
 		expect(response.headers.has('x-resource-sha256')).toBe(false);
 		expect(response.headers.has('x-storage-key-version')).toBe(false);
 	});
+
+	it.each(IMAGE_RESULTS)(
+		'previews $normalizedExtension with canonical image headers',
+		async (result) => {
+			const { dependencies } = makeDependencies(result);
+			const response = await handleResourceFileReadRequest(makeInput('inline'), dependencies);
+
+			expect(response.status).toBe(200);
+			expect(response.headers.get('content-type')).toBe(result.contentType);
+			expect(response.headers.get('content-disposition')).toMatch(/^inline;/);
+			expect(response.headers.get('x-content-type-options')).toBe('nosniff');
+			expect(response.headers.get('cache-control')).toBe('private, no-store');
+			expect(new Uint8Array(await response.arrayBuffer())).toEqual(BYTES);
+		},
+	);
+
+	it.each(IMAGE_RESULTS)(
+		'downloads $normalizedExtension with attachment disposition and canonical MIME',
+		async (result) => {
+			const { dependencies } = makeDependencies(result);
+			const response = await handleResourceFileReadRequest(makeInput('attachment'), dependencies);
+
+			expect(response.status).toBe(200);
+			expect(response.headers.get('content-type')).toBe(result.contentType);
+			expect(response.headers.get('content-disposition')).toMatch(/^attachment;/);
+			expect(response.headers.get('x-content-type-options')).toBe('nosniff');
+		},
+	);
 
 	it('uses the anonymous Supabase client so PostgreSQL can authorize public resources', async () => {
 		const { dependencies, createReader } = makeDependencies();

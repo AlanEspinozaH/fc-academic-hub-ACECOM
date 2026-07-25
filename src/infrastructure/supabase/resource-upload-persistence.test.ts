@@ -62,6 +62,41 @@ describe('Supabase resource upload persistence', () => {
 		expect(rpc.mock.calls[0]?.[1]).not.toHaveProperty('storage_key_version');
 	});
 
+	it.each([
+		['diagram.PNG', '.png', 'image/png'],
+		['photo.JPG', '.jpg', 'image/jpeg'],
+		['photo.jpeg', '.jpeg', 'image/jpeg'],
+	] as const)(
+		'reserves canonical image metadata for %s through the unchanged RPC',
+		async (displayFilename, normalizedExtension, contentType) => {
+			const { client, rpc } = makeClient();
+			const persistence = createSupabaseResourceUploadPersistence(client);
+			rpc.mockResolvedValueOnce({ data: FILE_ID, error: null });
+
+			await expect(
+				persistence.reserve({
+					resourceId: RESOURCE_ID,
+					displayFilename,
+					fileKind: 'image',
+					normalizedExtension,
+					contentType,
+					byteSize: 4321,
+					sha256: SHA256,
+				}),
+			).resolves.toBe(FILE_ID);
+
+			expect(rpc).toHaveBeenCalledWith('register_resource_file_upload', {
+				resource_id: RESOURCE_ID,
+				display_filename: displayFilename,
+				file_kind: 'image',
+				normalized_extension: normalizedExtension,
+				content_type: contentType,
+				byte_size: 4321,
+				sha256: SHA256,
+			});
+		},
+	);
+
 	it('retries finalization once after a status-zero transport response', async () => {
 		const { client, rpc } = makeClient();
 		const persistence = createSupabaseResourceUploadPersistence(client);

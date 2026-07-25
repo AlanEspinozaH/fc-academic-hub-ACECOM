@@ -2,6 +2,11 @@ export const RESOURCE_FILE_MAX_BYTES = 10_000_000;
 export const RESOURCE_PDF_CONTENT_TYPE = 'application/pdf' as const;
 export const RESOURCE_PDF_FILE_KIND = 'pdf' as const;
 export const RESOURCE_PDF_NORMALIZED_EXTENSION = '.pdf' as const;
+export const RESOURCE_PNG_CONTENT_TYPE = 'image/png' as const;
+export const RESOURCE_PNG_NORMALIZED_EXTENSION = '.png' as const;
+export const RESOURCE_JPEG_CONTENT_TYPE = 'image/jpeg' as const;
+export const RESOURCE_JPEG_NORMALIZED_EXTENSIONS = ['.jpg', '.jpeg'] as const;
+export const RESOURCE_IMAGE_FILE_KIND = 'image' as const;
 
 export type ResourceFileKind = 'pdf' | 'image' | 'markdown' | 'tex' | 'text' | 'source';
 
@@ -25,8 +30,10 @@ export type ResourceFileValidationErrorCode =
 	| 'EMPTY_FILE'
 	| 'FILE_TOO_LARGE'
 	| 'INVALID_FILENAME'
+	| 'INVALID_JPEG_SIGNATURE'
 	| 'INVALID_PDF_HEADER'
 	| 'INVALID_PDF_TRAILER'
+	| 'INVALID_PNG_SIGNATURE'
 	| 'MISSING_FILENAME'
 	| 'UNSUPPORTED_FILE_TYPE';
 
@@ -43,6 +50,12 @@ export class ResourceFileValidationError extends Error {
 const PDF_HEADER = new Uint8Array([0x25, 0x50, 0x44, 0x46, 0x2d]);
 const PDF_EOF_MARKER = new Uint8Array([0x25, 0x25, 0x45, 0x4f, 0x46]);
 const PDF_EOF_SEARCH_WINDOW_BYTES = 1_024;
+const PNG_SIGNATURE = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+const REGISTERED_EXTENSION_ONLY_FILENAMES = new Set<string>([
+	RESOURCE_PDF_NORMALIZED_EXTENSION,
+	RESOURCE_PNG_NORMALIZED_EXTENSION,
+	...RESOURCE_JPEG_NORMALIZED_EXTENSIONS,
+]);
 
 const fail = (code: ResourceFileValidationErrorCode, message: string): never => {
 	throw new ResourceFileValidationError(code, message);
@@ -73,7 +86,11 @@ const normalizeFilename = (candidateFilename: string): string => {
 		fail('INVALID_FILENAME', 'resource file filename must be a safe basename');
 	}
 
-	if (filename === '.' || filename === '..' || filename.toLowerCase() === '.pdf') {
+	if (
+		filename === '.' ||
+		filename === '..' ||
+		REGISTERED_EXTENSION_ONLY_FILENAMES.has(filename.toLowerCase())
+	) {
 		fail('INVALID_FILENAME', 'resource file filename must include a basename');
 	}
 
@@ -143,10 +160,10 @@ const hasValidPdfTrailer = (bytes: Uint8Array): boolean => {
 const toLowercaseHex = (buffer: ArrayBuffer): string =>
 	Array.from(new Uint8Array(buffer), (byte) => byte.toString(16).padStart(2, '0')).join('');
 
-const validatePdf = async (
+const snapshotCandidateBytes = (
 	candidate: ResourceFileCandidate,
-	filename: string,
-): Promise<ValidatedResourceFile> => {
+	formatLabel: string,
+): Uint8Array<ArrayBuffer> => {
 	const byteSize = candidate.bytes.byteLength;
 
 	if (byteSize === 0) {
@@ -154,11 +171,27 @@ const validatePdf = async (
 	}
 
 	if (byteSize > RESOURCE_FILE_MAX_BYTES) {
-		fail('FILE_TOO_LARGE', `resource PDF cannot exceed ${RESOURCE_FILE_MAX_BYTES} bytes`);
+		fail(
+			'FILE_TOO_LARGE',
+			`resource ${formatLabel} cannot exceed ${RESOURCE_FILE_MAX_BYTES} bytes`,
+		);
 	}
 
-	// Snapshot caller-owned bytes before structural validation and hashing.
-	const bytes: Uint8Array<ArrayBuffer> = Uint8Array.from(candidate.bytes);
+	return Uint8Array.from(candidate.bytes);
+};
+
+const sha256 = async (bytes: Uint8Array<ArrayBuffer>): Promise<string> => {
+	const digest = await globalThis.crypto.subtle.digest('SHA-256', bytes);
+
+	return toLowercaseHex(digest);
+};
+
+const validatePdf = async (
+	candidate: ResourceFileCandidate,
+	filename: string,
+): Promise<ValidatedResourceFile> => {
+	const byteSize = candidate.bytes.byteLength;
+	const bytes = snapshotCandidateBytes(candidate, 'PDF');
 
 	if (!hasSequenceAt(bytes, PDF_HEADER, 0)) {
 		fail('INVALID_PDF_HEADER', 'resource file must begin with the %PDF- signature');
@@ -168,8 +201,6 @@ const validatePdf = async (
 		fail('INVALID_PDF_TRAILER', 'resource PDF must end with a valid %%EOF marker');
 	}
 
-	const digest = await globalThis.crypto.subtle.digest('SHA-256', bytes);
-
 	return Object.freeze({
 		bytes,
 		byteSize,
@@ -177,7 +208,61 @@ const validatePdf = async (
 		fileKind: RESOURCE_PDF_FILE_KIND,
 		filename,
 		normalizedExtension: RESOURCE_PDF_NORMALIZED_EXTENSION,
-		sha256: toLowercaseHex(digest),
+		sha256: await sha256(bytes),
+	});
+};
+
+const validatePng = async (
+	candidate: ResourceFileCandidate,
+	filename: string,
+): Promise<ValidatedResourceFile> => {
+	const byteSize = candidate.bytes.byteLength;
+	const bytes = snapshotCandidateBytes(candidate, 'PNG');
+
+	if (!hasSequenceAt(bytes, PNG_SIGNATURE, 0)) {
+		fail('INVALID_PNG_SIGNATURE', 'resource PNG must begin with the canonical PNG signature');
+	}
+
+	return Object.freeze({
+		bytes,
+		byteSize,
+		contentType: RESOURCE_PNG_CONTENT_TYPE,
+		fileKind: RESOURCE_IMAGE_FILE_KIND,
+		filename,
+		normalizedExtension: RESOURCE_PNG_NORMALIZED_EXTENSION,
+		sha256: await sha256(bytes),
+	});
+};
+
+const validateJpeg = async (
+	candidate: ResourceFileCandidate,
+	filename: string,
+	normalizedExtension: (typeof RESOURCE_JPEG_NORMALIZED_EXTENSIONS)[number],
+): Promise<ValidatedResourceFile> => {
+	const byteSize = candidate.bytes.byteLength;
+	const bytes = snapshotCandidateBytes(candidate, 'JPEG');
+	const hasValidSignature =
+		bytes[0] === 0xff &&
+		bytes[1] === 0xd8 &&
+		bytes[2] === 0xff &&
+		bytes[bytes.length - 2] === 0xff &&
+		bytes[bytes.length - 1] === 0xd9;
+
+	if (!hasValidSignature) {
+		fail(
+			'INVALID_JPEG_SIGNATURE',
+			'resource JPEG must contain the required SOI, marker prefix, and EOI bytes',
+		);
+	}
+
+	return Object.freeze({
+		bytes,
+		byteSize,
+		contentType: RESOURCE_JPEG_CONTENT_TYPE,
+		fileKind: RESOURCE_IMAGE_FILE_KIND,
+		filename,
+		normalizedExtension,
+		sha256: await sha256(bytes),
 	});
 };
 
@@ -189,6 +274,17 @@ export const validateResourceFile = async (
 
 	if (normalizedExtension === RESOURCE_PDF_NORMALIZED_EXTENSION) {
 		return validatePdf(candidate, filename);
+	}
+
+	if (normalizedExtension === RESOURCE_PNG_NORMALIZED_EXTENSION) {
+		return validatePng(candidate, filename);
+	}
+
+	if (
+		normalizedExtension === RESOURCE_JPEG_NORMALIZED_EXTENSIONS[0] ||
+		normalizedExtension === RESOURCE_JPEG_NORMALIZED_EXTENSIONS[1]
+	) {
+		return validateJpeg(candidate, filename, normalizedExtension);
 	}
 
 	return fail('UNSUPPORTED_FILE_TYPE', 'submitted file type is not currently supported');

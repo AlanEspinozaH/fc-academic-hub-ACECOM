@@ -115,6 +115,40 @@ describe('resource file upload HTTP handler', () => {
 		expect(new TextDecoder().decode(uploadInput?.candidate.bytes)).toBe('%PDF-1.7\n%%EOF\n');
 	});
 
+	it.each([
+		{
+			filename: 'diagram.png',
+			bytes: new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
+			declaredContentType: 'image/jpeg',
+		},
+		{
+			filename: 'photo.jpeg',
+			bytes: new Uint8Array([0xff, 0xd8, 0xff, 0xe0, 0xff, 0xd9]),
+			declaredContentType: 'image/png',
+		},
+	])(
+		'passes $filename bytes and non-authoritative MIME to the generic uploader',
+		async ({ filename, bytes, declaredContentType }) => {
+			const { dependencies, upload } = makeDependencies();
+			const formData = new FormData();
+			formData.set('file', new File([bytes], filename, { type: declaredContentType }));
+
+			const response = await handleResourceFileUploadRequest(
+				{
+					request: makeRequest(formData),
+					resourceId: RESOURCE_ID,
+					auth: authenticated,
+				},
+				dependencies,
+			);
+
+			expect(response.status).toBe(201);
+			const candidate = upload.mock.calls[0]?.[0].candidate;
+			expect(candidate).toMatchObject({ filename, declaredContentType });
+			expect(candidate?.bytes).toEqual(bytes);
+		},
+	);
+
 	it('rejects a cross-origin POST before creating an uploader', async () => {
 		const { dependencies, createUploader } = makeDependencies();
 		const request = makeRequest();
@@ -427,8 +461,8 @@ describe('resource file upload HTTP handler', () => {
 
 		formData.set(
 			'file',
-			new File([new TextEncoder().encode('future bytes')], 'future.png', {
-				type: 'image/png',
+			new File([new TextEncoder().encode('future bytes')], 'future.md', {
+				type: 'text/markdown',
 			}),
 		);
 		upload.mockRejectedValueOnce(
