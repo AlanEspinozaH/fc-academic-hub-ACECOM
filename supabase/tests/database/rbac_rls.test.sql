@@ -3,7 +3,7 @@ CREATE EXTENSION IF NOT EXISTS pgtap WITH SCHEMA extensions;
 
 BEGIN;
 
-SELECT plan(79);
+SELECT plan(107);
 
 CREATE OR REPLACE FUNCTION pg_temp.set_request_context(user_id uuid, jwt_role text)
 RETURNS void
@@ -703,6 +703,268 @@ SELECT ok(
 	private.has_role('reviewer'::public.app_role)
 	AND private.has_any_role(ARRAY['reviewer']::public.app_role[]),
 	'role checks resume normal behavior after institutional active eligibility is restored'
+);
+
+RESET ROLE;
+SELECT ok(to_regtype('public.app_entitlement') IS NOT NULL, 'app_entitlement exists');
+SELECT is(
+	(
+		SELECT array_agg(pg_enum.enumlabel ORDER BY pg_enum.enumsortorder)
+		FROM pg_type
+		INNER JOIN pg_namespace ON pg_namespace.oid = pg_type.typnamespace
+		INNER JOIN pg_enum ON pg_enum.enumtypid = pg_type.oid
+		WHERE pg_namespace.nspname = 'public'
+			AND pg_type.typname = 'app_entitlement'
+	),
+	ARRAY['privileged_material.read']::name[],
+	'app_entitlement contains exactly privileged_material.read'
+);
+SELECT ok(to_regclass('public.user_entitlements') IS NOT NULL, 'user_entitlements exists');
+SELECT ok(to_regclass('public.entitlement_audit_log') IS NOT NULL, 'entitlement_audit_log exists');
+SELECT ok(
+	(SELECT relrowsecurity FROM pg_class WHERE oid = 'public.user_entitlements'::regclass)
+	AND (SELECT relrowsecurity FROM pg_class WHERE oid = 'public.entitlement_audit_log'::regclass),
+	'entitlement tables have RLS enabled'
+);
+
+SET LOCAL ROLE anon;
+SELECT pg_temp.set_request_context(NULL, 'anon');
+SELECT ok(
+	NOT pg_temp.try_sql('select * from public.user_entitlements')
+	AND NOT pg_temp.try_sql('select * from public.entitlement_audit_log'),
+	'anon cannot inspect entitlement data'
+);
+
+RESET ROLE;
+SET LOCAL ROLE authenticated;
+SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000102', 'authenticated');
+SELECT ok(
+	NOT pg_temp.try_sql($$
+		select public.grant_user_entitlement(
+			'00000000-0000-0000-0000-000000000106',
+			'privileged_material.read'::public.app_entitlement,
+			'non-admin grant'
+		)
+	$$),
+	'non-administrator cannot grant entitlements'
+);
+SELECT ok(
+	NOT pg_temp.try_sql($$
+		select public.revoke_user_entitlement(
+			'00000000-0000-0000-0000-000000000106',
+			'privileged_material.read'::public.app_entitlement,
+			'non-admin revoke'
+		)
+	$$),
+	'non-administrator cannot revoke entitlements'
+);
+
+RESET ROLE;
+UPDATE public.profiles
+SET identity_kind = 'external_authorized'::public.identity_kind,
+	account_status = 'active'::public.account_status
+WHERE user_id = '00000000-0000-0000-0000-000000000107';
+
+SET LOCAL ROLE authenticated;
+SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000105', 'authenticated');
+SELECT lives_ok(
+	$$
+		select public.grant_user_entitlement(
+			'00000000-0000-0000-0000-000000000106',
+			'privileged_material.read'::public.app_entitlement,
+			'institutional grant'
+		)
+	$$,
+	'administrator can grant entitlement to an active institutional user'
+);
+SELECT ok(
+	NOT pg_temp.try_sql($$
+		select public.grant_user_entitlement(
+			'00000000-0000-0000-0000-000000000106',
+			'privileged_material.read'::public.app_entitlement,
+			'duplicate grant'
+		)
+	$$),
+	'duplicate active entitlement grant is rejected'
+);
+SELECT lives_ok(
+	$$
+		select public.grant_user_entitlement(
+			'00000000-0000-0000-0000-000000000107',
+			'privileged_material.read'::public.app_entitlement,
+			'external grant'
+		)
+	$$,
+	'administrator can grant entitlement to an active external_authorized user'
+);
+SELECT is(
+	(
+		SELECT count(*)::integer
+		FROM public.user_roles
+		WHERE user_id = '00000000-0000-0000-0000-000000000107'
+			AND revoked_at IS NULL
+	),
+	0,
+	'granting an entitlement creates no internal role'
+);
+
+RESET ROLE;
+SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000106', 'authenticated');
+SELECT ok(
+	private.has_entitlement('privileged_material.read'::public.app_entitlement),
+	'active account has its active entitlement effectively'
+);
+
+RESET ROLE;
+UPDATE public.profiles
+SET account_status = 'suspended'::public.account_status
+WHERE user_id = '00000000-0000-0000-0000-000000000106';
+SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000106', 'authenticated');
+SELECT ok(
+	NOT private.has_entitlement('privileged_material.read'::public.app_entitlement),
+	'suspension makes an existing entitlement ineffective'
+);
+
+RESET ROLE;
+UPDATE public.profiles
+SET account_status = 'active'::public.account_status
+WHERE user_id = '00000000-0000-0000-0000-000000000106';
+SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000106', 'authenticated');
+SELECT ok(
+	private.has_entitlement('privileged_material.read'::public.app_entitlement),
+	'reactivation restores an unrevoked entitlement'
+);
+
+RESET ROLE;
+SET LOCAL ROLE authenticated;
+SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000105', 'authenticated');
+SELECT lives_ok(
+	$$
+		select public.revoke_user_entitlement(
+			'00000000-0000-0000-0000-000000000106',
+			'privileged_material.read'::public.app_entitlement,
+			'active revoke'
+		)
+	$$,
+	'administrator can revoke an active entitlement'
+);
+
+RESET ROLE;
+SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000106', 'authenticated');
+SELECT ok(
+	NOT private.has_entitlement('privileged_material.read'::public.app_entitlement),
+	'revocation makes an entitlement ineffective immediately'
+);
+
+RESET ROLE;
+SET LOCAL ROLE authenticated;
+SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000105', 'authenticated');
+SELECT lives_ok(
+	$$
+		select public.grant_user_entitlement(
+			'00000000-0000-0000-0000-000000000106',
+			'privileged_material.read'::public.app_entitlement,
+			'regrant after revoke'
+		)
+	$$,
+	'entitlement can be regranted after revocation'
+);
+
+RESET ROLE;
+UPDATE public.profiles
+SET account_status = 'suspended'::public.account_status
+WHERE user_id = '00000000-0000-0000-0000-000000000106';
+SET LOCAL ROLE authenticated;
+SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000105', 'authenticated');
+SELECT lives_ok(
+	$$
+		select public.revoke_user_entitlement(
+			'00000000-0000-0000-0000-000000000106',
+			'privileged_material.read'::public.app_entitlement,
+			'suspended revoke'
+		)
+	$$,
+	'administrator can revoke an entitlement from a suspended account'
+);
+
+RESET ROLE;
+SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000106', 'authenticated');
+SELECT ok(
+	NOT private.has_entitlement('privileged_material.read'::public.app_entitlement),
+	'revoked suspended account has no effective entitlement'
+);
+
+RESET ROLE;
+SELECT is(
+	(
+		SELECT count(*)::integer
+		FROM public.user_entitlements
+		WHERE user_id = '00000000-0000-0000-0000-000000000106'
+			AND entitlement = 'privileged_material.read'::public.app_entitlement
+			AND revoked_at IS NOT NULL
+	),
+	2,
+	'entitlement revocation preserves assignment history'
+);
+SELECT is(
+	(
+		SELECT count(*)::integer
+		FROM public.entitlement_audit_log
+		WHERE entitlement = 'privileged_material.read'::public.app_entitlement
+			AND action IN ('grant', 'revoke')
+	),
+	5,
+	'entitlement grants and revocations write audit rows'
+);
+SELECT ok(
+	NOT pg_temp.try_sql($$update public.entitlement_audit_log set metadata = '{"tampered": true}'::jsonb$$),
+	'entitlement audit log cannot be updated'
+);
+SELECT ok(
+	NOT pg_temp.try_sql('delete from public.entitlement_audit_log'),
+	'entitlement audit log cannot be deleted'
+);
+
+UPDATE public.profiles
+SET account_status = 'active'::public.account_status
+WHERE user_id = '00000000-0000-0000-0000-000000000106';
+
+SET LOCAL ROLE authenticated;
+SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000105', 'authenticated');
+SELECT ok(
+	NOT pg_temp.try_sql($$
+		insert into public.user_entitlements (user_id, entitlement, granted_by)
+		values (
+			'00000000-0000-0000-0000-000000000101',
+			'privileged_material.read'::public.app_entitlement,
+			'00000000-0000-0000-0000-000000000105'
+		)
+	$$),
+	'authenticated cannot insert entitlement assignments directly'
+);
+SELECT ok(
+	NOT pg_temp.try_sql($$update public.user_entitlements set reason = 'tampered'$$),
+	'authenticated cannot update entitlement assignments directly'
+);
+SELECT ok(
+	NOT pg_temp.try_sql($$delete from public.user_entitlements$$),
+	'authenticated cannot delete entitlement assignments directly'
+);
+SELECT ok(
+	NOT pg_temp.try_sql($$
+		insert into public.entitlement_audit_log (
+			actor_user_id,
+			target_user_id,
+			action,
+			entitlement
+		) values (
+			'00000000-0000-0000-0000-000000000105',
+			'00000000-0000-0000-0000-000000000107',
+			'grant',
+			'privileged_material.read'::public.app_entitlement
+		)
+	$$),
+	'authenticated cannot insert entitlement audit rows directly'
 );
 
 RESET ROLE;
