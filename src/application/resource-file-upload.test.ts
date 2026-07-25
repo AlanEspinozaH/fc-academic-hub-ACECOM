@@ -4,7 +4,10 @@ import {
 	ResourceUploadPersistenceError,
 	type ResourceUploadPersistence,
 } from '../infrastructure/supabase/resource-upload-persistence';
-import { ResourcePdfUploadError, createResourcePdfUploadOrchestrator } from './resource-pdf-upload';
+import {
+	ResourceFileUploadError,
+	createResourceFileUploadOrchestrator,
+} from './resource-file-upload';
 
 const RESOURCE_ID = '11111111-2222-3333-4444-555555555555';
 const FILE_ID = 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee';
@@ -13,7 +16,7 @@ const SHA256 = '1e7313ace78f0fb481a486939b4885902663102818090805515553d84e0bbfd3
 
 const makeCandidate = () => ({
 	filename: 'exam.pdf',
-	contentType: 'application/pdf',
+	declaredContentType: 'text/plain',
 	bytes: new TextEncoder().encode('%PDF-1.7\n%%EOF\n'),
 });
 
@@ -30,8 +33,8 @@ const makeDependencies = () => {
 		markFailed,
 	} as unknown as ResourceUploadPersistence;
 
-	const write = vi.fn(async (): Promise<void> => undefined);
-	const deleteObject = vi.fn(async (): Promise<void> => undefined);
+	const write = vi.fn<ResourceObjectStore['write']>(async () => undefined);
+	const deleteObject = vi.fn<ResourceObjectStore['delete']>(async () => undefined);
 
 	const objectStore = {
 		write,
@@ -50,17 +53,18 @@ const makeDependencies = () => {
 	};
 };
 
-describe('resource PDF upload orchestrator', () => {
+describe('resource file upload orchestrator', () => {
 	it('validates, reserves, writes and finalizes a private PDF', async () => {
 		const dependencies = makeDependencies();
-		const orchestrator = createResourcePdfUploadOrchestrator(
+		const orchestrator = createResourceFileUploadOrchestrator(
 			dependencies.persistence,
 			dependencies.objectStore,
 		);
 
+		const candidate = makeCandidate();
 		const result = await orchestrator.upload({
 			resourceId: RESOURCE_ID,
-			candidate: makeCandidate(),
+			candidate,
 			comment: 'ready for review',
 		});
 
@@ -83,6 +87,10 @@ describe('resource PDF upload orchestrator', () => {
 			bytes: expect.any(Uint8Array),
 			contentType: 'application/pdf',
 		});
+		const writtenBytes = dependencies.write.mock.calls[0]?.[0].bytes;
+
+		expect(writtenBytes).toEqual(candidate.bytes);
+		expect(writtenBytes).not.toBe(candidate.bytes);
 
 		expect(dependencies.finalize).toHaveBeenCalledWith({
 			fileId: FILE_ID,
@@ -95,9 +103,9 @@ describe('resource PDF upload orchestrator', () => {
 		expect(dependencies.deleteObject).not.toHaveBeenCalled();
 	});
 
-	it('does not reserve or write when PDF validation fails', async () => {
+	it('does not reserve or write when generic validation fails', async () => {
 		const dependencies = makeDependencies();
-		const orchestrator = createResourcePdfUploadOrchestrator(
+		const orchestrator = createResourceFileUploadOrchestrator(
 			dependencies.persistence,
 			dependencies.objectStore,
 		);
@@ -107,7 +115,7 @@ describe('resource PDF upload orchestrator', () => {
 				resourceId: RESOURCE_ID,
 				candidate: {
 					filename: 'exam.pdf',
-					contentType: 'application/pdf',
+					declaredContentType: 'application/pdf',
 					bytes: new TextEncoder().encode('not a PDF'),
 				},
 			}),
@@ -126,7 +134,7 @@ describe('resource PDF upload orchestrator', () => {
 			new ResourceUploadPersistenceError('RESERVE_FAILED', 'Resource upload reservation failed'),
 		);
 
-		const orchestrator = createResourcePdfUploadOrchestrator(
+		const orchestrator = createResourceFileUploadOrchestrator(
 			dependencies.persistence,
 			dependencies.objectStore,
 		);
@@ -154,7 +162,7 @@ describe('resource PDF upload orchestrator', () => {
 			),
 		);
 
-		const orchestrator = createResourcePdfUploadOrchestrator(
+		const orchestrator = createResourceFileUploadOrchestrator(
 			dependencies.persistence,
 			dependencies.objectStore,
 		);
@@ -175,7 +183,7 @@ describe('resource PDF upload orchestrator', () => {
 	it('aborts the reservation when storage-key derivation fails', async () => {
 		const dependencies = makeDependencies();
 
-		const orchestrator = createResourcePdfUploadOrchestrator(
+		const orchestrator = createResourceFileUploadOrchestrator(
 			dependencies.persistence,
 			dependencies.objectStore,
 		);
@@ -200,7 +208,7 @@ describe('resource PDF upload orchestrator', () => {
 		const dependencies = makeDependencies();
 		dependencies.write.mockRejectedValueOnce(new Error('R2 write failure'));
 
-		const orchestrator = createResourcePdfUploadOrchestrator(
+		const orchestrator = createResourceFileUploadOrchestrator(
 			dependencies.persistence,
 			dependencies.objectStore,
 		);
@@ -228,7 +236,7 @@ describe('resource PDF upload orchestrator', () => {
 		dependencies.write.mockRejectedValueOnce(new Error('R2 write failure'));
 		dependencies.deleteObject.mockRejectedValueOnce(new Error('R2 delete failure'));
 
-		const orchestrator = createResourcePdfUploadOrchestrator(
+		const orchestrator = createResourceFileUploadOrchestrator(
 			dependencies.persistence,
 			dependencies.objectStore,
 		);
@@ -251,7 +259,7 @@ describe('resource PDF upload orchestrator', () => {
 		dependencies.write.mockRejectedValueOnce(new Error('R2 write failure'));
 		dependencies.abort.mockRejectedValueOnce(new Error('abort failure'));
 
-		const orchestrator = createResourcePdfUploadOrchestrator(
+		const orchestrator = createResourceFileUploadOrchestrator(
 			dependencies.persistence,
 			dependencies.objectStore,
 		);
@@ -275,7 +283,7 @@ describe('resource PDF upload orchestrator', () => {
 			new ResourceUploadPersistenceError('FINALIZE_FAILED', 'Resource upload finalization failed'),
 		);
 
-		const orchestrator = createResourcePdfUploadOrchestrator(
+		const orchestrator = createResourceFileUploadOrchestrator(
 			dependencies.persistence,
 			dependencies.objectStore,
 		);
@@ -307,7 +315,7 @@ describe('resource PDF upload orchestrator', () => {
 			),
 		);
 
-		const orchestrator = createResourcePdfUploadOrchestrator(
+		const orchestrator = createResourceFileUploadOrchestrator(
 			dependencies.persistence,
 			dependencies.objectStore,
 		);
@@ -334,7 +342,7 @@ describe('resource PDF upload orchestrator', () => {
 		);
 		dependencies.deleteObject.mockRejectedValueOnce(new Error('delete failure'));
 
-		const orchestrator = createResourcePdfUploadOrchestrator(
+		const orchestrator = createResourceFileUploadOrchestrator(
 			dependencies.persistence,
 			dependencies.objectStore,
 		);
@@ -364,7 +372,7 @@ describe('resource PDF upload orchestrator', () => {
 		dependencies.deleteObject.mockRejectedValueOnce(new Error('delete failure'));
 		dependencies.markFailed.mockRejectedValueOnce(new Error('mark failed failure'));
 
-		const orchestrator = createResourcePdfUploadOrchestrator(
+		const orchestrator = createResourceFileUploadOrchestrator(
 			dependencies.persistence,
 			dependencies.objectStore,
 		);
@@ -375,12 +383,12 @@ describe('resource PDF upload orchestrator', () => {
 		});
 
 		await expect(operation).rejects.toMatchObject({
-			name: 'ResourcePdfUploadError',
+			name: 'ResourceFileUploadError',
 			code: 'COMPENSATION_FAILED',
 			message: 'Resource upload compensation failed',
 		});
 
-		await expect(operation).rejects.toBeInstanceOf(ResourcePdfUploadError);
+		await expect(operation).rejects.toBeInstanceOf(ResourceFileUploadError);
 	});
 
 	it('reports compensation failure when metadata abort fails after a successful delete', async () => {
@@ -391,7 +399,7 @@ describe('resource PDF upload orchestrator', () => {
 		);
 		dependencies.abort.mockRejectedValueOnce(new Error('abort failure'));
 
-		const orchestrator = createResourcePdfUploadOrchestrator(
+		const orchestrator = createResourceFileUploadOrchestrator(
 			dependencies.persistence,
 			dependencies.objectStore,
 		);

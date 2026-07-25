@@ -1,7 +1,8 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, expectTypeOf, it, vi } from 'vitest';
 import {
 	ResourceUploadPersistenceError,
 	createSupabaseResourceUploadPersistence,
+	type ResourceUploadReservation,
 } from './resource-upload-persistence';
 import type { SupabaseServerClient } from './server';
 
@@ -20,6 +21,12 @@ const makeClient = () => {
 };
 
 describe('Supabase resource upload persistence', () => {
+	it('accepts the canonical ResourceFile kind union at the TypeScript boundary', () => {
+		expectTypeOf<ResourceUploadReservation['fileKind']>().toEqualTypeOf<
+			'pdf' | 'image' | 'markdown' | 'tex' | 'text' | 'source'
+		>();
+	});
+
 	it('reserves file metadata through the registration RPC', async () => {
 		const { client, rpc } = makeClient();
 		const persistence = createSupabaseResourceUploadPersistence(client);

@@ -1,3 +1,4 @@
+import type { ResourceFileKind } from '../../domain/resource-file-validation';
 import type { SupabaseServerClient } from './server';
 
 export type ResourceUploadPersistenceErrorCode =
@@ -21,9 +22,9 @@ export class ResourceUploadPersistenceError extends Error {
 export interface ResourceUploadReservation {
 	readonly resourceId: string;
 	readonly displayFilename: string;
-	readonly fileKind: 'pdf';
-	readonly normalizedExtension: '.pdf';
-	readonly contentType: 'application/pdf';
+	readonly fileKind: ResourceFileKind;
+	readonly normalizedExtension: string;
+	readonly contentType: string;
 	readonly byteSize: number;
 	readonly sha256: string;
 }

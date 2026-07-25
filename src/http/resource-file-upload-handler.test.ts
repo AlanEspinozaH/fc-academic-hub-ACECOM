@@ -1,16 +1,16 @@
 import { describe, expect, it, vi } from 'vitest';
 import {
-	ResourcePdfUploadError,
-	type ResourcePdfUploadOrchestrator,
-} from '../application/resource-pdf-upload';
-import { ResourcePdfValidationError } from '../domain/resource-file-validation';
+	ResourceFileUploadError,
+	type ResourceFileUploadOrchestrator,
+} from '../application/resource-file-upload';
+import { ResourceFileValidationError } from '../domain/resource-file-validation';
 import type { SupabaseServerClient } from '../infrastructure/supabase/server';
 
 import {
-	RESOURCE_PDF_UPLOAD_MAX_BODY_BYTES,
-	handleResourcePdfUploadRequest,
-	type ResourcePdfUploadHttpDependencies,
-} from './resource-pdf-upload-handler';
+	RESOURCE_FILE_UPLOAD_MAX_BODY_BYTES,
+	handleResourceFileUploadRequest,
+	type ResourceFileUploadHttpDependencies,
+} from './resource-file-upload-handler';
 
 const RESOURCE_ID = '11111111-2222-3333-4444-555555555555';
 const FILE_ID = 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee';
@@ -39,7 +39,7 @@ const makeFormData = (): FormData => {
 	formData.set(
 		'file',
 		new File([new TextEncoder().encode('%PDF-1.7\n%%EOF\n')], 'exam.pdf', {
-			type: 'application/pdf',
+			type: 'text/plain',
 		}),
 	);
 	formData.set('comment', '  ready for review  ');
@@ -57,17 +57,17 @@ const makeRequest = (body: FormData = makeFormData()): Request =>
 	});
 
 const makeDependencies = () => {
-	const upload = vi.fn<ResourcePdfUploadOrchestrator['upload']>(async () => ({
+	const upload = vi.fn<ResourceFileUploadOrchestrator['upload']>(async () => ({
 		fileId: FILE_ID,
 	}));
 
 	const uploader = {
 		upload,
-	} as ResourcePdfUploadOrchestrator;
+	} as ResourceFileUploadOrchestrator;
 
 	const createUploader = vi.fn(() => uploader);
 
-	const dependencies: ResourcePdfUploadHttpDependencies = {
+	const dependencies: ResourceFileUploadHttpDependencies = {
 		createUploader,
 	};
 
@@ -78,11 +78,11 @@ const makeDependencies = () => {
 	};
 };
 
-describe('resource PDF upload HTTP handler', () => {
-	it('uploads a multipart PDF and returns 201 with only the file id', async () => {
+describe('resource file upload HTTP handler', () => {
+	it('accepts a valid PDF with misleading declared MIME and returns only the file id', async () => {
 		const { dependencies, createUploader, upload } = makeDependencies();
 
-		const response = await handleResourcePdfUploadRequest(
+		const response = await handleResourceFileUploadRequest(
 			{
 				request: makeRequest(),
 				resourceId: RESOURCE_ID.toUpperCase(),
@@ -108,7 +108,7 @@ describe('resource PDF upload HTTP handler', () => {
 			comment: 'ready for review',
 			candidate: {
 				filename: 'exam.pdf',
-				contentType: 'application/pdf',
+				declaredContentType: 'text/plain',
 			},
 		});
 
@@ -121,7 +121,7 @@ describe('resource PDF upload HTTP handler', () => {
 
 		request.headers.set('Origin', 'https://attacker.example');
 
-		const response = await handleResourcePdfUploadRequest(
+		const response = await handleResourceFileUploadRequest(
 			{
 				request,
 				resourceId: RESOURCE_ID,
@@ -142,7 +142,7 @@ describe('resource PDF upload HTTP handler', () => {
 	it('requires an authenticated session', async () => {
 		const { dependencies, createUploader } = makeDependencies();
 
-		const response = await handleResourcePdfUploadRequest(
+		const response = await handleResourceFileUploadRequest(
 			{
 				request: makeRequest(),
 				resourceId: RESOURCE_ID,
@@ -163,7 +163,7 @@ describe('resource PDF upload HTTP handler', () => {
 	it('returns 503 when authentication context is unavailable', async () => {
 		const { dependencies, createUploader } = makeDependencies();
 
-		const response = await handleResourcePdfUploadRequest(
+		const response = await handleResourceFileUploadRequest(
 			{
 				request: makeRequest(),
 				resourceId: RESOURCE_ID,
@@ -183,7 +183,7 @@ describe('resource PDF upload HTTP handler', () => {
 	it('rejects an invalid resource id before parsing the upload', async () => {
 		const { dependencies, createUploader } = makeDependencies();
 
-		const response = await handleResourcePdfUploadRequest(
+		const response = await handleResourceFileUploadRequest(
 			{
 				request: makeRequest(),
 				resourceId: 'not-a-uuid',
@@ -204,7 +204,7 @@ describe('resource PDF upload HTTP handler', () => {
 	it('requires multipart form data', async () => {
 		const { dependencies, createUploader } = makeDependencies();
 
-		const response = await handleResourcePdfUploadRequest(
+		const response = await handleResourceFileUploadRequest(
 			{
 				request: new Request(`${ORIGIN}/api/resources/${RESOURCE_ID}/files`, {
 					method: 'POST',
@@ -227,7 +227,7 @@ describe('resource PDF upload HTTP handler', () => {
 	it('rejects content types that only prefix-match multipart form data', async () => {
 		const { dependencies, createUploader } = makeDependencies();
 
-		const response = await handleResourcePdfUploadRequest(
+		const response = await handleResourceFileUploadRequest(
 			{
 				request: new Request(`${ORIGIN}/api/resources/${RESOURCE_ID}/files`, {
 					method: 'POST',
@@ -255,7 +255,7 @@ describe('resource PDF upload HTTP handler', () => {
 	it('rejects malformed multipart data', async () => {
 		const { dependencies, createUploader } = makeDependencies();
 
-		const response = await handleResourcePdfUploadRequest(
+		const response = await handleResourceFileUploadRequest(
 			{
 				request: new Request(`${ORIGIN}/api/resources/${RESOURCE_ID}/files`, {
 					method: 'POST',
@@ -283,9 +283,9 @@ describe('resource PDF upload HTTP handler', () => {
 	it('rejects an oversized multipart body before creating an uploader', async () => {
 		const { dependencies, createUploader } = makeDependencies();
 
-		const oversizedBody = new Uint8Array(RESOURCE_PDF_UPLOAD_MAX_BODY_BYTES + 1);
+		const oversizedBody = new Uint8Array(RESOURCE_FILE_UPLOAD_MAX_BODY_BYTES + 1);
 
-		const response = await handleResourcePdfUploadRequest(
+		const response = await handleResourceFileUploadRequest(
 			{
 				request: new Request(`${ORIGIN}/api/resources/${RESOURCE_ID}/files`, {
 					method: 'POST',
@@ -318,7 +318,37 @@ describe('resource PDF upload HTTP handler', () => {
 
 		formData.set('comment', 'missing file');
 
-		const response = await handleResourcePdfUploadRequest(
+		const response = await handleResourceFileUploadRequest(
+			{
+				request: makeRequest(formData),
+				resourceId: RESOURCE_ID,
+				auth: authenticated,
+			},
+			dependencies,
+		);
+
+		expect(response.status).toBe(400);
+		await expect(response.json()).resolves.toEqual({
+			error: {
+				code: 'MISSING_FILE',
+				message: 'Exactly one resource file is required',
+			},
+		});
+		expect(createUploader).not.toHaveBeenCalled();
+	});
+
+	it('rejects multiple file fields', async () => {
+		const { dependencies, createUploader } = makeDependencies();
+		const formData = makeFormData();
+
+		formData.append(
+			'file',
+			new File([new TextEncoder().encode('%PDF-1.7\n%%EOF\n')], 'second.pdf', {
+				type: 'application/pdf',
+			}),
+		);
+
+		const response = await handleResourceFileUploadRequest(
 			{
 				request: makeRequest(formData),
 				resourceId: RESOURCE_ID,
@@ -329,9 +359,7 @@ describe('resource PDF upload HTTP handler', () => {
 
 		expect(response.status).toBe(400);
 		await expect(response.json()).resolves.toMatchObject({
-			error: {
-				code: 'MISSING_FILE',
-			},
+			error: { code: 'MISSING_FILE' },
 		});
 		expect(createUploader).not.toHaveBeenCalled();
 	});
@@ -347,7 +375,7 @@ describe('resource PDF upload HTTP handler', () => {
 			}),
 		);
 
-		const response = await handleResourcePdfUploadRequest(
+		const response = await handleResourceFileUploadRequest(
 			{
 				request: makeRequest(formData),
 				resourceId: RESOURCE_ID,
@@ -365,17 +393,17 @@ describe('resource PDF upload HTTP handler', () => {
 		expect(createUploader).not.toHaveBeenCalled();
 	});
 
-	it('maps PDF validation failures to a safe client error', async () => {
+	it('maps ResourceFile validation failures to a safe client error', async () => {
 		const { dependencies, upload } = makeDependencies();
 
 		upload.mockRejectedValueOnce(
-			new ResourcePdfValidationError(
+			new ResourceFileValidationError(
 				'INVALID_PDF_HEADER',
 				'resource file must begin with the %PDF- signature',
 			),
 		);
 
-		const response = await handleResourcePdfUploadRequest(
+		const response = await handleResourceFileUploadRequest(
 			{
 				request: makeRequest(),
 				resourceId: RESOURCE_ID,
@@ -393,14 +421,49 @@ describe('resource PDF upload HTTP handler', () => {
 		});
 	});
 
+	it('maps an unsupported future extension to a safe 400', async () => {
+		const { dependencies, upload } = makeDependencies();
+		const formData = new FormData();
+
+		formData.set(
+			'file',
+			new File([new TextEncoder().encode('future bytes')], 'future.png', {
+				type: 'image/png',
+			}),
+		);
+		upload.mockRejectedValueOnce(
+			new ResourceFileValidationError(
+				'UNSUPPORTED_FILE_TYPE',
+				'submitted file type is not currently supported',
+			),
+		);
+
+		const response = await handleResourceFileUploadRequest(
+			{
+				request: makeRequest(formData),
+				resourceId: RESOURCE_ID,
+				auth: authenticated,
+			},
+			dependencies,
+		);
+
+		expect(response.status).toBe(400);
+		await expect(response.json()).resolves.toEqual({
+			error: {
+				code: 'UNSUPPORTED_FILE_TYPE',
+				message: 'submitted file type is not currently supported',
+			},
+		});
+	});
+
 	it('maps a deterministic reservation failure to 409', async () => {
 		const { dependencies, upload } = makeDependencies();
 
 		upload.mockRejectedValueOnce(
-			new ResourcePdfUploadError('RESERVATION_FAILED', 'Resource upload reservation failed'),
+			new ResourceFileUploadError('RESERVATION_FAILED', 'Resource upload reservation failed'),
 		);
 
-		const response = await handleResourcePdfUploadRequest(
+		const response = await handleResourceFileUploadRequest(
 			{
 				request: makeRequest(),
 				resourceId: RESOURCE_ID,
@@ -421,13 +484,13 @@ describe('resource PDF upload HTTP handler', () => {
 		const { dependencies, upload } = makeDependencies();
 
 		upload.mockRejectedValueOnce(
-			new ResourcePdfUploadError(
+			new ResourceFileUploadError(
 				'FINALIZATION_OUTCOME_UNKNOWN',
 				'Resource upload finalization outcome is unknown',
 			),
 		);
 
-		const response = await handleResourcePdfUploadRequest(
+		const response = await handleResourceFileUploadRequest(
 			{
 				request: makeRequest(),
 				resourceId: RESOURCE_ID,
@@ -450,7 +513,7 @@ describe('resource PDF upload HTTP handler', () => {
 
 		upload.mockRejectedValueOnce(new Error(`internal secret involving ${RESOURCE_ID}`));
 
-		const response = await handleResourcePdfUploadRequest(
+		const response = await handleResourceFileUploadRequest(
 			{
 				request: makeRequest(),
 				resourceId: RESOURCE_ID,

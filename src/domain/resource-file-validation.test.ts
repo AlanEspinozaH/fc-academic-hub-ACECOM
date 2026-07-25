@@ -1,21 +1,19 @@
 import { describe, expect, it } from 'vitest';
 import {
-	RESOURCE_PDF_MAX_BYTES,
-	ResourcePdfValidationError,
+	RESOURCE_FILE_MAX_BYTES,
+	ResourceFileValidationError,
 	type ResourceFileCandidate,
-	type ResourcePdfValidationErrorCode,
-	validateResourcePdf,
+	type ResourceFileValidationErrorCode,
+	validateResourceFile,
 } from './resource-file-validation';
 
 const encoder = new TextEncoder();
-
 const MINIMAL_PDF_TEXT = '%PDF-1.7\n1 0 obj\n<<>>\nendobj\n%%EOF\n';
-
 const MINIMAL_PDF_SHA256 = '14fb1bb0a3f76503d164c7fd78a07c420c2f07eecd41793b406c6f75f2bc2aba';
 
 const makeCandidate = (overrides: Partial<ResourceFileCandidate> = {}): ResourceFileCandidate => ({
 	bytes: encoder.encode(MINIMAL_PDF_TEXT),
-	contentType: 'application/pdf',
+	declaredContentType: 'application/pdf',
 	filename: 'exam.pdf',
 	...overrides,
 });
@@ -31,108 +29,115 @@ const makeSizedPdf = (size: number): Uint8Array => {
 
 const expectValidationError = async (
 	candidate: ResourceFileCandidate,
-	code: ResourcePdfValidationErrorCode,
+	code: ResourceFileValidationErrorCode,
 ): Promise<void> => {
-	await expect(validateResourcePdf(candidate)).rejects.toMatchObject({
+	await expect(validateResourceFile(candidate)).rejects.toMatchObject({
 		code,
-		name: 'ResourcePdfValidationError',
+		name: 'ResourceFileValidationError',
 	});
 };
 
-describe('resource PDF validation', () => {
-	it('normalizes metadata, copies the bytes and calculates SHA-256', async () => {
+describe('ResourceFile validation dispatcher', () => {
+	it.each(['', 'application/octet-stream', 'text/plain', 'application/pdf'])(
+		'accepts a structurally valid PDF despite declared MIME %j',
+		async (declaredContentType) => {
+			const result = await validateResourceFile(
+				makeCandidate({
+					declaredContentType,
+					filename: ' exam.PDF ',
+				}),
+			);
+
+			expect(result).toMatchObject({
+				contentType: 'application/pdf',
+				fileKind: 'pdf',
+				filename: 'exam.PDF',
+				normalizedExtension: '.pdf',
+			});
+		},
+	);
+
+	it('copies exact bytes and hashes the stabilized stored snapshot', async () => {
 		const sourceBytes = encoder.encode(MINIMAL_PDF_TEXT);
+		const result = await validateResourceFile(makeCandidate({ bytes: sourceBytes }));
 
-		const result = await validateResourcePdf(
-			makeCandidate({
-				bytes: sourceBytes,
-				contentType: ' Application/PDF ',
-				filename: ' exam.PDF ',
-			}),
-		);
-
-		expect(result).toMatchObject({
-			byteSize: sourceBytes.byteLength,
-			contentType: 'application/pdf',
-			fileKind: 'pdf',
-			filename: 'exam.PDF',
-			normalizedExtension: '.pdf',
-			sha256: MINIMAL_PDF_SHA256,
-		});
+		expect(result.byteSize).toBe(sourceBytes.byteLength);
+		expect(result.sha256).toBe(MINIMAL_PDF_SHA256);
 		expect(result.bytes).not.toBe(sourceBytes);
 		expect(result.bytes).toEqual(sourceBytes);
 
 		sourceBytes.fill(0);
 
 		expect(result.bytes[0]).toBe(0x25);
+		expect(result.sha256).toBe(MINIMAL_PDF_SHA256);
 	});
 
-	it('accepts a PDF at the exact size limit', async () => {
-		const result = await validateResourcePdf(
-			makeCandidate({
-				bytes: makeSizedPdf(RESOURCE_PDF_MAX_BYTES),
-			}),
-		);
-
-		expect(result.byteSize).toBe(RESOURCE_PDF_MAX_BYTES);
-		expect(result.sha256).toMatch(/^[0-9a-f]{64}$/);
-	});
+	it.each(['notes.png', 'photo.jpg', 'notes.md', 'solution.py'])(
+		'rejects the not-yet-enabled extension in %j',
+		async (filename) => {
+			await expectValidationError(makeCandidate({ filename }), 'UNSUPPORTED_FILE_TYPE');
+		},
+	);
 
 	it.each([
 		['', 'MISSING_FILENAME'],
 		['   ', 'MISSING_FILENAME'],
-		['.pdf', 'WRONG_FILE_EXTENSION'],
-		['exam.txt', 'WRONG_FILE_EXTENSION'],
+		['.pdf', 'INVALID_FILENAME'],
 		['folder/exam.pdf', 'INVALID_FILENAME'],
 		['folder\\exam.pdf', 'INVALID_FILENAME'],
 		['exam\r\n.pdf', 'INVALID_FILENAME'],
-	] as const)('rejects the invalid filename %j', async (filename, expectedCode) => {
+		['exam\u007f.pdf', 'INVALID_FILENAME'],
+	] as const)('rejects the unsafe filename %j', async (filename, expectedCode) => {
 		await expectValidationError(makeCandidate({ filename }), expectedCode);
 	});
 
-	it.each(['', 'text/plain', 'application/octet-stream', 'application/pdf; charset=binary'])(
-		'rejects the invalid content type %j',
-		async (contentType) => {
-			await expectValidationError(makeCandidate({ contentType }), 'INVALID_CONTENT_TYPE');
+	it.each(['exam', 'exam.', 'exam.txt'])(
+		'rejects the unsupported filename %j without MIME classification',
+		async (filename) => {
+			await expectValidationError(
+				makeCandidate({ filename, declaredContentType: 'application/pdf' }),
+				'UNSUPPORTED_FILE_TYPE',
+			);
 		},
 	);
 
-	it('rejects an empty file', async () => {
+	it('accepts a PDF at the exact decimal size limit', async () => {
+		const result = await validateResourceFile(
+			makeCandidate({ bytes: makeSizedPdf(RESOURCE_FILE_MAX_BYTES) }),
+		);
+
+		expect(result.byteSize).toBe(RESOURCE_FILE_MAX_BYTES);
+		expect(result.sha256).toMatch(/^[0-9a-f]{64}$/);
+	});
+
+	it('rejects an empty PDF', async () => {
 		await expectValidationError(makeCandidate({ bytes: new Uint8Array() }), 'EMPTY_FILE');
 	});
 
-	it('rejects a file larger than 10 MB decimal', async () => {
+	it('rejects a PDF larger than 10 MB decimal', async () => {
 		await expectValidationError(
-			makeCandidate({
-				bytes: new Uint8Array(RESOURCE_PDF_MAX_BYTES + 1),
-			}),
+			makeCandidate({ bytes: new Uint8Array(RESOURCE_FILE_MAX_BYTES + 1) }),
 			'FILE_TOO_LARGE',
 		);
 	});
 
 	it('rejects content without the PDF header', async () => {
 		await expectValidationError(
-			makeCandidate({
-				bytes: encoder.encode('not a PDF\n%%EOF\n'),
-			}),
+			makeCandidate({ bytes: encoder.encode('not a PDF\n%%EOF\n') }),
 			'INVALID_PDF_HEADER',
 		);
 	});
 
 	it('rejects a truncated PDF without an EOF marker', async () => {
 		await expectValidationError(
-			makeCandidate({
-				bytes: encoder.encode('%PDF-1.7\ntruncated'),
-			}),
+			makeCandidate({ bytes: encoder.encode('%PDF-1.7\ntruncated') }),
 			'INVALID_PDF_TRAILER',
 		);
 	});
 
 	it('rejects non-whitespace data after the EOF marker', async () => {
 		await expectValidationError(
-			makeCandidate({
-				bytes: encoder.encode('%PDF-1.7\n%%EOF\nunexpected'),
-			}),
+			makeCandidate({ bytes: encoder.encode('%PDF-1.7\n%%EOF\nunexpected') }),
 			'INVALID_PDF_TRAILER',
 		);
 	});
@@ -148,18 +153,16 @@ describe('resource PDF validation', () => {
 	});
 
 	it('accepts PDF whitespace after the EOF marker', async () => {
-		const result = await validateResourcePdf(
-			makeCandidate({
-				bytes: encoder.encode('%PDF-1.7\n%%EOF\u0000\t\n\f\r '),
-			}),
+		const result = await validateResourceFile(
+			makeCandidate({ bytes: encoder.encode('%PDF-1.7\n%%EOF\u0000\t\n\f\r ') }),
 		);
 
 		expect(result.sha256).toMatch(/^[0-9a-f]{64}$/);
 	});
 
-	it('uses a dedicated validation error type', async () => {
+	it('uses the generic ResourceFile validation error type', async () => {
 		await expect(
-			validateResourcePdf(makeCandidate({ bytes: new Uint8Array() })),
-		).rejects.toBeInstanceOf(ResourcePdfValidationError);
+			validateResourceFile(makeCandidate({ filename: 'future.png' })),
+		).rejects.toBeInstanceOf(ResourceFileValidationError);
 	});
 });
