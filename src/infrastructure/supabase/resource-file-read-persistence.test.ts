@@ -52,6 +52,58 @@ describe('Supabase resource file read persistence', () => {
 		expect(rpc.mock.calls[0]?.[1]).not.toHaveProperty('storage_key');
 	});
 
+	it.each([
+		{
+			display_filename: 'Diagram.PNG',
+			file_kind: 'image',
+			normalized_extension: '.png',
+			content_type: 'image/png',
+		},
+		{
+			display_filename: 'Photo.JPG',
+			file_kind: 'image',
+			normalized_extension: '.jpg',
+			content_type: 'image/jpeg',
+		},
+		{
+			display_filename: 'Photo.jpeg',
+			file_kind: 'image',
+			normalized_extension: '.jpeg',
+			content_type: 'image/jpeg',
+		},
+	] as const)(
+		'returns the canonical operational descriptor for $normalized_extension',
+		async ({ display_filename, file_kind, normalized_extension, content_type }) => {
+			const { client, rpc } = makeClient();
+			const persistence = createSupabaseResourceFileReadPersistence(client);
+			rpc.mockResolvedValueOnce({
+				data: [
+					{
+						...descriptorRow,
+						display_filename,
+						file_kind,
+						normalized_extension,
+						content_type,
+						storage_key_version: 'generic_v2',
+					},
+				],
+				error: null,
+			});
+
+			await expect(persistence.getDescriptor(RESOURCE_ID, FILE_ID)).resolves.toEqual({
+				resourceId: RESOURCE_ID,
+				fileId: FILE_ID,
+				displayFilename: display_filename,
+				fileKind: file_kind,
+				normalizedExtension: normalized_extension,
+				contentType: content_type,
+				byteSize: 1234,
+				sha256: 'a'.repeat(64),
+				storageKeyVersion: 'generic_v2',
+			});
+		},
+	);
+
 	it.each([null, []])('maps a zero-row result to NOT_FOUND', async (data) => {
 		const { client, rpc } = makeClient();
 		const persistence = createSupabaseResourceFileReadPersistence(client);
@@ -84,7 +136,7 @@ describe('Supabase resource file read persistence', () => {
 		await expect(operation).rejects.not.toHaveProperty('message', expect.stringContaining(FILE_ID));
 	});
 
-	it('maps thrown network errors and malformed rows to READ_FAILED', async () => {
+	it('maps thrown network errors to READ_FAILED', async () => {
 		const { client, rpc } = makeClient();
 		const persistence = createSupabaseResourceFileReadPersistence(client);
 
@@ -92,11 +144,72 @@ describe('Supabase resource file read persistence', () => {
 		await expect(persistence.getDescriptor(RESOURCE_ID, FILE_ID)).rejects.toMatchObject({
 			code: 'READ_FAILED',
 		});
+	});
 
+	it.each([
+		{ content_type: 'text/html' },
+		{
+			file_kind: 'image',
+			normalized_extension: '.png',
+			content_type: 'image/jpeg',
+			storage_key_version: 'generic_v2',
+		},
+		{
+			file_kind: 'image',
+			normalized_extension: '.jpg',
+			content_type: 'image/png',
+			storage_key_version: 'generic_v2',
+		},
+		{
+			file_kind: 'image',
+			normalized_extension: '.pdf',
+			content_type: 'application/pdf',
+			storage_key_version: 'generic_v2',
+		},
+		{
+			file_kind: 'pdf',
+			normalized_extension: '.png',
+			content_type: 'image/png',
+			storage_key_version: 'generic_v2',
+		},
+		{
+			file_kind: 'image',
+			normalized_extension: '.png',
+			content_type: 'image/png',
+			storage_key_version: 'legacy_pdf_v1',
+		},
+		{
+			file_kind: 'markdown',
+			normalized_extension: '.md',
+			content_type: 'text/plain',
+			storage_key_version: 'generic_v2',
+		},
+		{
+			file_kind: 'tex',
+			normalized_extension: '.tex',
+			content_type: 'text/plain',
+			storage_key_version: 'generic_v2',
+		},
+		{
+			file_kind: 'text',
+			normalized_extension: '.txt',
+			content_type: 'text/plain',
+			storage_key_version: 'generic_v2',
+		},
+		{
+			file_kind: 'source',
+			normalized_extension: '.py',
+			content_type: 'text/plain',
+			storage_key_version: 'generic_v2',
+		},
+	])('rejects malformed or not-yet-operational descriptor metadata %#', async (overrides) => {
+		const { client, rpc } = makeClient();
+		const persistence = createSupabaseResourceFileReadPersistence(client);
 		rpc.mockResolvedValueOnce({
-			data: [{ ...descriptorRow, content_type: 'text/html' }],
+			data: [{ ...descriptorRow, ...overrides }],
 			error: null,
 		});
+
 		await expect(persistence.getDescriptor(RESOURCE_ID, FILE_ID)).rejects.toMatchObject({
 			code: 'READ_FAILED',
 		});

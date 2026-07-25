@@ -3,7 +3,7 @@ CREATE EXTENSION IF NOT EXISTS pgtap WITH SCHEMA extensions;
 
 BEGIN;
 
-SELECT plan(105);
+SELECT plan(106);
 
 CREATE OR REPLACE FUNCTION pg_temp.set_request_context(user_id uuid, jwt_role text)
 RETURNS void
@@ -1008,7 +1008,7 @@ VALUES
 		'20000000-0000-0000-0000-000000000030',
 		'10000000-0000-0000-0000-000000000030',
 		'00000000-0000-0000-0000-000000000502',
-		'Public matrix.pdf', 'pdf', '.pdf', 'application/pdf', 1030,
+		'Public matrix.PNG', 'image', '.png', 'image/png', 1030,
 		'3030303030303030303030303030303030303030303030303030303030303030',
 		'generic_v2'
 	),
@@ -1452,6 +1452,20 @@ SELECT is(
 	)),
 	1,
 	'RA-01 anon receives a stored approved public generic_v2 descriptor'
+);
+SELECT ok(
+	(
+		SELECT descriptor.file_kind = 'image'::public.resource_file_kind
+			AND descriptor.normalized_extension = '.png'
+			AND descriptor.content_type = 'image/png'
+			AND descriptor.display_filename = 'Public matrix.PNG'
+			AND descriptor.storage_key_version = 'generic_v2'
+		FROM public.get_resource_file_read_descriptor(
+			'10000000-0000-0000-0000-000000000030',
+			'20000000-0000-0000-0000-000000000030'
+		) AS descriptor
+	),
+	'RF-04 authorized stored PNG descriptor exposes canonical public metadata'
 );
 SELECT is(
 	(SELECT count(*)::integer FROM public.get_resource_file_read_descriptor(

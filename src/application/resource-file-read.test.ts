@@ -12,9 +12,14 @@ const RESOURCE_ID = '11111111-2222-3333-4444-555555555555';
 const FILE_ID = 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee';
 const BYTES = new TextEncoder().encode('%PDF-1.7\nread\n%%EOF\n');
 
+type PdfResourceFileReadDescriptor = Extract<
+	ResourceFileReadDescriptor,
+	{ readonly fileKind: 'pdf' }
+>;
+
 const makeDescriptor = (
 	storageKeyVersion: ResourceStorageKeyVersion = 'generic_v2',
-): ResourceFileReadDescriptor => ({
+): PdfResourceFileReadDescriptor => ({
 	resourceId: RESOURCE_ID,
 	fileId: FILE_ID,
 	displayFilename: 'Examen final.pdf',
@@ -25,6 +30,42 @@ const makeDescriptor = (
 	sha256: 'a'.repeat(64),
 	storageKeyVersion,
 });
+
+const IMAGE_DESCRIPTORS = [
+	{
+		resourceId: RESOURCE_ID,
+		fileId: FILE_ID,
+		displayFilename: 'Diagram.PNG',
+		fileKind: 'image',
+		normalizedExtension: '.png',
+		contentType: 'image/png',
+		byteSize: BYTES.byteLength,
+		sha256: 'b'.repeat(64),
+		storageKeyVersion: 'generic_v2',
+	},
+	{
+		resourceId: RESOURCE_ID,
+		fileId: FILE_ID,
+		displayFilename: 'Photo.jpg',
+		fileKind: 'image',
+		normalizedExtension: '.jpg',
+		contentType: 'image/jpeg',
+		byteSize: BYTES.byteLength,
+		sha256: 'c'.repeat(64),
+		storageKeyVersion: 'generic_v2',
+	},
+	{
+		resourceId: RESOURCE_ID,
+		fileId: FILE_ID,
+		displayFilename: 'Photo.jpeg',
+		fileKind: 'image',
+		normalizedExtension: '.jpeg',
+		contentType: 'image/jpeg',
+		byteSize: BYTES.byteLength,
+		sha256: 'd'.repeat(64),
+		storageKeyVersion: 'generic_v2',
+	},
+] satisfies readonly ResourceFileReadDescriptor[];
 
 const makeDependencies = () => {
 	const getDescriptor = vi.fn(async (): Promise<ResourceFileReadDescriptor> => makeDescriptor());
@@ -55,6 +96,24 @@ describe('resource file reader', () => {
 			dependencies.read.mock.invocationCallOrder[0] ?? 0,
 		);
 	});
+
+	it.each(IMAGE_DESCRIPTORS)(
+		'reads an authorized $normalizedExtension descriptor from the suffixless generic_v2 key',
+		async (descriptor) => {
+			const dependencies = makeDependencies();
+			dependencies.getDescriptor.mockResolvedValueOnce(descriptor);
+			const reader = createResourceFileReader(dependencies.persistence, dependencies.objectStore);
+
+			await expect(reader.read({ resourceId: RESOURCE_ID, fileId: FILE_ID })).resolves.toEqual({
+				...descriptor,
+				bytes: BYTES,
+			});
+			expect(dependencies.read).toHaveBeenCalledWith(`resources/${RESOURCE_ID}/${FILE_ID}`);
+			expect(dependencies.getDescriptor.mock.invocationCallOrder[0]).toBeLessThan(
+				dependencies.read.mock.invocationCallOrder[0] ?? 0,
+			);
+		},
+	);
 
 	it('does not access R2 when PostgreSQL returns no descriptor', async () => {
 		const dependencies = makeDependencies();

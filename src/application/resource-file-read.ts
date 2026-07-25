@@ -23,9 +23,9 @@ export interface ResourceFileReadInput {
 	readonly fileId: string;
 }
 
-export interface ResourceFileReadResult extends ResourceFileReadDescriptor {
+export type ResourceFileReadResult = ResourceFileReadDescriptor & {
 	readonly bytes: Uint8Array<ArrayBuffer>;
-}
+};
 
 export interface ResourceFileReader {
 	read(input: ResourceFileReadInput): Promise<ResourceFileReadResult>;
