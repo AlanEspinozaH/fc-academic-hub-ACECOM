@@ -4,37 +4,37 @@ FC Academic Hub es una plataforma académica comunitaria para organizar cursos, 
 
 El proyecto prioriza:
 
-* seguridad;
-* moderación;
-* derechos sobre los recursos;
-* bajo costo operativo;
-* mantenimiento simple.
+- seguridad;
+- moderación;
+- derechos sobre los recursos;
+- bajo costo operativo;
+- mantenimiento simple.
 
 ## Estado actual
 
 El proyecto utiliza:
 
-* Astro con TypeScript estricto;
-* Cloudflare Workers como runtime SSR;
-* Supabase Auth con Google OAuth;
-* PostgreSQL y RLS para identidad, roles, metadatos y autorización;
-* integración server-side con Cloudflare R2 privado para almacenamiento de archivos;
-* Content Collections/JSON para el catálogo académico actual.
+- Astro con TypeScript estricto;
+- Cloudflare Workers como runtime SSR;
+- Supabase Auth con Google OAuth;
+- PostgreSQL y RLS para identidad, roles, metadatos y autorización;
+- integración server-side con Cloudflare R2 privado para almacenamiento de archivos;
+- Content Collections/JSON para el catálogo académico actual.
 
 La infraestructura implementada incluye:
 
-* catálogo académico público;
-* autenticación Google OAuth;
-* sesiones SSR;
-* perfiles y roles PostgreSQL;
-* RLS y RPC transaccionales;
-* metadatos de recursos académicos;
-* workflow `draft -> pending -> approved | rejected`;
-* adaptador y binding R2 privado para desarrollo local, incluido el flujo PDF de Stage 4B;
-* endpoint server-side de subida PDF;
-* SHA-256;
-* compensación PostgreSQL/R2;
-* auditoría de operaciones relevantes.
+- catálogo académico público;
+- autenticación Google OAuth;
+- sesiones SSR;
+- perfiles y roles PostgreSQL;
+- RLS y RPC transaccionales;
+- metadatos de recursos académicos;
+- workflow `draft -> pending -> approved | rejected`;
+- adaptador y binding R2 privado para desarrollo local, incluido el flujo PDF de Stage 4B;
+- endpoint server-side de subida PDF;
+- SHA-256;
+- compensación PostgreSQL/R2;
+- auditoría de operaciones relevantes.
 
 La integración R2 está implementada y probada dentro del entorno local del proyecto. La existencia del adaptador, binding y soporte mediante Miniflare no implica que exista actualmente un bucket R2 remoto productivo ni un despliegue remoto de la aplicación.
 
@@ -48,13 +48,13 @@ La implementación operativa de 4B continúa siendo PDF-only.
 
 Stage 4C está siendo diseñado para incorporar:
 
-* acceso `public`, `restricted` y `privileged`;
-* lectura, preview y download server-side;
-* `ResourceFile` genérico;
-* PNG/JPEG;
-* Markdown, TeX, TXT y source code allowlisted;
-* identidades externas preautorizadas;
-* entitlements de acceso privilegiado.
+- acceso `public`, `restricted` y `privileged`;
+- lectura, preview y download server-side;
+- `ResourceFile` genérico;
+- PNG/JPEG;
+- Markdown, TeX, TXT y source code allowlisted;
+- identidades externas preautorizadas;
+- entitlements de acceso privilegiado.
 
 Estas capacidades no deben considerarse implementadas hasta que sus respectivas etapas de 4C hayan sido completadas.
 
@@ -81,31 +81,31 @@ PostgreSQL es la autoridad de autorización.
 
 R2 almacena objetos privados y no decide:
 
-* roles;
-* ownership;
-* revisión;
-* audiencia;
-* derechos.
+- roles;
+- ownership;
+- revisión;
+- audiencia;
+- derechos.
 
 ## Documentación normativa
 
 Antes de modificar recursos académicos, consultar:
 
-* `docs/product/v1-product-contract.md`
-* `docs/architecture/resource-access-contract.md`
-* `docs/architecture/resource-file-policy.md`
-* `docs/architecture/resource-upload-contract.md`
-* `docs/architecture/authentication-and-authorization.md`
-* `docs/security/role-model.md`
-* `docs/adr/`
+- `docs/product/v1-product-contract.md`
+- `docs/architecture/resource-access-contract.md`
+- `docs/architecture/resource-file-policy.md`
+- `docs/architecture/resource-upload-contract.md`
+- `docs/architecture/authentication-and-authorization.md`
+- `docs/security/role-model.md`
+- `docs/adr/`
 
 `AGENTS.md` contiene las instrucciones de trabajo para Codex.
 
 ## Requisitos
 
-* Node.js >= 22.12.0
-* npm
-* Docker para Supabase local cuando se ejecuten pruebas de base de datos
+- Node.js >= 22.12.0
+- npm
+- Docker para Supabase local cuando se ejecuten pruebas de base de datos
 
 ## Instalación
 
@@ -123,12 +123,12 @@ Configurar únicamente los valores públicos requeridos por el entorno local.
 
 No versionar:
 
-* Client Secrets;
-* passwords;
-* JWT secrets;
-* tokens;
-* cookies;
-* credenciales de infraestructura.
+- Client Secrets;
+- passwords;
+- JWT secrets;
+- tokens;
+- cookies;
+- credenciales de infraestructura.
 
 Iniciar desarrollo:
 
@@ -215,9 +215,9 @@ src/content/catalog/
 
 Antes de modificarlos consultar:
 
-* `docs/data/catalog-model.md`
-* `docs/data/adding-catalog-content.md`
-* `docs/data/plan-2018-import.md`
+- `docs/data/catalog-model.md`
+- `docs/data/adding-catalog-content.md`
+- `docs/data/plan-2018-import.md`
 
 Las páginas y componentes no deben convertirse en la fuente de datos del catálogo.
 
@@ -225,28 +225,28 @@ Las páginas y componentes no deben convertirse en la fuente de datos del catál
 
 Reglas fundamentales:
 
-* no usar `service_role` en el runtime normal de Astro;
-* no confiar en roles o permisos enviados por el navegador;
-* no exponer `storage_key`;
-* mantener R2 privado;
-* validar uploads server-side;
-* no ejecutar ni compilar archivos aportados por usuarios;
-* aplicar mínimo privilegio;
-* no ampliar formatos, roles, entitlements o audiencias fuera de los contratos aceptados;
-* no desplegar ni modificar infraestructura remota sin autorización explícita.
+- no usar `service_role` en el runtime normal de Astro;
+- no confiar en roles o permisos enviados por el navegador;
+- no exponer `storage_key`;
+- mantener R2 privado;
+- validar uploads server-side;
+- no ejecutar ni compilar archivos aportados por usuarios;
+- aplicar mínimo privilegio;
+- no ampliar formatos, roles, entitlements o audiencias fuera de los contratos aceptados;
+- no desplegar ni modificar infraestructura remota sin autorización explícita.
 
 ## Limitaciones actuales
 
 Mientras Stage 4C no esté implementado completamente:
 
-* la subida operativa continúa siendo PDF-only;
-* no existe todavía preview/download general de archivos;
-* los nuevos formatos definidos por el contrato todavía no están habilitados;
-* `privileged` y los entitlements asociados todavía requieren implementación;
-* las identidades externas preautorizadas forman parte del diseño objetivo, no del baseline actual;
-* no existen múltiples archivos por recurso;
-* no se ejecutan ni compilan uploads;
-* no se habilitan URLs públicas directas de R2.
+- la subida operativa continúa siendo PDF-only;
+- no existe todavía preview/download general de archivos;
+- los nuevos formatos definidos por el contrato todavía no están habilitados;
+- `privileged` y los entitlements asociados todavía requieren implementación;
+- las identidades externas preautorizadas forman parte del diseño objetivo, no del baseline actual;
+- no existen múltiples archivos por recurso;
+- no se ejecutan ni compilan uploads;
+- no se habilitan URLs públicas directas de R2.
 
 ## Desarrollo incremental
 

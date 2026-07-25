@@ -20,24 +20,84 @@ Construir y mantener FC Academic Hub, una plataforma académica comunitaria para
 
 Separar dominio, aplicación, infraestructura y presentación.
 
-## Fuentes normativas
+## Fuentes normativas por área
 
-Antes de implementar cambios relacionados con recursos, revisar:
+No es necesario leer todos los contratos para cada tarea.
 
-* `docs/product/v1-product-contract.md`
-* `docs/architecture/resource-access-contract.md`
-* `docs/architecture/resource-file-policy.md`
-* `docs/architecture/resource-upload-contract.md`
-* `docs/architecture/authentication-and-authorization.md`
-* `docs/security/role-model.md`
-* `docs/operations/governance.md` cuando el cambio afecte designación, transferencia, continuidad o custodia operativa.
-* ADR aceptados aplicables.
+Consultar únicamente las fuentes relevantes para el cambio.
+
+### Alcance de producto
+
+```text
+docs/product/v1-product-contract.md
+```
+
+Define qué promete FC Academic Hub v1.
+
+### Decisiones arquitectónicas
+
+```text
+docs/adr/
+```
+
+Los ADR aceptados explican por qué se adoptaron decisiones arquitectónicas relevantes.
+
+### Acceso, RLS, preview y download
+
+```text
+docs/architecture/resource-access-contract.md
+```
+
+Es la fuente normativa de matrices de acceso, workflow de autorización, audiencias y acceso a recursos aprobados.
+
+### Formatos, validación y representación de archivos
+
+```text
+docs/architecture/resource-file-policy.md
+```
+
+Es la fuente normativa de formatos, extensiones, límites, validación, MIME canónico y presentación segura.
+
+### Upload y coordinación PostgreSQL/R2
+
+```text
+docs/architecture/resource-upload-contract.md
+```
+
+Es la fuente normativa del pipeline de upload, atomicidad PostgreSQL, compensación, idempotencia y tratamiento de resultados desconocidos.
+
+### Autenticación, identidad y admisión
+
+```text
+docs/architecture/authentication-and-authorization.md
+```
+
+Es la fuente normativa de autenticación, `identity_kind`, admisión externa, preautorización y `account_status`.
+
+### Roles y entitlements
+
+```text
+docs/security/role-model.md
+```
+
+Es la fuente normativa de responsabilidades de roles, capacidades y entitlements.
+
+### Gobierno y continuidad
+
+```text
+docs/operations/governance.md
+```
+
+Consultar únicamente cuando el cambio afecte designación, transferencia, continuidad institucional o custodia operativa.
+
+Cuando un documento especializado es la fuente normativa de un tema, los demás documentos pueden resumirlo o referenciarlo, pero no deben crear una política alternativa.
 
 Si implementación y contrato divergen:
 
 * el código actual describe el estado implementado;
 * los contratos aceptados describen el objetivo de la etapa;
-* el cambio debe hacer converger código, tests y documentación.
+* el cambio debe hacer converger únicamente los artefactos correspondientes al alcance autorizado.
+
 
 ## Alcance de Stage 4C
 

@@ -14,14 +14,14 @@ Stage 4C debe evolucionar ese baseline para soportar distintos tipos de archivos
 
 En particular, FC Academic Hub necesita:
 
-* generalizar el concepto de archivo desde PDF hacia un `ResourceFile`;
-* mantener Cloudflare R2 privado independientemente de la audiencia lógica;
-* distinguir audiencia pública, institucional y privilegiada;
-* admitir determinadas identidades externas de manera explícita;
-* separar identidad, roles y privilegios especiales de lectura;
-* separar derechos de distribución de audiencia de publicación;
-* preservar compatibilidad con los objetos PDF existentes;
-* tratar todos los uploads como datos no confiables.
+- generalizar el concepto de archivo desde PDF hacia un `ResourceFile`;
+- mantener Cloudflare R2 privado independientemente de la audiencia lógica;
+- distinguir audiencia pública, institucional y privilegiada;
+- admitir determinadas identidades externas de manera explícita;
+- separar identidad, roles y privilegios especiales de lectura;
+- separar derechos de distribución de audiencia de publicación;
+- preservar compatibilidad con los objetos PDF existentes;
+- tratar todos los uploads como datos no confiables.
 
 Los detalles exactos de autorización, formatos y flujo de upload pertenecen a contratos especializados y no se duplican en este ADR.
 
@@ -318,38 +318,38 @@ ADR 0010 continúa representando el baseline histórico de Stage 4A.
 
 ADR 0011 modifica o amplía específicamente las siguientes decisiones de ese baseline:
 
-* `restricted` pasa a derivarse de identidad institucional activa y no del rol `student`;
-* se incorpora la audiencia `privileged`;
-* se incorpora `identity_kind`;
-* se incorpora admisión externa explícita;
-* se incorpora `privileged_material.read`;
-* el modelo de archivo evoluciona hacia `ResourceFile`;
-* aparecen `legacy_pdf_v1` y `generic_v2`;
-* los derechos y la audiencia quedan explícitamente separados.
+- `restricted` pasa a derivarse de identidad institucional activa y no del rol `student`;
+- se incorpora la audiencia `privileged`;
+- se incorpora `identity_kind`;
+- se incorpora admisión externa explícita;
+- se incorpora `privileged_material.read`;
+- el modelo de archivo evoluciona hacia `ResourceFile`;
+- aparecen `legacy_pdf_v1` y `generic_v2`;
+- los derechos y la audiencia quedan explícitamente separados.
 
 Las garantías de seguridad que no resulten contradichas por este ADR permanecen vigentes.
 
 En particular se conservan:
 
-* PostgreSQL como autoridad de autorización;
-* RLS;
-* ausencia de `service_role` en el runtime normal de Astro;
-* `storage_key` privado;
-* funciones controladas para cambios sensibles;
-* auditoría;
-* almacenamiento R2 privado.
+- PostgreSQL como autoridad de autorización;
+- RLS;
+- ausencia de `service_role` en el runtime normal de Astro;
+- `storage_key` privado;
+- funciones controladas para cambios sensibles;
+- auditoría;
+- almacenamiento R2 privado.
 
 ## Consecuencias
 
-* La autorización deja de depender de una jerarquía de roles para determinar audiencias de lectura.
-* Una identidad institucional activa puede consumir contenido `restricted` sin poseer `student`.
-* Una identidad externa puede ser admitida sin convertirse en institucional.
-* La lectura privilegiada puede concederse sin otorgar capacidades editoriales.
-* Los nuevos formatos pueden incorporarse detrás de una política común de `ResourceFile`.
-* El pipeline existente puede evolucionar incrementalmente en lugar de reescribirse.
-* PostgreSQL y R2 continúan separados por una frontera explícita de autorización.
-* Los objetos PDF existentes pueden continuar funcionando sin migración física obligatoria.
-* La arquitectura permite separar en el futuro administración de aplicación y custodia de infraestructura.
+- La autorización deja de depender de una jerarquía de roles para determinar audiencias de lectura.
+- Una identidad institucional activa puede consumir contenido `restricted` sin poseer `student`.
+- Una identidad externa puede ser admitida sin convertirse en institucional.
+- La lectura privilegiada puede concederse sin otorgar capacidades editoriales.
+- Los nuevos formatos pueden incorporarse detrás de una política común de `ResourceFile`.
+- El pipeline existente puede evolucionar incrementalmente en lugar de reescribirse.
+- PostgreSQL y R2 continúan separados por una frontera explícita de autorización.
+- Los objetos PDF existentes pueden continuar funcionando sin migración física obligatoria.
+- La arquitectura permite separar en el futuro administración de aplicación y custodia de infraestructura.
 
 ## Alternativas consideradas
 

@@ -8,14 +8,14 @@ Los archivos académicos utilizan almacenamiento privado en Cloudflare R2 median
 
 ## Capas
 
-* `src/content/catalog/`: JSON activos del catálogo académico.
-* `src/domain/`: tipos, consultas, filtros, validaciones de integridad y lógica de dominio.
-* `src/application/`: casos de uso y orquestación de aplicación.
-* `src/infrastructure/`: integración con Supabase, Cloudflare R2 y otros adaptadores externos.
-* `src/http/`: lógica HTTP server-side reutilizable.
-* `src/components/` y `src/pages/`: interfaz y endpoints Astro.
-* `docs/`: contratos de producto, arquitectura, operaciones, seguridad y ADR.
-* `supabase/`: configuración local, migraciones PostgreSQL, RLS, RPC y pruebas pgTAP.
+- `src/content/catalog/`: JSON activos del catálogo académico.
+- `src/domain/`: tipos, consultas, filtros, validaciones de integridad y lógica de dominio.
+- `src/application/`: casos de uso y orquestación de aplicación.
+- `src/infrastructure/`: integración con Supabase, Cloudflare R2 y otros adaptadores externos.
+- `src/http/`: lógica HTTP server-side reutilizable.
+- `src/components/` y `src/pages/`: interfaz y endpoints Astro.
+- `docs/`: contratos de producto, arquitectura, operaciones, seguridad y ADR.
+- `supabase/`: configuración local, migraciones PostgreSQL, RLS, RPC y pruebas pgTAP.
 
 ## Catálogo estático
 
@@ -102,36 +102,3 @@ remote infrastructure provisioned
 ```
 
 El estado de infraestructura remota debe documentarse separadamente y no inferirse a partir del código versionado.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

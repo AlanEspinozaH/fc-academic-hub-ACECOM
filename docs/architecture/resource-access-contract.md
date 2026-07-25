@@ -20,14 +20,14 @@ Las diferencias deben resolverse haciendo converger implementación, migraciones
 
 FC Academic Hub debe separar explícitamente:
 
-* identidad;
-* estado de cuenta;
-* roles;
-* privilegios especiales;
-* estado de revisión del recurso;
-* audiencia de publicación;
-* derechos de distribución;
-* almacenamiento físico del archivo.
+- identidad;
+- estado de cuenta;
+- roles;
+- privilegios especiales;
+- estado de revisión del recurso;
+- audiencia de publicación;
+- derechos de distribución;
+- almacenamiento físico del archivo.
 
 La autorización de un recurso no depende de que su objeto R2 sea público o privado.
 
@@ -60,14 +60,14 @@ Identidad que realiza una solicitud.
 
 Puede ser:
 
-* anónimo;
-* usuario institucional;
-* usuario externo autorizado;
-* Contributor;
-* Reviewer;
-* Moderator;
-* Administrator;
-* usuario con entitlement especial.
+- anónimo;
+- usuario institucional;
+- usuario externo autorizado;
+- Contributor;
+- Reviewer;
+- Moderator;
+- Administrator;
+- usuario con entitlement especial.
 
 Una misma persona puede pertenecer a varias categorías simultáneamente.
 
@@ -189,12 +189,12 @@ cuando la cuenta está activa.
 
 No permite:
 
-* crear recursos;
-* revisar;
-* aprobar;
-* rechazar;
-* administrar usuarios;
-* saltarse estados de revisión.
+- crear recursos;
+- revisar;
+- aprobar;
+- rechazar;
+- administrar usuarios;
+- saltarse estados de revisión.
 
 ---
 
@@ -219,10 +219,10 @@ Significa:
 
 No requiere:
 
-* autenticación;
-* identidad institucional;
-* entitlement;
-* rol.
+- autenticación;
+- identidad institucional;
+- entitlement;
+- rol.
 
 Solo puede ser efectivo cuando:
 
@@ -376,12 +376,12 @@ Un recurso `rejected` puede ser corregido y reenviado posteriormente.
 
 # 5. Matriz de workflow
 
-| Estado     |           Owner |          Reviewer | Moderator | Administrator |   Usuario final |
-| ---------- | --------------: | ----------------: | --------: | ------------: | --------------: |
-| `draft`    |              Sí |                No |        No |            Sí |              No |
-| `pending`  |              Sí |                Sí |        Sí |            Sí |              No |
-| `rejected` |              Sí |                No |        No |            Sí |              No |
-| `approved` | Según audiencia | Según audiencia   |        Sí |            Sí | Según audiencia |
+| Estado     |           Owner |        Reviewer | Moderator | Administrator |   Usuario final |
+| ---------- | --------------: | --------------: | --------: | ------------: | --------------: |
+| `draft`    |              Sí |              No |        No |            Sí |              No |
+| `pending`  |              Sí |              Sí |        Sí |            Sí |              No |
+| `rejected` |              Sí |              No |        No |            Sí |              No |
+| `approved` | Según audiencia | Según audiencia |        Sí |            Sí | Según audiencia |
 
 ---
 
@@ -405,16 +405,16 @@ Un Administrator puede acceder por razones administrativas.
 
 Pueden acceder:
 
-* owner;
-* Reviewer;
-* Moderator;
-* Administrator.
+- owner;
+- Reviewer;
+- Moderator;
+- Administrator.
 
 No pueden acceder como usuarios finales:
 
-* anónimos;
-* institucionales ordinarios;
-* usuarios con entitlement privilegiado.
+- anónimos;
+- institucionales ordinarios;
+- usuarios con entitlement privilegiado.
 
 La audiencia propuesta no cambia esta regla.
 
@@ -435,8 +435,8 @@ Un recurso rechazado vuelve al ámbito del propietario.
 
 Pueden acceder:
 
-* owner;
-* Administrator.
+- owner;
+- Administrator.
 
 Reviewer y Moderator no obtienen acceso permanente a recursos rechazados ajenos únicamente por su rol.
 
@@ -474,24 +474,24 @@ El Moderator es la autoridad editorial ordinaria sobre los recursos académicos.
 
 Puede:
 
-* revisar recursos `pending`;
-* acceder al archivo pendiente;
-* verificar metadatos;
-* verificar derechos;
-* evaluar duplicados;
-* aprobar;
-* rechazar;
-* seleccionar la audiencia final;
-* iniciar o ejecutar procedimientos editoriales de retiro según el contrato correspondiente.
+- revisar recursos `pending`;
+- acceder al archivo pendiente;
+- verificar metadatos;
+- verificar derechos;
+- evaluar duplicados;
+- aprobar;
+- rechazar;
+- seleccionar la audiencia final;
+- iniciar o ejecutar procedimientos editoriales de retiro según el contrato correspondiente.
 
 El Moderator no puede:
 
-* aprobar su propio recurso;
-* acceder a drafts ajenos únicamente por ser Moderator;
-* acceder a rejected ajenos únicamente por ser Moderator;
-* conceder entitlements permanentes a usuarios;
-* admitir arbitrariamente identidades externas;
-* ampliar derechos legales mediante una decisión de visibilidad.
+- aprobar su propio recurso;
+- acceder a drafts ajenos únicamente por ser Moderator;
+- acceder a rejected ajenos únicamente por ser Moderator;
+- conceder entitlements permanentes a usuarios;
+- admitir arbitrariamente identidades externas;
+- ampliar derechos legales mediante una decisión de visibilidad.
 
 ---
 
@@ -503,10 +503,10 @@ No existe un límite estructural de dos moderators.
 
 Para el piloto se recomienda mantener al menos dos Moderators activos para:
 
-* reducir dependencia de una única persona;
-* evitar bloqueo operativo durante ausencias;
-* permitir que otro Moderator revise recursos propiedad de un Moderator;
-* distribuir carga de revisión.
+- reducir dependencia de una única persona;
+- evitar bloqueo operativo durante ausencias;
+- permitir que otro Moderator revise recursos propiedad de un Moderator;
+- distribuir carga de revisión.
 
 La versión 1 no exige aprobación múltiple.
 
@@ -528,13 +528,13 @@ El Administrator es la autoridad administrativa de la plataforma.
 
 Puede:
 
-* gestionar roles;
-* gestionar Moderators;
-* suspender o deshabilitar cuentas;
-* gestionar admisión de identidades externas;
-* conceder y revocar entitlements;
-* responder a incidentes;
-* acceder administrativamente a recursos del workflow cuando sea necesario.
+- gestionar roles;
+- gestionar Moderators;
+- suspender o deshabilitar cuentas;
+- gestionar admisión de identidades externas;
+- conceder y revocar entitlements;
+- responder a incidentes;
+- acceder administrativamente a recursos del workflow cuando sea necesario.
 
 El Administrator no debe convertirse en el actor editorial ordinario del producto.
 
@@ -598,22 +598,22 @@ El hecho de haber podido revisar el recurso mientras estaba `pending` no constit
 
 Contributor puede:
 
-* crear recursos;
-* editar recursos propios permitidos;
-* subir el archivo principal admitido;
-* corregir recursos rechazados;
-* reenviar recursos;
-* proponer metadatos;
-* proponer `rights_status`;
-* proponer una audiencia.
+- crear recursos;
+- editar recursos propios permitidos;
+- subir el archivo principal admitido;
+- corregir recursos rechazados;
+- reenviar recursos;
+- proponer metadatos;
+- proponer `rights_status`;
+- proponer una audiencia.
 
 La audiencia propuesta por Contributor no constituye la decisión final de publicación.
 
 El Moderator puede:
 
-* aceptarla;
-* reducirla;
-* cambiarla;
+- aceptarla;
+- reducirla;
+- cambiarla;
 
 siempre dentro de los derechos aplicables al recurso, incluidas las restricciones estructurales y, cuando corresponda, el alcance de la evidencia documental.
 
@@ -828,7 +828,7 @@ copyright-restricted
 
 | `rights_status`                |              Archivo almacenado |            `public` |        `restricted` |                                                 `privileged` |
 | ------------------------------ | ------------------------------: | ------------------: | ------------------: | -----------------------------------------------------------: |
-| `pending`                      |  No archivo principal almacenado |          No aprobar |          No aprobar |                                                   No aprobar |
+| `pending`                      | No archivo principal almacenado |          No aprobar |          No aprobar |                                                   No aprobar |
 | `own-work`                     |                              Sí |                  Sí |                  Sí |                                                           Sí |
 | `authorized`                   |                              Sí |  Según autorización |  Según autorización |                                           Según autorización |
 | `institutional`                |                              Sí |                  No |                  Sí | Sí, cuando la autorización institucional cubra esa audiencia |
@@ -1137,10 +1137,10 @@ En v1, los metadatos generales del recurso y su archivo principal comparten la m
 
 Un actor que no tenga acceso al recurso no debe conocer mediante las interfaces ordinarias de consumo:
 
-* su título;
-* su existencia;
-* sus metadatos generales;
-* la existencia de su archivo principal.
+- su título;
+- su existencia;
+- sus metadatos generales;
+- la existencia de su archivo principal.
 
 Por tanto, un recurso `approved + restricted` o `approved + privileged` no forma parte de un catálogo público de metadatos.
 
@@ -1148,10 +1148,10 @@ Una eventual vista mínima de estado para que el propietario gestione su propia 
 
 Un usuario que no puede acceder al recurso tampoco puede:
 
-* previsualizar su archivo;
-* descargarlo;
-* obtener una URL directa;
-* conocer su `storage_key`.
+- previsualizar su archivo;
+- descargarlo;
+- obtener una URL directa;
+- conocer su `storage_key`.
 
 La vista previa y la descarga tienen la misma autorización.
 
@@ -1244,10 +1244,10 @@ La publicación es una propiedad lógica del recurso, no del bucket.
 
 No debe:
 
-* exponerse en respuestas públicas;
-* devolverse al navegador;
-* aceptarse libremente desde el cliente;
-* utilizarse como identificador público del recurso.
+- exponerse en respuestas públicas;
+- devolverse al navegador;
+- aceptarse libremente desde el cliente;
+- utilizarse como identificador público del recurso.
 
 Los clientes trabajan con identificadores de dominio como:
 
@@ -1270,11 +1270,11 @@ role = moderator
 
 enviados por:
 
-* formularios;
-* JSON;
-* headers controlados por cliente;
-* localStorage;
-* query parameters.
+- formularios;
+- JSON;
+- headers controlados por cliente;
+- localStorage;
+- query parameters.
 
 Los roles y entitlements efectivos se resuelven mediante PostgreSQL y las estructuras autorizadas del sistema.
 
@@ -1398,9 +1398,9 @@ unauthorized
 
 La autorización no depende de:
 
-* roles enviados por navegador;
-* comparación runtime directa del email;
-* `storage_key` proporcionado por cliente.
+- roles enviados por navegador;
+- comparación runtime directa del email;
+- `storage_key` proporcionado por cliente.
 
 ---
 
@@ -1416,9 +1416,9 @@ La audiencia propuesta por Contributor no es vinculante.
 
 Solo la autoridad administrativa definida por el producto puede:
 
-* admitir identidades externas;
-* conceder;
-* revocar;
+- admitir identidades externas;
+- conceder;
+- revocar;
 
 `privileged_material.read`.
 
@@ -1586,6 +1586,7 @@ moderator other -> deny
 administrator -> allow
 ordinary user -> deny
 ```
+
 ## Approved
 
 ```text
@@ -1639,6 +1640,7 @@ administrator
 + approved resource
 -> allow when required by administrative authority
 ```
+
 ---
 
 # 38. Pruebas de roles y entitlements
@@ -1731,6 +1733,7 @@ copyright-restricted + approval
 bibliographic-reference-only + stored file
 -> rejected
 ```
+
 `structurally allowed` significa únicamente que PostgreSQL no encuentra una prohibición estructural. No equivale por sí mismo a una aprobación editorial.
 
 Para combinaciones cuyo alcance depende de evidencia documental:
@@ -1832,16 +1835,16 @@ Las acciones sensibles deben poder auditarse.
 
 Como mínimo:
 
-* aprobación;
-* rechazo;
-* cambio final de audiencia;
-* concesión de roles;
-* revocación de roles;
-* concesión de entitlement;
-* revocación de entitlement;
-* admisión administrativa de identidad externa;
-* suspensión/desactivación de cuentas;
-* retiro de contenido.
+- aprobación;
+- rechazo;
+- cambio final de audiencia;
+- concesión de roles;
+- revocación de roles;
+- concesión de entitlement;
+- revocación de entitlement;
+- admisión administrativa de identidad externa;
+- suspensión/desactivación de cuentas;
+- retiro de contenido.
 
 La estructura exacta de las tablas de auditoría pertenece al diseño de implementación.
 
@@ -1851,18 +1854,18 @@ La estructura exacta de las tablas de auditoría pertenece al diseño de impleme
 
 Este contrato no introduce:
 
-* ACL individual `usuario × recurso`;
-* múltiples cohortes privileged;
-* grupos arbitrarios;
-* permisos personalizados por archivo;
-* account linking entre Gmail e identidad institucional;
-* múltiples identidades activas para una misma cuenta;
-* publicación directa de objetos R2;
-* URLs públicas permanentes de R2;
-* URLs firmadas como mecanismo principal de autorización;
-* autorización basada en email durante cada request;
-* doble aprobación obligatoria por dos Moderators;
-* bypass administrativo silencioso sin auditoría.
+- ACL individual `usuario × recurso`;
+- múltiples cohortes privileged;
+- grupos arbitrarios;
+- permisos personalizados por archivo;
+- account linking entre Gmail e identidad institucional;
+- múltiples identidades activas para una misma cuenta;
+- publicación directa de objetos R2;
+- URLs públicas permanentes de R2;
+- URLs firmadas como mecanismo principal de autorización;
+- autorización basada en email durante cada request;
+- doble aprobación obligatoria por dos Moderators;
+- bypass administrativo silencioso sin auditoría.
 
 ---
 
@@ -1945,11 +1948,11 @@ Codex y cualquier implementación futura deben tratar este documento como contra
 
 No deben añadirse implícitamente:
 
-* nuevas audiencias;
-* nuevos entitlements;
-* nuevos roles;
-* excepciones de autorización;
-* bypasses administrativos;
-* ACL por recurso;
+- nuevas audiencias;
+- nuevos entitlements;
+- nuevos roles;
+- excepciones de autorización;
+- bypasses administrativos;
+- ACL por recurso;
 
 sin modificar primero el contrato normativo y aprobar explícitamente la nueva decisión de producto o arquitectura.

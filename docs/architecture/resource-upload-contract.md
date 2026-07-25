@@ -4,9 +4,9 @@
 
 Baseline implementado:
 
-* Stage 4B.2 — contrato PostgreSQL de subida;
-* Stage 4B.6 — orquestación Worker;
-* Stage 4B.7 — endpoint HTTP server-side.
+- Stage 4B.2 — contrato PostgreSQL de subida;
+- Stage 4B.6 — orquestación Worker;
+- Stage 4B.7 — endpoint HTTP server-side.
 
 Evolución hacia `ResourceFile` genérico:
 
@@ -22,21 +22,21 @@ Este documento define las garantías observables del flujo de subida de archivos
 
 Su responsabilidad principal es definir:
 
-* quién puede iniciar una subida;
-* cómo se reserva el archivo;
-* cómo se coordina PostgreSQL con R2;
-* cómo se finaliza una subida;
-* cómo se compensan fallos;
-* qué ocurre ante resultados de transporte desconocidos;
-* qué información permanece privada;
-* qué invariantes deben conservarse al generalizar de PDF a `ResourceFile`.
+- quién puede iniciar una subida;
+- cómo se reserva el archivo;
+- cómo se coordina PostgreSQL con R2;
+- cómo se finaliza una subida;
+- cómo se compensan fallos;
+- qué ocurre ante resultados de transporte desconocidos;
+- qué información permanece privada;
+- qué invariantes deben conservarse al generalizar de PDF a `ResourceFile`.
 
 Este documento **no** define:
 
-* qué usuarios pueden leer posteriormente un archivo;
-* qué formatos exactos se aceptan;
-* cómo debe mostrarse un archivo;
-* la audiencia final de publicación.
+- qué usuarios pueden leer posteriormente un archivo;
+- qué formatos exactos se aceptan;
+- cómo debe mostrarse un archivo;
+- la audiencia final de publicación.
 
 Esas responsabilidades viven respectivamente en:
 
@@ -67,13 +67,14 @@ El ADR:
 docs/adr/0011-resource-files-access-and-external-identities.md
 
 ```
+
 documenta las decisiones arquitectónicas de Stage 4C relativas a:
 
-* `ResourceFile` genérico;
-* nuevas audiencias;
-* entitlements;
-* identidades externas autorizadas;
-* storage keys genéricas.
+- `ResourceFile` genérico;
+- nuevas audiencias;
+- entitlements;
+- identidades externas autorizadas;
+- storage keys genéricas.
 
 ---
 
@@ -85,15 +86,15 @@ docs/architecture/resource-file-policy.md
 
 define:
 
-* allowlist;
-* `file_kind`;
-* extensiones;
-* límites;
-* validación;
-* MIME canónico;
-* preview;
-* hashing;
-* layouts de storage.
+- allowlist;
+- `file_kind`;
+- extensiones;
+- límites;
+- validación;
+- MIME canónico;
+- preview;
+- hashing;
+- layouts de storage.
 
 ---
 
@@ -105,13 +106,13 @@ docs/architecture/resource-access-contract.md
 
 define:
 
-* identidad;
-* roles;
-* entitlements;
-* `review_status`;
-* `visibility`;
-* `rights_status`;
-* acceso a preview y download.
+- identidad;
+- roles;
+- entitlements;
+- `review_status`;
+- `visibility`;
+- `rights_status`;
+- acceso a preview y download.
 
 ---
 
@@ -204,15 +205,15 @@ y utiliza objetos R2 privados.
 
 El baseline 4B:
 
-* valida PDF;
-* calcula SHA-256;
-* reserva metadata PostgreSQL;
-* escribe R2;
-* finaliza PostgreSQL;
-* compensa fallos conocidos;
-* preserva resultados desconocidos;
-* no devuelve `storage_key`;
-* no publica automáticamente el recurso.
+- valida PDF;
+- calcula SHA-256;
+- reserva metadata PostgreSQL;
+- escribe R2;
+- finaliza PostgreSQL;
+- compensa fallos conocidos;
+- preserva resultados desconocidos;
+- no devuelve `storage_key`;
+- no publica automáticamente el recurso.
 
 Este comportamiento debe mantenerse hasta que Stage 4C generalice expresamente el upload.
 
@@ -254,17 +255,17 @@ en v1.
 
 La generalización de formatos no debe eliminar ni debilitar:
 
-* reserva PostgreSQL previa;
-* storage privado;
-* SHA-256;
-* atomicidad PostgreSQL;
-* idempotencia de finalización;
-* compensación;
-* tratamiento de resultados desconocidos;
-* auditoría;
-* un archivo por recurso;
-* no exposición de `storage_key`;
-* ausencia de `service_role`.
+- reserva PostgreSQL previa;
+- storage privado;
+- SHA-256;
+- atomicidad PostgreSQL;
+- idempotencia de finalización;
+- compensación;
+- tratamiento de resultados desconocidos;
+- auditoría;
+- un archivo por recurso;
+- no exposición de `storage_key`;
+- ausencia de `service_role`.
 
 Stage 4C debe evolucionar el contrato de archivo, no reconstruir innecesariamente el pipeline.
 
@@ -322,14 +323,14 @@ como campo textual opcional cuando corresponda al workflow existente.
 
 El cliente no proporciona de forma autoritativa:
 
-* `file_kind`;
-* `normalized_extension`;
-* MIME canónico;
-* SHA-256;
-* `storage_key`;
-* `storage_key_version`;
-* `uploaded_by`;
-* estado de storage.
+- `file_kind`;
+- `normalized_extension`;
+- MIME canónico;
+- SHA-256;
+- `storage_key`;
+- `storage_key_version`;
+- `uploaded_by`;
+- estado de storage.
 
 Estos valores son determinados por componentes confiables del sistema.
 
@@ -561,9 +562,9 @@ los bytes exactos que serán escritos en R2
 
 La aplicación no debe:
 
-* normalizar line endings antes de hash;
-* eliminar BOM antes de hash;
-* transformar el archivo antes de hash.
+- normalizar line endings antes de hash;
+- eliminar BOM antes de hash;
+- transformar el archivo antes de hash.
 
 Conceptualmente:
 
@@ -589,9 +590,9 @@ El archivo individual más grande admitido en v1 es:
 
 para:
 
-* PDF;
-* PNG;
-* JPEG.
+- PDF;
+- PNG;
+- JPEG.
 
 Por ello, el endpoint puede conservar un límite HTTP global basado en:
 
@@ -642,20 +643,20 @@ puede encontrarse por debajo del máximo HTTP global y aun así debe ser rechaza
 
 PostgreSQL es responsable de:
 
-* identificar al actor mediante `auth.uid()`;
-* comprobar account status;
-* comprobar roles/capacidades;
-* comprobar ownership;
-* comprobar estado editable;
-* comprobar derechos requeridos;
-* reservar metadata;
-* reservar estado de almacenamiento;
-* controlar transiciones;
-* finalizar;
-* abortar;
-* registrar eventos;
-* mantener invariantes;
-* proteger metadata privada.
+- identificar al actor mediante `auth.uid()`;
+- comprobar account status;
+- comprobar roles/capacidades;
+- comprobar ownership;
+- comprobar estado editable;
+- comprobar derechos requeridos;
+- reservar metadata;
+- reservar estado de almacenamiento;
+- controlar transiciones;
+- finalizar;
+- abortar;
+- registrar eventos;
+- mantener invariantes;
+- proteger metadata privada.
 
 PostgreSQL no valida magic bytes ni UTF-8 del archivo.
 
@@ -692,18 +693,18 @@ para ejecutar este flujo.
 
 Cloudflare R2:
 
-* almacena bytes;
-* devuelve éxito/fallo de operaciones de object storage.
+- almacena bytes;
+- devuelve éxito/fallo de operaciones de object storage.
 
 R2 no determina:
 
-* identidad;
-* roles;
-* ownership;
-* `review_status`;
-* `visibility`;
-* derechos;
-* audiencia.
+- identidad;
+- roles;
+- ownership;
+- `review_status`;
+- `visibility`;
+- derechos;
+- audiencia.
 
 R2 permanece privado.
 
@@ -802,11 +803,11 @@ uploading
 
 La reserva debe bloquear primero el recurso y volver a comprobar:
 
-* ownership;
-* estado editable;
-* permisos;
-* ausencia de un archivo ya reservado;
-* derechos compatibles.
+- ownership;
+- estado editable;
+- permisos;
+- ausencia de un archivo ya reservado;
+- derechos compatibles.
 
 ---
 
@@ -923,11 +924,11 @@ La clave concreta continúa almacenada como información privada de infraestruct
 
 No debe:
 
-* devolverse en la respuesta HTTP;
-* exponerse en una API pública;
-* convertirse en identificador de dominio;
-* aceptarse desde el navegador;
-* utilizarse para autorización.
+- devolverse en la respuesta HTTP;
+- exponerse en una API pública;
+- convertirse en identificador de dominio;
+- aceptarse desde el navegador;
+- utilizarse para autorización.
 
 ---
 
@@ -977,9 +978,9 @@ Esto evita necesitar revelar la clave privada al cliente.
 
 La escritura utiliza únicamente:
 
-* storage key derivada internamente;
-* bytes ya validados;
-* content type canónico.
+- storage key derivada internamente;
+- bytes ya validados;
+- content type canónico.
 
 No debe usar como autoridad:
 
@@ -1032,16 +1033,16 @@ Las garantías no deben debilitarse.
 
 Una repetición de finalización puede considerarse idempotente únicamente cuando:
 
-* se refiere al mismo `file_id`;
-* storage ya está confirmado;
-* resource se encuentra en el estado esperado;
-* SHA-256 coincide.
+- se refiere al mismo `file_id`;
+- storage ya está confirmado;
+- resource se encuentra en el estado esperado;
+- SHA-256 coincide.
 
 No debe:
 
-* duplicar eventos;
-* cambiar timestamps innecesariamente;
-* aceptar un hash diferente.
+- duplicar eventos;
+- cambiar timestamps innecesariamente;
+- aceptar un hash diferente.
 
 ---
 
@@ -1060,15 +1061,15 @@ abort_resource_file_upload(
 
 puede eliminar una reserva no finalizada cuando:
 
-* el actor conserva autorización;
-* el recurso sigue siendo editable;
-* el storage se encuentra en un estado abortable.
+- el actor conserva autorización;
+- el recurso sigue siendo editable;
+- el storage se encuentra en un estado abortable.
 
 El aborto:
 
-* elimina metadata de la reserva;
-* elimina el registro de storage mediante la relación correspondiente;
-* conserva el recurso académico.
+- elimina metadata de la reserva;
+- elimina el registro de storage mediante la relación correspondiente;
+- conserva el recurso académico.
 
 Un archivo ya:
 
@@ -1112,9 +1113,9 @@ unknown outcome
 
 Un error de transporte como:
 
-* timeout;
-* conexión interrumpida;
-* respuesta perdida;
+- timeout;
+- conexión interrumpida;
+- respuesta perdida;
 
 no demuestra necesariamente que la operación remota no haya ocurrido.
 
@@ -1329,12 +1330,12 @@ fileId
 
 No devuelve:
 
-* `storage_key`;
-* bucket name;
-* internal R2 URL;
-* signed URL;
-* secretos;
-* detalles privados de PostgreSQL.
+- `storage_key`;
+- bucket name;
+- internal R2 URL;
+- signed URL;
+- secretos;
+- detalles privados de PostgreSQL.
 
 ---
 
@@ -1355,12 +1356,12 @@ Resource cannot accept an upload
 
 No deben revelar:
 
-* storage keys;
-* SQL interno;
-* UUID de otros propietarios;
-* stack traces productivos;
-* secretos;
-* credenciales.
+- storage keys;
+- SQL interno;
+- UUID de otros propietarios;
+- stack traces productivos;
+- secretos;
+- credenciales.
 
 ---
 
@@ -1368,16 +1369,16 @@ No deben revelar:
 
 El upload debe mantener:
 
-* same-origin enforcement en operaciones sensibles;
-* bounded request body;
-* server-side validation;
-* autorización PostgreSQL;
-* private R2;
-* safe filenames;
-* canonical MIME;
-* hashing;
-* mínimo privilegio;
-* auditabilidad.
+- same-origin enforcement en operaciones sensibles;
+- bounded request body;
+- server-side validation;
+- autorización PostgreSQL;
+- private R2;
+- safe filenames;
+- canonical MIME;
+- hashing;
+- mínimo privilegio;
+- auditabilidad.
 
 ---
 
@@ -1395,10 +1396,10 @@ Esto se mantiene incluso si una operación sería más sencilla con acceso privi
 
 Las capacidades necesarias deben modelarse mediante:
 
-* RLS;
-* grants;
-* RPC seguras;
-* identidad real del usuario.
+- RLS;
+- grants;
+- RPC seguras;
+- identidad real del usuario.
 
 ---
 
@@ -1492,22 +1493,22 @@ La política de publicación se evalúa separadamente.
 
 Quedan fuera de este contrato:
 
-* múltiples archivos por recurso;
-* ZIP/proyectos;
-* multipart con varios documentos;
-* uploads directos navegador → R2;
-* public bucket;
-* signed URLs como flujo principal;
-* resumable uploads;
-* chunked multi-part object uploads;
-* ejecución del contenido;
-* compilación;
-* conversiones de formato;
-* thumbnails;
-* OCR;
-* antivirus server-side;
-* publicación automática;
-* ACL por archivo.
+- múltiples archivos por recurso;
+- ZIP/proyectos;
+- multipart con varios documentos;
+- uploads directos navegador → R2;
+- public bucket;
+- signed URLs como flujo principal;
+- resumable uploads;
+- chunked multi-part object uploads;
+- ejecución del contenido;
+- compilación;
+- conversiones de formato;
+- thumbnails;
+- OCR;
+- antivirus server-side;
+- publicación automática;
+- ACL por archivo.
 
 ---
 
@@ -1515,22 +1516,22 @@ Quedan fuera de este contrato:
 
 Las pruebas pgTAP deben conservar y ampliar como mínimo cobertura para:
 
-* privilegios de las RPC;
-* un archivo máximo;
-* actor sin capacidad de upload;
-* owner incorrecto;
-* cuenta no activa;
-* estado no editable;
-* derechos incompatibles;
-* reserva válida;
-* finalización válida;
-* atomicidad;
-* idempotencia;
-* hash conflictivo;
-* aborto;
-* concurrencia;
-* auditoría append-only;
-* ausencia de acceso directo a `storage_key`.
+- privilegios de las RPC;
+- un archivo máximo;
+- actor sin capacidad de upload;
+- owner incorrecto;
+- cuenta no activa;
+- estado no editable;
+- derechos incompatibles;
+- reserva válida;
+- finalización válida;
+- atomicidad;
+- idempotencia;
+- hash conflictivo;
+- aborto;
+- concurrencia;
+- auditoría append-only;
+- ausencia de acceso directo a `storage_key`.
 
 ---
 
@@ -1584,21 +1585,21 @@ copyright-restricted + file
 
 Las pruebas de orquestación deben cubrir:
 
-* validación antes de R2;
-* reserva con éxito;
-* reserva con fallo conocido;
-* reserva con outcome desconocido;
-* escritura R2 exitosa;
-* escritura R2 fallida;
-* escritura R2 con outcome desconocido;
-* delete defensivo;
-* finalización exitosa;
-* finalización con fallo conocido;
-* reintento idempotente;
-* finalización persistentemente desconocida;
-* compensación;
-* fallo de compensación;
-* preservación de estado para reconciliación.
+- validación antes de R2;
+- reserva con éxito;
+- reserva con fallo conocido;
+- reserva con outcome desconocido;
+- escritura R2 exitosa;
+- escritura R2 fallida;
+- escritura R2 con outcome desconocido;
+- delete defensivo;
+- finalización exitosa;
+- finalización con fallo conocido;
+- reintento idempotente;
+- finalización persistentemente desconocida;
+- compensación;
+- fallo de compensación;
+- preservación de estado para reconciliación.
 
 ---
 
@@ -1606,13 +1607,13 @@ Las pruebas de orquestación deben cubrir:
 
 Los tests específicos de:
 
-* PDF;
-* PNG;
-* JPEG;
-* Markdown;
-* TeX;
-* TXT;
-* source;
+- PDF;
+- PNG;
+- JPEG;
+- Markdown;
+- TeX;
+- TXT;
+- source;
 
 pertenecen principalmente a:
 
@@ -1984,13 +1985,13 @@ Codex debe tratar las garantías de 4B como inversión que se preserva.
 
 No debe sustituir la orquestación existente por un flujo más simple que elimine:
 
-* reserva;
-* compensación;
-* idempotencia;
-* unknown-outcome handling;
-* privacidad de storage;
-* atomicidad;
-* auditoría.
+- reserva;
+- compensación;
+- idempotencia;
+- unknown-outcome handling;
+- privacidad de storage;
+- atomicidad;
+- auditoría.
 
 La generalización de formatos debe producir el menor cambio estructural posible compatible con:
 

@@ -14,16 +14,16 @@ Los visitantes podrán consultar carreras, cursos y metadatos públicos de recur
 
 Los archivos aprobados podrán tener una de las siguientes audiencias de publicación:
 
-* `public`;
-* `restricted`;
-* `privileged`.
+- `public`;
+- `restricted`;
+- `privileged`.
 
 El acceso efectivo dependerá de:
 
-* el estado de revisión del recurso;
-* la audiencia aprobada;
-* los derechos aplicables;
-* la identidad y los privilegios del usuario cuando corresponda.
+- el estado de revisión del recurso;
+- la audiencia aprobada;
+- los derechos aplicables;
+- la identidad y los privilegios del usuario cuando corresponda.
 
 `private` se utiliza para recursos no publicados o dentro del workflow interno y no constituye una audiencia final de publicación.
 
@@ -41,12 +41,12 @@ El piloto está orientado a aproximadamente 100 usuarios y cubre las carreras de
 
 La prioridad no es la escalabilidad masiva, sino:
 
-* seguridad;
-* moderación;
-* derechos;
-* bajo costo;
-* operación simple;
-* transferencia entre estudiantes.
+- seguridad;
+- moderación;
+- derechos;
+- bajo costo;
+- operación simple;
+- transferencia entre estudiantes.
 
 ## Acceso
 
@@ -68,10 +68,10 @@ En v1, los metadatos generales de un recurso y su archivo principal comparten la
 
 Por tanto, un actor que no pueda acceder al recurso tampoco debe conocer mediante las interfaces ordinarias de consumo:
 
-* su existencia;
-* su título;
-* sus metadatos generales;
-* la existencia de su archivo principal.
+- su existencia;
+- su título;
+- sus metadatos generales;
+- la existencia de su archivo principal.
 
 Una vista mínima destinada al propietario para consultar el estado de su propia submission pertenece al workflow y no constituye exposición de los metadatos generales del recurso.
 
@@ -91,8 +91,8 @@ Un usuario externo con privilegio especial no obtiene acceso a `restricted` úni
 
 Puede incluir:
 
-* identidades institucionales;
-* identidades externas previamente admitidas.
+- identidades institucionales;
+- identidades externas previamente admitidas.
 
 El acceso privilegiado se concede a la cuenta del usuario mediante una autorización explícita independiente de sus roles editoriales.
 
@@ -130,20 +130,20 @@ privileged_material.read
 
 La versión 1 admite:
 
-* un único archivo principal por recurso;
-* PDF;
-* PNG y JPEG;
-* Markdown;
-* TeX;
-* texto plano;
-* código fuente con extensiones incluidas expresamente en la allowlist de v1;
-* ninguna compilación de LaTeX en el servidor;
-* ninguna ejecución de código o archivos aportados por usuarios.
+- un único archivo principal por recurso;
+- PDF;
+- PNG y JPEG;
+- Markdown;
+- TeX;
+- texto plano;
+- código fuente con extensiones incluidas expresamente en la allowlist de v1;
+- ninguna compilación de LaTeX en el servidor;
+- ninguna ejecución de código o archivos aportados por usuarios.
 
 Los límites de tamaño dependen de la familia del archivo:
 
-* PDF, PNG y JPEG: máximo 10 000 000 bytes;
-* Markdown, TeX, texto y código fuente: máximo 2 000 000 bytes.
+- PDF, PNG y JPEG: máximo 10 000 000 bytes;
+- Markdown, TeX, texto y código fuente: máximo 2 000 000 bytes.
 
 Los archivos admitidos, extensiones exactas, validaciones, media types y reglas de presentación se definen en la política normativa de archivos.
 
@@ -153,14 +153,14 @@ HTML, SVG, ejecutables, archivos comprimidos, proyectos multiarchivo y otros for
 
 Tipos admitidos:
 
-* syllabus;
-* exam;
-* solution;
-* notes;
-* assignment;
-* laboratory;
-* class-material;
-* book-reference.
+- syllabus;
+- exam;
+- solution;
+- notes;
+- assignment;
+- laboratory;
+- class-material;
+- book-reference.
 
 `has_solution` indica que el archivo principal contiene una solución.
 
@@ -168,9 +168,9 @@ Tipos admitidos:
 
 El periodo puede ser:
 
-* exacto;
-* aproximado;
-* desconocido.
+- exacto;
+- aproximado;
+- desconocido.
 
 Un periodo exacto usa `academic_term_id`.
 
@@ -182,14 +182,14 @@ Un periodo desconocido no requiere ninguno de los dos.
 
 Estados admitidos para la versión objetivo:
 
-* `pending`;
-* `own-work`;
-* `authorized`;
-* `institutional`;
-* `open-license`;
-* `public-domain`;
-* `bibliographic-reference-only`;
-* `copyright-restricted`.
+- `pending`;
+- `own-work`;
+- `authorized`;
+- `institutional`;
+- `open-license`;
+- `public-domain`;
+- `bibliographic-reference-only`;
+- `copyright-restricted`.
 
 `rights_status` establece qué distribución puede autorizarse para el recurso.
 
@@ -231,12 +231,12 @@ En v1, la comprobación del alcance concreto de esa autorización forma parte de
 
 ### Contributor
 
-* crear recursos;
-* editar borradores propios;
-* subir un archivo principal admitido;
-* corregir recursos rechazados;
-* reenviar recursos a revisión;
-* proponer metadatos, derechos y audiencia.
+- crear recursos;
+- editar borradores propios;
+- subir un archivo principal admitido;
+- corregir recursos rechazados;
+- reenviar recursos a revisión;
+- proponer metadatos, derechos y audiencia.
 
 El Contributor no decide la audiencia final de publicación.
 
@@ -252,13 +252,13 @@ El Moderator es la autoridad editorial ordinaria sobre los recursos académicos.
 
 Puede:
 
-* revisar recursos pendientes;
-* abrir archivos pendientes;
-* detectar duplicados;
-* aprobar;
-* rechazar;
-* determinar la audiencia final de publicación;
-* retirar contenido según el procedimiento correspondiente.
+- revisar recursos pendientes;
+- abrir archivos pendientes;
+- detectar duplicados;
+- aprobar;
+- rechazar;
+- determinar la audiencia final de publicación;
+- retirar contenido según el procedimiento correspondiente.
 
 El Contributor puede proponer una audiencia, pero el Moderator determina la audiencia final al aprobar el recurso, dentro de los derechos aplicables, incluidas las restricciones estructurales y el alcance de la evidencia documental cuando corresponda.
 
@@ -270,13 +270,13 @@ El Administrator es la autoridad administrativa de la plataforma.
 
 Puede:
 
-* asignar y revocar roles;
-* autorizar o revocar privilegios especiales;
-* gestionar moderadores;
-* gestionar la admisión administrativa de identidades externas;
-* suspender o desactivar cuentas;
-* responder a incidentes;
-* realizar las intervenciones administrativas excepcionales previstas por el sistema.
+- asignar y revocar roles;
+- autorizar o revocar privilegios especiales;
+- gestionar moderadores;
+- gestionar la admisión administrativa de identidades externas;
+- suspender o desactivar cuentas;
+- responder a incidentes;
+- realizar las intervenciones administrativas excepcionales previstas por el sistema.
 
 La administración de cuentas y privilegios debe permanecer separada de la decisión editorial ordinaria sobre los recursos.
 
@@ -302,25 +302,25 @@ draft -> pending -> approved | rejected
 
 Reglas:
 
-* una aprobación válida es suficiente;
-* el rechazo requiere comentario;
-* un Moderator no puede aprobar su propio recurso;
-* un Moderator no puede acceder a borradores o rechazados ajenos únicamente por ser Moderator;
-* Reviewer y Moderator pueden acceder a recursos `pending` según la política de revisión;
-* Administrator conserva las capacidades administrativas excepcionales definidas por la política de acceso;
-* un recurso rechazado puede editarse y reenviarse;
-* toda transición relevante queda auditada;
-* ninguna audiencia de publicación permite saltarse `review_status`.
-* una vez aprobado un recurso, ownership no concede un bypass de la audiencia final; el propietario consume el recurso según las mismas reglas ordinarias de audiencia;
-* Reviewer no conserva acceso editorial general después de la aprobación; su acceso a un recurso `approved` depende de la audiencia final, salvo que posea otra autoridad explícita independiente;
+- una aprobación válida es suficiente;
+- el rechazo requiere comentario;
+- un Moderator no puede aprobar su propio recurso;
+- un Moderator no puede acceder a borradores o rechazados ajenos únicamente por ser Moderator;
+- Reviewer y Moderator pueden acceder a recursos `pending` según la política de revisión;
+- Administrator conserva las capacidades administrativas excepcionales definidas por la política de acceso;
+- un recurso rechazado puede editarse y reenviarse;
+- toda transición relevante queda auditada;
+- ninguna audiencia de publicación permite saltarse `review_status`.
+- una vez aprobado un recurso, ownership no concede un bypass de la audiencia final; el propietario consume el recurso según las mismas reglas ordinarias de audiencia;
+- Reviewer no conserva acceso editorial general después de la aprobación; su acceso a un recurso `approved` depende de la audiencia final, salvo que posea otra autoridad explícita independiente;
 
 ## Duplicados
 
-* SHA-256 identifica archivos idénticos;
-* una coincidencia produce una advertencia;
-* no se rechaza automáticamente;
-* el Moderator toma la decisión;
-* un recurso aprobado no se sobrescribe.
+- SHA-256 identifica archivos idénticos;
+- una coincidencia produce una advertencia;
+- no se rechaza automáticamente;
+- el Moderator toma la decisión;
+- un recurso aprobado no se sobrescribe.
 
 ## Retiro
 
@@ -338,59 +338,59 @@ La eliminación física es un procedimiento posterior y auditado.
 
 La versión 1 puede incluir un catálogo público simple de menos de 70 libros con:
 
-* título;
-* autor;
-* edición;
-* ISBN opcional;
-* categoría;
-* ubicación;
-* estado físico;
-* disponibilidad;
-* observaciones.
+- título;
+- autor;
+- edición;
+- ISBN opcional;
+- categoría;
+- ubicación;
+- estado físico;
+- disponibilidad;
+- observaciones.
 
 No incluye préstamos avanzados, reservas, multas ni notificaciones.
 
 ## P0: piloto
 
-* backend de subida;
-* almacenamiento privado;
-* portal Contributor;
-* portal Moderator;
-* catálogo dinámico;
-* vista previa y descarga según audiencia `public`, `restricted` o `privileged`;
-* administración mínima de cuentas, roles y privilegios;
-* seguridad;
-* despliegue;
-* backups;
-* documentación.
+- backend de subida;
+- almacenamiento privado;
+- portal Contributor;
+- portal Moderator;
+- catálogo dinámico;
+- vista previa y descarga según audiencia `public`, `restricted` o `privileged`;
+- administración mínima de cuentas, roles y privilegios;
+- seguridad;
+- despliegue;
+- backups;
+- documentación.
 
 ## P1: versión 1 completa
 
-* solicitudes de retiro;
-* detección visible de duplicados;
-* catálogo físico;
-* limpieza programada;
-* transferencia administrativa.
+- solicitudes de retiro;
+- detección visible de duplicados;
+- catálogo físico;
+- limpieza programada;
+- transferencia administrativa.
 
 ## Fuera de alcance
 
-* múltiples archivos por recurso;
-* compilación LaTeX;
-* ejecución de código subido;
-* renderizado activo de HTML aportado por usuarios;
-* SVG;
-* archivos comprimidos y proyectos multiarchivo;
-* OCR;
-* búsqueda interna dentro del contenido;
-* comentarios;
-* puntuaciones;
-* IA;
-* aplicación móvil;
-* notificaciones;
-* videos;
-* préstamos avanzados;
-* ACL individual por recurso;
-* linking complejo de múltiples identidades para una misma cuenta.
+- múltiples archivos por recurso;
+- compilación LaTeX;
+- ejecución de código subido;
+- renderizado activo de HTML aportado por usuarios;
+- SVG;
+- archivos comprimidos y proyectos multiarchivo;
+- OCR;
+- búsqueda interna dentro del contenido;
+- comentarios;
+- puntuaciones;
+- IA;
+- aplicación móvil;
+- notificaciones;
+- videos;
+- préstamos avanzados;
+- ACL individual por recurso;
+- linking complejo de múltiples identidades para una misma cuenta.
 
 ## Definición de terminado
 

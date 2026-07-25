@@ -10,19 +10,19 @@ Este documento define el contrato normativo de archivos aceptados por FC Academi
 
 Describe:
 
-* tipos de archivo admitidos;
-* extensiones permitidas;
-* clasificación mediante `file_kind`;
-* límites de tamaño;
-* validación server-side;
-* media types canónicos;
-* tratamiento de texto;
-* presentación segura;
-* descarga;
-* nombres de archivo;
-* hashing;
-* almacenamiento privado;
-* compatibilidad de `storage_key`.
+- tipos de archivo admitidos;
+- extensiones permitidas;
+- clasificación mediante `file_kind`;
+- límites de tamaño;
+- validación server-side;
+- media types canónicos;
+- tratamiento de texto;
+- presentación segura;
+- descarga;
+- nombres de archivo;
+- hashing;
+- almacenamiento privado;
+- compatibilidad de `storage_key`.
 
 Mientras Stage 4C no esté completamente implementado, pueden existir diferencias entre esta política y el comportamiento productivo actual, que permanece parcialmente especializado en PDF.
 
@@ -55,31 +55,31 @@ untrusted input
 
 independientemente de:
 
-* quién lo haya subido;
-* su rol;
-* el nombre del archivo;
-* su extensión;
-* el media type declarado por el navegador;
-* su procedencia académica.
+- quién lo haya subido;
+- su rol;
+- el nombre del archivo;
+- su extensión;
+- el media type declarado por el navegador;
+- su procedencia académica.
 
 La aplicación puede:
 
-* validar;
-* almacenar;
-* calcular hash;
-* recuperar;
-* mostrar de manera segura;
-* permitir descarga.
+- validar;
+- almacenar;
+- calcular hash;
+- recuperar;
+- mostrar de manera segura;
+- permitir descarga.
 
 La aplicación no debe:
 
-* ejecutar código subido;
-* compilar código;
-* compilar LaTeX;
-* ejecutar scripts;
-* interpretar HTML aportado por usuarios;
-* confiar únicamente en extensión o MIME del cliente;
-* convertir automáticamente contenido textual en contenido activo.
+- ejecutar código subido;
+- compilar código;
+- compilar LaTeX;
+- ejecutar scripts;
+- interpretar HTML aportado por usuarios;
+- confiar únicamente en extensión o MIME del cliente;
+- convertir automáticamente contenido textual en contenido activo.
 
 ---
 
@@ -95,11 +95,11 @@ Esta restricción es independiente del formato.
 
 No se implementan en v1:
 
-* múltiples anexos;
-* proyectos multiarchivo;
-* directorios;
-* paquetes;
-* archivos ZIP que representen proyectos.
+- múltiples anexos;
+- proyectos multiarchivo;
+- directorios;
+- paquetes;
+- archivos ZIP que representen proyectos.
 
 Si en el futuro se admite más de un archivo por recurso, deberá modificarse explícitamente el contrato de producto y esta política.
 
@@ -267,10 +267,10 @@ Ninguna otra extensión está admitida en v1.
 
 Una extensión no puede considerarse permitida simplemente porque sea:
 
-* textual;
-* popular;
-* académicamente útil;
-* parecida a otra extensión admitida.
+- textual;
+- popular;
+- académicamente útil;
+- parecida a otra extensión admitida.
 
 Por ejemplo, v1 no permite automáticamente:
 
@@ -338,12 +338,12 @@ La siguiente denylist documenta formatos particularmente fuera de alcance:
 
 También se rechazan:
 
-* binarios arbitrarios;
-* paquetes de dependencias;
-* proyectos multiarchivo;
-* archivos comprimidos;
-* ejecutables;
-* formatos activos no aprobados.
+- binarios arbitrarios;
+- paquetes de dependencias;
+- proyectos multiarchivo;
+- archivos comprimidos;
+- ejecutables;
+- formatos activos no aprobados.
 
 Esta lista no pretende enumerar todas las extensiones rechazadas.
 
@@ -375,10 +375,10 @@ SVG está explícitamente rechazado en v1.
 
 No debe:
 
-* almacenarse como imagen admitida;
-* mostrarse inline;
-* reinterpretarse como texto admitido;
-* aceptarse por tener MIME `image/svg+xml`.
+- almacenarse como imagen admitida;
+- mostrarse inline;
+- reinterpretarse como texto admitido;
+- aceptarse por tener MIME `image/svg+xml`.
 
 El soporte de imágenes v1 se limita a:
 
@@ -777,6 +777,7 @@ PNG signature exacta en offset 0:
 89 50 4E 47 0D 0A 1A 0A
 SHA-256
 ```
+
 La implementación debe comparar exactamente estos ocho bytes desde el inicio del archivo.
 
 La firma PNG esperada debe validarse sobre los bytes del archivo.
@@ -822,9 +823,9 @@ FF D9
 
 Por tanto, el archivo debe:
 
-* comenzar con el marcador JPEG SOI `FF D8`;
-* tener `FF` como siguiente prefijo de marcador;
-* terminar con el marcador JPEG EOI `FF D9`.
+- comenzar con el marcador JPEG SOI `FF D8`;
+- tener `FF` como siguiente prefijo de marcador;
+- terminar con el marcador JPEG EOI `FF D9`.
 
 La implementación no necesita realizar parsing ni decoding completo de JPEG en v1.
 
@@ -882,9 +883,9 @@ Un archivo con secuencias UTF-8 inválidas debe rechazarse.
 
 No debe intentarse convertir automáticamente desde:
 
-* Latin-1;
-* Windows-1252;
-* otras codificaciones.
+- Latin-1;
+- Windows-1252;
+- otras codificaciones.
 
 El usuario deberá proporcionar un archivo UTF-8 válido.
 
@@ -929,9 +930,9 @@ durante almacenamiento.
 
 Esto preserva:
 
-* bytes originales;
-* SHA-256;
-* descarga exacta del archivo aportado.
+- bytes originales;
+- SHA-256;
+- descarga exacta del archivo aportado.
 
 ---
 
@@ -998,11 +999,11 @@ preview = plain text
 
 No se:
 
-* compila;
-* ejecuta;
-* interpreta mediante LaTeX;
-* procesa mediante shell escape;
-* convierte a PDF automáticamente.
+- compila;
+- ejecuta;
+- interpreta mediante LaTeX;
+- procesa mediante shell escape;
+- convierte a PDF automáticamente.
 
 La plataforma almacena y muestra el source de manera conservadora.
 
@@ -1022,12 +1023,12 @@ preview = plain text
 
 No se:
 
-* compila;
-* ejecuta;
-* interpreta;
-* evalúa;
-* instala;
-* resuelve dependencias.
+- compila;
+- ejecuta;
+- interpreta;
+- evalúa;
+- instala;
+- resuelve dependencias.
 
 Por ejemplo, un archivo:
 
@@ -1064,10 +1065,10 @@ los bytes originales exactos que se almacenarán
 
 No sobre una versión:
 
-* normalizada;
-* decodificada;
-* reserializada;
-* transformada.
+- normalizada;
+- decodificada;
+- reserializada;
+- transformada.
 
 Por tanto:
 
@@ -1281,11 +1282,11 @@ La visibilidad del recurso no determina la visibilidad física del objeto R2.
 
 No debe:
 
-* devolverse al navegador;
-* aparecer en APIs públicas;
-* utilizarse como identificador de producto;
-* aceptarse libremente como input del cliente;
-* considerarse una credencial de autorización.
+- devolverse al navegador;
+- aparecer en APIs públicas;
+- utilizarse como identificador de producto;
+- aceptarse libremente como input del cliente;
+- considerarse una credencial de autorización.
 
 El cliente trabaja con identificadores del dominio, como:
 
@@ -1346,10 +1347,10 @@ storage_key_version =
 
 El nombre físico exacto de la columna o enum puede definirse durante implementación, pero la información no debe inferirse utilizando únicamente:
 
-* fecha de creación;
-* MIME;
-* `file_kind`;
-* suposición de que todos los PDFs son legacy.
+- fecha de creación;
+- MIME;
+- `file_kind`;
+- suposición de que todos los PDFs son legacy.
 
 ---
 
@@ -1420,10 +1421,10 @@ El formato vive en PostgreSQL mediante metadata canónica y no en la key del obj
 
 Stage 4C no requiere:
 
-* copiar todos los objetos legacy;
-* renombrarlos;
-* eliminarlos;
-* reescribir R2.
+- copiar todos los objetos legacy;
+- renombrarlos;
+- eliminarlos;
+- reescribir R2.
 
 La compatibilidad dual es preferible a una migración física sin necesidad funcional.
 
@@ -1433,9 +1434,9 @@ La compatibilidad dual es preferible a una migración física sin necesidad func
 
 Esta política no introduce:
 
-* public bucket URLs;
-* URLs permanentes de objetos;
-* signed URLs como mecanismo principal de acceso.
+- public bucket URLs;
+- URLs permanentes de objetos;
+- signed URLs como mecanismo principal de acceso.
 
 La recuperación continúa mediada por la aplicación server-side y la política de autorización.
 
@@ -1445,9 +1446,9 @@ La recuperación continúa mediada por la aplicación server-side y la política
 
 Los errores de validación deben ser:
 
-* seguros;
-* suficientemente específicos para corregir el upload;
-* incapaces de revelar datos internos.
+- seguros;
+- suficientemente específicos para corregir el upload;
+- incapaces de revelar datos internos.
 
 Ejemplos apropiados:
 
@@ -1462,11 +1463,11 @@ Filename is not valid
 
 No deben revelar:
 
-* storage keys;
-* SQL interno;
-* secretos;
-* rutas físicas;
-* datos de otros usuarios.
+- storage keys;
+- SQL interno;
+- secretos;
+- rutas físicas;
+- datos de otros usuarios.
 
 ---
 
@@ -1488,11 +1489,11 @@ format
 
 No deben existir allowlists divergentes repartidas arbitrariamente entre:
 
-* endpoint;
-* UI;
-* R2;
-* validator;
-* componentes.
+- endpoint;
+- UI;
+- R2;
+- validator;
+- componentes.
 
 Las restricciones PostgreSQL pueden reflejar invariantes críticas como defensa en profundidad, pero no deben contradecir la política normativa.
 
@@ -1951,25 +1952,25 @@ para la decisión arquitectónica global.
 
 Esta política no introduce:
 
-* múltiples archivos por recurso;
-* directorios;
-* ZIP de proyectos;
-* antivirus server-side;
-* ejecución sandboxed;
-* compilación de código;
-* compilación LaTeX;
-* syntax highlighting obligatorio;
-* Markdown rendering;
-* HTML rendering;
-* SVG;
-* thumbnails;
-* conversión de imágenes;
-* transcodificación;
-* OCR;
-* normalización automática de archivos;
-* conversión automática entre formatos;
-* límites de dimensiones de imagen;
-* URLs públicas directas de R2.
+- múltiples archivos por recurso;
+- directorios;
+- ZIP de proyectos;
+- antivirus server-side;
+- ejecución sandboxed;
+- compilación de código;
+- compilación LaTeX;
+- syntax highlighting obligatorio;
+- Markdown rendering;
+- HTML rendering;
+- SVG;
+- thumbnails;
+- conversión de imágenes;
+- transcodificación;
+- OCR;
+- normalización automática de archivos;
+- conversión automática entre formatos;
+- límites de dimensiones de imagen;
+- URLs públicas directas de R2.
 
 Estas capacidades requieren decisiones futuras explícitas si llegan a ser necesarias.
 
@@ -1981,12 +1982,12 @@ Codex y cualquier implementación futura deben tratar esta política como una al
 
 No deben ampliar:
 
-* extensiones;
-* `file_kind`;
-* media types;
-* límites;
-* estrategias de preview;
-* layouts de storage;
+- extensiones;
+- `file_kind`;
+- media types;
+- límites;
+- estrategias de preview;
+- layouts de storage;
 
 por conveniencia de implementación.
 

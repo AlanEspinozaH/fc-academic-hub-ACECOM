@@ -10,12 +10,12 @@ Implementación de entitlements, identidades externas y nueva semántica de acce
 
 Este documento define las responsabilidades asociadas a los roles de FC Academic Hub y su separación respecto de:
 
-* identidad;
-* estado de cuenta;
-* audiencia de recursos;
-* entitlements;
-* ownership;
-* workflow de revisión.
+- identidad;
+- estado de cuenta;
+- audiencia de recursos;
+- entitlements;
+- ownership;
+- workflow de revisión.
 
 El modelo de roles no sustituye las políticas RLS.
 
@@ -135,6 +135,7 @@ privileged_material.read
 +
 roles = none
 ```
+
 ---
 
 # 3. Estados de cuenta
@@ -155,10 +156,10 @@ account_status = active
 
 Las cuentas `suspended` y `disabled` pierden:
 
-* capacidades editoriales;
-* acceso `restricted`;
-* acceso `privileged`;
-* gestión administrativa.
+- capacidades editoriales;
+- acceso `restricted`;
+- acceso `privileged`;
+- gestión administrativa.
 
 Conservan únicamente aquello que también pueda consumir un actor anónimo, como un recurso:
 
@@ -292,14 +293,14 @@ Contributor representa capacidad de aportar recursos académicos.
 
 Puede:
 
-* crear recursos;
-* editar recursos propios cuando el workflow lo permita;
-* subir el archivo principal admitido;
-* corregir recursos rechazados propios;
-* reenviar recursos;
-* proponer metadata;
-* proponer `rights_status`;
-* proponer audiencia.
+- crear recursos;
+- editar recursos propios cuando el workflow lo permita;
+- subir el archivo principal admitido;
+- corregir recursos rechazados propios;
+- reenviar recursos;
+- proponer metadata;
+- proponer `rights_status`;
+- proponer audiencia.
 
 Conceptualmente posee:
 
@@ -309,11 +310,11 @@ submission.create
 
 Contributor no puede:
 
-* aprobar recursos;
-* publicar;
-* administrar cuentas;
-* administrar roles;
-* conceder entitlements.
+- aprobar recursos;
+- publicar;
+- administrar cuentas;
+- administrar roles;
+- conceder entitlements.
 
 La audiencia propuesta por Contributor no es vinculante.
 
@@ -325,11 +326,11 @@ Reviewer participa en la revisión formal.
 
 Puede:
 
-* acceder a recursos `pending`;
-* revisar metadata y archivo;
-* identificar problemas;
-* rechazar cuando la política lo permita;
-* registrar observaciones de revisión.
+- acceder a recursos `pending`;
+- revisar metadata y archivo;
+- identificar problemas;
+- rechazar cuando la política lo permita;
+- registrar observaciones de revisión.
 
 Conceptualmente posee:
 
@@ -367,15 +368,15 @@ submission.publish
 
 Puede:
 
-* revisar recursos `pending`;
-* abrir archivos pendientes;
-* revisar metadata;
-* verificar derechos;
-* detectar duplicados;
-* aprobar;
-* rechazar;
-* determinar la audiencia final;
-* intervenir en procedimientos editoriales de retiro.
+- revisar recursos `pending`;
+- abrir archivos pendientes;
+- revisar metadata;
+- verificar derechos;
+- detectar duplicados;
+- aprobar;
+- rechazar;
+- determinar la audiencia final;
+- intervenir en procedimientos editoriales de retiro.
 
 ---
 
@@ -412,15 +413,15 @@ dentro de los derechos aplicables al recurso, incluidas las restricciones estruc
 
 Moderator no puede:
 
-* aprobar su propio recurso;
-* leer drafts ajenos únicamente por su rol;
-* leer rejected ajenos únicamente por su rol;
-* conceder `privileged_material.read`;
-* revocar `privileged_material.read`;
-* preautorizar arbitrariamente identidades externas;
-* gestionar roles;
-* suspender cuentas por autoridad editorial;
-* modificar derechos para hacer legal una audiencia que no lo sea.
+- aprobar su propio recurso;
+- leer drafts ajenos únicamente por su rol;
+- leer rejected ajenos únicamente por su rol;
+- conceder `privileged_material.read`;
+- revocar `privileged_material.read`;
+- preautorizar arbitrariamente identidades externas;
+- gestionar roles;
+- suspender cuentas por autoridad editorial;
+- modificar derechos para hacer legal una audiencia que no lo sea.
 
 El Moderator selecciona la audiencia del **recurso**.
 
@@ -446,10 +447,10 @@ al menos 2 Moderators activos
 
 Esto permite:
 
-* continuidad durante ausencias;
-* reparto de carga;
-* revisión de recursos pertenecientes a otro Moderator;
-* menor dependencia de una única persona.
+- continuidad durante ausencias;
+- reparto de carga;
+- revisión de recursos pertenecientes a otro Moderator;
+- menor dependencia de una única persona.
 
 ---
 
@@ -538,17 +539,17 @@ La misma persona puede ejercer ambas responsabilidades, especialmente durante la
 
 Administrator puede:
 
-* asignar roles;
-* revocar roles;
-* gestionar Moderators;
-* conceder entitlements;
-* revocar entitlements;
-* gestionar la admisión de identidades externas;
-* suspender cuentas;
-* deshabilitar cuentas;
-* responder a incidentes;
-* consultar información de auditoría;
-* realizar intervenciones administrativas excepcionales.
+- asignar roles;
+- revocar roles;
+- gestionar Moderators;
+- conceder entitlements;
+- revocar entitlements;
+- gestionar la admisión de identidades externas;
+- suspender cuentas;
+- deshabilitar cuentas;
+- responder a incidentes;
+- consultar información de auditoría;
+- realizar intervenciones administrativas excepcionales.
 
 ---
 
@@ -566,10 +567,10 @@ Moderator publishes
 
 Administrator conserva las capacidades excepcionales necesarias para:
 
-* recuperación;
-* incidentes;
-* administración;
-* mantenimiento.
+- recuperación;
+- incidentes;
+- administración;
+- mantenimiento.
 
 Pero la interfaz y los procesos normales no deben convertir Administrator en el sustituto diario de Moderator.
 
@@ -697,10 +698,10 @@ privileged_material.read
 
 Un entitlement debe:
 
-* asignarse explícitamente;
-* asociarse a `user_id`;
-* ser revocable;
-* ser auditable.
+- asignarse explícitamente;
+- asociarse a `user_id`;
+- ser revocable;
+- ser auditable.
 
 ---
 
@@ -756,10 +757,10 @@ approved/restricted
 
 y tampoco puede:
 
-* contribuir;
-* revisar;
-* publicar;
-* administrar.
+- contribuir;
+- revisar;
+- publicar;
+- administrar.
 
 ---
 
@@ -1107,11 +1108,11 @@ revoke privileged_material.read
 
 Como mínimo debe poder conocerse:
 
-* destinatario;
-* acción;
-* actor;
-* fecha;
-* razón.
+- destinatario;
+- acción;
+- actor;
+- fecha;
+- razón.
 
 ---
 
@@ -1119,13 +1120,13 @@ Como mínimo debe poder conocerse:
 
 También deben poder auditarse según corresponda:
 
-* admisión de identidad externa;
-* revocación de dicha admisión;
-* cambio administrativo de tipo de identidad;
-* suspensión;
-* deshabilitación;
-* reactivación;
-* cambios de Moderator.
+- admisión de identidad externa;
+- revocación de dicha admisión;
+- cambio administrativo de tipo de identidad;
+- suspensión;
+- deshabilitación;
+- reactivación;
+- cambios de Moderator.
 
 ---
 
@@ -1139,11 +1140,11 @@ role = moderator
 
 proporcionados por:
 
-* formulario;
-* JSON;
-* query string;
-* localStorage;
-* metadata OAuth manipulable.
+- formulario;
+- JSON;
+- query string;
+- localStorage;
+- metadata OAuth manipulable.
 
 Los roles efectivos se resuelven desde PostgreSQL.
 
@@ -1200,10 +1201,10 @@ Para `external_authorized`, la restricción es más fuerte: los roles internos n
 
 En particular, no debe crearse un Administrator automáticamente:
 
-* por ser el primer usuario;
-* por dominio de correo;
-* por metadata OAuth;
-* por variable enviada por navegador.
+- por ser el primer usuario;
+- por dominio de correo;
+- por metadata OAuth;
+- por variable enviada por navegador.
 
 El bootstrap administrativo debe utilizar un procedimiento explícito y controlado.
 
@@ -1502,18 +1503,18 @@ La implementación no debe resolver ese caso concediendo artificialmente un enti
 
 Este modelo no introduce:
 
-* roles personalizados por usuario;
-* creación arbitraria de nuevos roles;
-* ACL por recurso;
-* grupos privileged múltiples;
-* permisos resource-specific;
-* doble aprobación obligatoria;
-* Moderator gestionando cuentas;
-* Moderator gestionando entitlements;
-* roles derivados automáticamente del email;
-* entitlements derivados automáticamente del email;
-* jerarquía numérica universal de roles;
-* autorización basada exclusivamente en frontend.
+- roles personalizados por usuario;
+- creación arbitraria de nuevos roles;
+- ACL por recurso;
+- grupos privileged múltiples;
+- permisos resource-specific;
+- doble aprobación obligatoria;
+- Moderator gestionando cuentas;
+- Moderator gestionando entitlements;
+- roles derivados automáticamente del email;
+- entitlements derivados automáticamente del email;
+- jerarquía numérica universal de roles;
+- autorización basada exclusivamente en frontend.
 
 ---
 
@@ -1575,9 +1576,9 @@ No debe conceder `privileged_material.read` a Moderator o Administrator únicame
 
 Cualquier cambio que introduzca:
 
-* nuevos roles;
-* nuevos entitlements;
-* nuevas capacidades;
-* nueva jerarquía;
+- nuevos roles;
+- nuevos entitlements;
+- nuevas capacidades;
+- nueva jerarquía;
 
 requiere primero modificar y aceptar este contrato.

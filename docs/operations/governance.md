@@ -36,8 +36,8 @@ El Centro de Estudiantes de la Facultad es la referencia institucional para la p
 
 Su Presidencia vigente puede:
 
-* ejercer directamente la responsabilidad editorial operativa; o
-* designar a un miembro institucional de confianza.
+- ejercer directamente la responsabilidad editorial operativa; o
+- designar a un miembro institucional de confianza.
 
 La responsabilidad editorial operativa se representa dentro de la aplicación mediante el rol:
 
@@ -62,8 +62,8 @@ ACECOM es la referencia institucional para la continuidad técnica, seguridad y 
 
 Su Presidencia vigente puede:
 
-* ejercer directamente la responsabilidad administrativa; o
-* designar a un miembro institucional de confianza.
+- ejercer directamente la responsabilidad administrativa; o
+- designar a un miembro institucional de confianza.
 
 La responsabilidad administrativa de la aplicación se representa mediante:
 
@@ -161,13 +161,13 @@ del Consejo de Continuidad.
 
 Esta regla se aplica a situaciones como:
 
-* pérdida de acceso administrativo;
-* pérdida de custodia de infraestructura;
-* salida inesperada del responsable;
-* cuenta administrativa comprometida;
-* transferencia anual fallida;
-* disputa sobre la custodia técnica;
-* imposibilidad de completar el relevo ordinario.
+- pérdida de acceso administrativo;
+- pérdida de custodia de infraestructura;
+- salida inesperada del responsable;
+- cuenta administrativa comprometida;
+- transferencia anual fallida;
+- disputa sobre la custodia técnica;
+- imposibilidad de completar el relevo ordinario.
 
 ---
 
@@ -195,12 +195,12 @@ Su finalidad es exclusivamente la recuperación excepcional y la continuidad del
 
 Las transferencias relevantes deben dejar evidencia suficiente para conocer:
 
-* responsabilidad transferida;
-* responsable anterior;
-* responsable nuevo;
-* autoridad que aprobó la transferencia;
-* fecha;
-* razón cuando no sea una transición ordinaria.
+- responsabilidad transferida;
+- responsable anterior;
+- responsable nuevo;
+- autoridad que aprobó la transferencia;
+- fecha;
+- razón cuando no sea una transición ordinaria.
 
 Las credenciales y secretos no deben almacenarse dentro del registro de auditoría.
 

@@ -52,18 +52,18 @@ El navegador nunca es la autoridad sobre roles, privilegios o acceso a recursos.
 
 Supabase Auth es responsable de aspectos como:
 
-* autenticación con Google;
-* sesiones;
-* intercambio OAuth;
-* identidad autenticada.
+- autenticación con Google;
+- sesiones;
+- intercambio OAuth;
+- identidad autenticada.
 
 No determina por sí mismo:
 
-* roles de aplicación;
-* audiencia de recursos;
-* permisos de moderación;
-* entitlements;
-* autorización de archivos.
+- roles de aplicación;
+- audiencia de recursos;
+- permisos de moderación;
+- entitlements;
+- autorización de archivos.
 
 ---
 
@@ -93,11 +93,11 @@ y aplicar las correspondientes políticas RLS y funciones de autorización.
 
 El runtime server-side:
 
-* valida la identidad de la request;
-* utiliza un cliente Supabase asociado a esa request;
-* delega autorización de datos en PostgreSQL;
-* ejecuta los flujos server-side permitidos;
-* nunca confía en roles o grants proporcionados por el navegador.
+- valida la identidad de la request;
+- utiliza un cliente Supabase asociado a esa request;
+- delega autorización de datos en PostgreSQL;
+- ejecuta los flujos server-side permitidos;
+- nunca confía en roles o grants proporcionados por el navegador.
 
 `Astro.locals.auth` proporciona contexto de autenticación.
 
@@ -118,11 +118,11 @@ La publishable key puede estar disponible en el navegador.
 
 No constituye una credencial administrativa y su seguridad depende de:
 
-* Supabase Auth;
-* grants PostgreSQL;
-* RLS;
-* funciones controladas;
-* autorización server-side.
+- Supabase Auth;
+- grants PostgreSQL;
+- RLS;
+- funciones controladas;
+- autorización server-side.
 
 Las claves secretas no deben formar parte del runtime normal de Astro.
 
@@ -142,10 +142,10 @@ La `service_role` omite RLS y por tanto no debe utilizarse como solución para s
 
 Las operaciones normales del producto deben funcionar mediante:
 
-* identidad del usuario;
-* RLS;
-* RPC controladas;
-* privilegios mínimos.
+- identidad del usuario;
+- RLS;
+- RPC controladas;
+- privilegios mínimos.
 
 ---
 
@@ -178,12 +178,12 @@ no obtiene ningún privilegio.
 
 Cuando una función PostgreSQL requiera `SECURITY DEFINER`, debe mantener las garantías de seguridad existentes:
 
-* `search_path` controlado;
-* nombres SQL completamente calificados;
-* sin SQL dinámico innecesario;
-* `EXECUTE` concedido únicamente a las firmas y roles requeridos;
-* validación del actor mediante `auth.uid()`;
-* mínimo privilegio.
+- `search_path` controlado;
+- nombres SQL completamente calificados;
+- sin SQL dinámico innecesario;
+- `EXECUTE` concedido únicamente a las firmas y roles requeridos;
+- validación del actor mediante `auth.uid()`;
+- mínimo privilegio.
 
 Una función `SECURITY DEFINER` no debe convertirse en una manera indirecta de saltarse RLS sin una política explícita.
 
@@ -203,20 +203,20 @@ identity_kind
 
 La razón es evitar problemas de:
 
-* revocación tardía;
-* claims obsoletos;
-* invalidación compleja;
-* divergencia entre token y PostgreSQL.
+- revocación tardía;
+- claims obsoletos;
+- invalidación compleja;
+- divergencia entre token y PostgreSQL.
 
 Las decisiones sensibles continúan consultando información autoritativa en PostgreSQL.
 
 Si una evolución futura requiere claims por rendimiento, deberá definir mediante ADR:
 
-* qué datos se replican;
-* tiempo máximo de obsolescencia;
-* revocación;
-* invalidación;
-* riesgos aceptados.
+- qué datos se replican;
+- tiempo máximo de obsolescencia;
+- revocación;
+- invalidación;
+- riesgos aceptados.
 
 ---
 
@@ -246,18 +246,18 @@ inicia el flujo con Google mediante Supabase Auth.
 
 Debe:
 
-* validar `Origin` cuando corresponda;
-* evitar redirects abiertos;
-* utilizar el cliente Supabase de la request;
-* construir únicamente callbacks internos controlados;
-* no aceptar tokens proporcionados manualmente por el cliente.
+- validar `Origin` cuando corresponda;
+- evitar redirects abiertos;
+- utilizar el cliente Supabase de la request;
+- construir únicamente callbacks internos controlados;
+- no aceptar tokens proporcionados manualmente por el cliente.
 
 La aplicación no necesita solicitar acceso a:
 
-* Gmail;
-* Google Drive;
-* Google Calendar;
-* otras APIs de Google.
+- Gmail;
+- Google Drive;
+- Google Calendar;
+- otras APIs de Google.
 
 Google se utiliza como proveedor de identidad.
 
@@ -326,11 +326,11 @@ El cliente server-side se crea por request.
 
 No se deben ejecutar durante import:
 
-* login;
-* logout;
-* `getUser`;
-* consultas;
-* decisiones de autorización.
+- login;
+- logout;
+- `getUser`;
+- consultas;
+- decisiones de autorización.
 
 El middleware es responsable de validar la identidad durante una request real.
 
@@ -361,12 +361,12 @@ La identidad expuesta al contexto SSR debe mantenerse mínima.
 
 No debe incluir automáticamente:
 
-* tokens;
-* roles;
-* entitlements;
-* `storage_key`;
-* credenciales;
-* sesión OAuth completa.
+- tokens;
+- roles;
+- entitlements;
+- `storage_key`;
+- credenciales;
+- sesión OAuth completa.
 
 ---
 
@@ -527,9 +527,9 @@ Sin dicho entitlement, una identidad externa activa conserva únicamente las cap
 
 El email participa en:
 
-* autenticación;
-* admisión;
-* mantenimiento de identidad.
+- autenticación;
+- admisión;
+- mantenimiento de identidad.
 
 No debe ser el mecanismo runtime de autorización.
 
@@ -619,10 +619,10 @@ La estructura SQL exacta se define durante implementación.
 
 La preautorización debe ser:
 
-* explícita;
-* auditable;
-* revocable;
-* limitada al email exacto autorizado.
+- explícita;
+- auditable;
+- revocable;
+- limitada al email exacto autorizado.
 
 No existe una regla general:
 
@@ -664,9 +664,9 @@ Cuando corresponda retirar también las capacidades autenticadas de la cuenta, A
 
 La admisión no debe confiar en un email arbitrario proporcionado por:
 
-* formulario;
-* query parameter;
-* JSON del navegador.
+- formulario;
+- query parameter;
+- JSON del navegador.
 
 La identidad debe proceder del proveedor/Auth validado por Supabase.
 
@@ -726,6 +726,7 @@ reviewer
 moderator
 administrator
 ```
+
 En v1, todos los roles internos requieren:
 
 ```text
@@ -780,12 +781,12 @@ approved + privileged
 
 No concede:
 
-* Contributor;
-* Reviewer;
-* Moderator;
-* Administrator;
-* capacidad de upload;
-* capacidad de publicación.
+- Contributor;
+- Reviewer;
+- Moderator;
+- Administrator;
+- capacidad de upload;
+- capacidad de publicación.
 
 ---
 
@@ -928,11 +929,11 @@ active
 
 Puede utilizar todas las capacidades que le concedan:
 
-* identidad;
-* roles;
-* entitlements;
-* ownership;
-* políticas de recursos.
+- identidad;
+- roles;
+- entitlements;
+- ownership;
+- políticas de recursos.
 
 ---
 
@@ -940,11 +941,11 @@ Puede utilizar todas las capacidades que le concedan:
 
 Pierde:
 
-* acceso `restricted`;
-* acceso `privileged`;
-* roles editoriales;
-* privilegios institucionales;
-* capacidades de contribución y moderación.
+- acceso `restricted`;
+- acceso `privileged`;
+- roles editoriales;
+- privilegios institucionales;
+- capacidades de contribución y moderación.
 
 Conserva únicamente el contenido disponible públicamente.
 
@@ -1118,13 +1119,13 @@ Administrator representa autoridad administrativa.
 
 Puede:
 
-* gestionar roles;
-* gestionar Moderators;
-* conceder/revocar entitlements;
-* gestionar admisión externa;
-* suspender/deshabilitar cuentas;
-* responder a incidentes;
-* realizar acceso administrativo excepcional según el contrato de recursos.
+- gestionar roles;
+- gestionar Moderators;
+- conceder/revocar entitlements;
+- gestionar admisión externa;
+- suspender/deshabilitar cuentas;
+- responder a incidentes;
+- realizar acceso administrativo excepcional según el contrato de recursos.
 
 Administrator no sustituye al Moderator como flujo editorial ordinario.
 
@@ -1172,10 +1173,10 @@ requieren una operación administrativa explícita.
 
 La operación debe ser:
 
-* autorizada;
-* auditada;
-* coherente con la identidad actualmente validada;
-* incapaz de convertirse en una elevación automática de privilegios.
+- autorizada;
+- auditada;
+- coherente con la identidad actualmente validada;
+- incapaz de convertirse en una elevación automática de privilegios.
 
 ---
 
@@ -1201,11 +1202,11 @@ En v1 se utiliza una identidad principal por cuenta.
 
 Una futura capacidad de linking debe diseñarse explícitamente debido a los riesgos de:
 
-* account takeover;
-* duplicación de cuentas;
-* transferencia de roles;
-* transferencia de entitlements;
-* recuperación de cuenta.
+- account takeover;
+- duplicación de cuentas;
+- transferencia de roles;
+- transferencia de entitlements;
+- recuperación de cuenta.
 
 ---
 
@@ -1222,11 +1223,11 @@ public.resource_review_events
 
 y autorización basada en:
 
-* perfiles activos;
-* roles;
-* ownership;
-* `review_status`;
-* `visibility`.
+- perfiles activos;
+- roles;
+- ownership;
+- `review_status`;
+- `visibility`.
 
 Ese baseline se conserva históricamente.
 
@@ -1331,11 +1332,11 @@ La clave de almacenamiento pertenece a infraestructura privada.
 
 No debe convertirse en:
 
-* claim;
-* cookie;
-* localStorage;
-* respuesta de autorización;
-* identificador de recurso público.
+- claim;
+- cookie;
+- localStorage;
+- respuesta de autorización;
+- identificador de recurso público.
 
 ---
 
@@ -1345,16 +1346,16 @@ Las operaciones sensibles de identidad y autorización deben poder auditarse.
 
 Como mínimo:
 
-* grant de rol;
-* revoke de rol;
-* grant de entitlement;
-* revoke de entitlement;
-* preautorización externa;
-* revocación de preautorización;
-* cambio administrativo de `identity_kind`;
-* suspensión;
-* desactivación;
-* reactivación cuando corresponda.
+- grant de rol;
+- revoke de rol;
+- grant de entitlement;
+- revoke de entitlement;
+- preautorización externa;
+- revocación de preautorización;
+- cambio administrativo de `identity_kind`;
+- suspensión;
+- desactivación;
+- reactivación cuando corresponda.
 
 El actor administrativo debe derivarse de la sesión autorizada y no ser proporcionado libremente por el cliente.
 
@@ -1676,20 +1677,20 @@ external_authorized + privileged_material.read
 
 Esta arquitectura no introduce:
 
-* registro abierto a cualquier email;
-* registro abierto a cualquier Gmail;
-* custom JWT claims de autorización;
-* autorización por `app_metadata`;
-* autorización por `raw_user_meta_data`;
-* autorización runtime por dominio de email;
-* account linking automático;
-* múltiples proveedores asociados automáticamente a una cuenta;
-* ACL por recurso;
-* múltiples cohortes privileged;
-* roles creados automáticamente;
-* Moderator automático;
-* Administrator automático;
-* entitlements automáticos.
+- registro abierto a cualquier email;
+- registro abierto a cualquier Gmail;
+- custom JWT claims de autorización;
+- autorización por `app_metadata`;
+- autorización por `raw_user_meta_data`;
+- autorización runtime por dominio de email;
+- account linking automático;
+- múltiples proveedores asociados automáticamente a una cuenta;
+- ACL por recurso;
+- múltiples cohortes privileged;
+- roles creados automáticamente;
+- Moderator automático;
+- Administrator automático;
+- entitlements automáticos.
 
 ---
 
@@ -1767,13 +1768,13 @@ accepted Stage 4C target
 
 No deben inventar:
 
-* nuevos tipos de identidad;
-* nuevos mecanismos de admisión;
-* nuevos roles;
-* nuevos entitlements;
-* bypasses de account status;
-* custom claims;
-* account linking;
+- nuevos tipos de identidad;
+- nuevos mecanismos de admisión;
+- nuevos roles;
+- nuevos entitlements;
+- bypasses de account status;
+- custom claims;
+- account linking;
 
 sin modificar primero los contratos normativos correspondientes.
 
