@@ -54,7 +54,9 @@ describe('resource PDF validation', () => {
 		expect(result).toMatchObject({
 			byteSize: sourceBytes.byteLength,
 			contentType: 'application/pdf',
+			fileKind: 'pdf',
 			filename: 'exam.PDF',
+			normalizedExtension: '.pdf',
 			sha256: MINIMAL_PDF_SHA256,
 		});
 		expect(result.bytes).not.toBe(sourceBytes);

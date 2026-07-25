@@ -21,7 +21,9 @@ export class ResourceUploadPersistenceError extends Error {
 export interface ResourceUploadReservation {
 	readonly resourceId: string;
 	readonly displayFilename: string;
-	readonly contentType: string;
+	readonly fileKind: 'pdf';
+	readonly normalizedExtension: '.pdf';
+	readonly contentType: 'application/pdf';
 	readonly byteSize: number;
 	readonly sha256: string;
 }
@@ -73,6 +75,8 @@ export const createSupabaseResourceUploadPersistence = (
 				const response = await client.rpc('register_resource_file_upload', {
 					resource_id: input.resourceId,
 					display_filename: input.displayFilename,
+					file_kind: input.fileKind,
+					normalized_extension: input.normalizedExtension,
 					content_type: input.contentType,
 					byte_size: input.byteSize,
 					sha256: input.sha256,

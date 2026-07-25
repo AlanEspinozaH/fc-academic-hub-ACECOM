@@ -234,9 +234,12 @@ export type Database = {
 					content_type: string;
 					created_at: string;
 					display_filename: string;
+					file_kind: Database['public']['Enums']['resource_file_kind'];
 					id: string;
+					normalized_extension: string;
 					resource_id: string;
 					sha256: string | null;
+					storage_key_version: Database['public']['Enums']['resource_storage_key_version'];
 					updated_at: string;
 					uploaded_by: string;
 				};
@@ -245,9 +248,12 @@ export type Database = {
 					content_type: string;
 					created_at?: string;
 					display_filename: string;
+					file_kind: Database['public']['Enums']['resource_file_kind'];
 					id?: string;
+					normalized_extension: string;
 					resource_id: string;
 					sha256?: string | null;
+					storage_key_version: Database['public']['Enums']['resource_storage_key_version'];
 					updated_at?: string;
 					uploaded_by: string;
 				};
@@ -256,9 +262,12 @@ export type Database = {
 					content_type?: string;
 					created_at?: string;
 					display_filename?: string;
+					file_kind?: Database['public']['Enums']['resource_file_kind'];
 					id?: string;
+					normalized_extension?: string;
 					resource_id?: string;
 					sha256?: string | null;
+					storage_key_version?: Database['public']['Enums']['resource_storage_key_version'];
 					updated_at?: string;
 					uploaded_by?: string;
 				};
@@ -535,6 +544,8 @@ export type Database = {
 					byte_size: number;
 					content_type: string;
 					display_filename: string;
+					file_kind: Database['public']['Enums']['resource_file_kind'];
+					normalized_extension: string;
 					resource_id: string;
 					sha256?: string;
 				};
@@ -574,6 +585,7 @@ export type Database = {
 			app_entitlement: 'privileged_material.read';
 			app_role: 'student' | 'contributor' | 'reviewer' | 'moderator' | 'administrator';
 			identity_kind: 'institutional' | 'external_authorized';
+			resource_file_kind: 'pdf' | 'image' | 'markdown' | 'tex' | 'text' | 'source';
 			resource_review_status: 'draft' | 'pending' | 'approved' | 'rejected';
 			resource_rights_status:
 				| 'pending'
@@ -584,6 +596,7 @@ export type Database = {
 				| 'copyright-restricted'
 				| 'open-license'
 				| 'public-domain';
+			resource_storage_key_version: 'legacy_pdf_v1' | 'generic_v2';
 			resource_storage_status: 'uploading' | 'stored' | 'delete_pending' | 'deleted' | 'failed';
 			resource_visibility: 'private' | 'restricted' | 'public' | 'privileged';
 		};
@@ -711,6 +724,7 @@ export const Constants = {
 			app_entitlement: ['privileged_material.read'],
 			app_role: ['student', 'contributor', 'reviewer', 'moderator', 'administrator'],
 			identity_kind: ['institutional', 'external_authorized'],
+			resource_file_kind: ['pdf', 'image', 'markdown', 'tex', 'text', 'source'],
 			resource_review_status: ['draft', 'pending', 'approved', 'rejected'],
 			resource_rights_status: [
 				'pending',
@@ -722,6 +736,7 @@ export const Constants = {
 				'open-license',
 				'public-domain',
 			],
+			resource_storage_key_version: ['legacy_pdf_v1', 'generic_v2'],
 			resource_storage_status: ['uploading', 'stored', 'delete_pending', 'deleted', 'failed'],
 			resource_visibility: ['private', 'restricted', 'public', 'privileged'],
 		},
