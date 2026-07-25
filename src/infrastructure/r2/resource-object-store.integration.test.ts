@@ -3,7 +3,8 @@ import { createR2ResourceObjectStore } from './resource-object-store';
 import { describe, expect, it } from 'vitest';
 
 const BUCKET_BINDING = 'ACADEMIC_RESOURCES';
-const STORAGE_KEY = 'integration/private-resource.pdf';
+const STORAGE_KEY =
+	'resources/11111111-2222-3333-4444-555555555555/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee';
 
 const WORKER_SCRIPT = `
 export default {
@@ -14,7 +15,7 @@ export default {
 `;
 
 describe('R2 resource object store with local Miniflare', () => {
-	it('writes and deletes an object in local R2', async () => {
+	it('writes, reads, detects missing, and deletes a generic_v2 object in local R2', async () => {
 		const miniflare = new Miniflare({
 			modules: true,
 			script: WORKER_SCRIPT,
@@ -32,23 +33,12 @@ describe('R2 resource object store with local Miniflare', () => {
 				contentType: 'application/pdf',
 			});
 
-			const storedObject = await bucket.get(STORAGE_KEY);
-
-			expect(storedObject).not.toBeNull();
-
-			if (storedObject === null) {
-				throw new Error('Expected local R2 object to exist');
-			}
-
-			expect(storedObject.httpMetadata?.contentType).toBe('application/pdf');
-
-			const storedBytes = new Uint8Array(await storedObject.arrayBuffer());
-
-			expect(storedBytes).toEqual(bytes);
+			await expect(store.read(STORAGE_KEY)).resolves.toEqual({ bytes });
+			await expect(store.read(`${STORAGE_KEY}-missing`)).resolves.toBeNull();
 
 			await store.delete(STORAGE_KEY);
 
-			expect(await bucket.get(STORAGE_KEY)).toBeNull();
+			await expect(store.read(STORAGE_KEY)).resolves.toBeNull();
 		} finally {
 			await miniflare.dispose();
 		}

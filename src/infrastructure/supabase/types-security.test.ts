@@ -49,6 +49,27 @@ type GrantEntitlementResult =
 type RevokeEntitlementResult =
 	SupabaseDatabase['public']['Functions']['revoke_user_entitlement']['Returns'];
 
+type PublicFunctions = SupabaseDatabase['public']['Functions'];
+
+type HasReadDescriptorRpc = 'get_resource_file_read_descriptor' extends keyof PublicFunctions
+	? true
+	: false;
+
+type ReadDescriptorFunction =
+	PublicFunctions extends Record<'get_resource_file_read_descriptor', infer FunctionContract>
+		? FunctionContract
+		: never;
+
+type ReadDescriptorArgs = ReadDescriptorFunction extends { Args: infer Args } ? Args : never;
+
+type ReadDescriptorReturns = ReadDescriptorFunction extends { Returns: infer Returns }
+	? Returns
+	: never;
+
+type ReadDescriptorRow = ReadDescriptorReturns extends ReadonlyArray<infer Row> ? Row : never;
+
+type ReadDescriptorExposesStorageKey = 'storage_key' extends keyof ReadDescriptorRow ? true : false;
+
 type HasPrivateSchema = 'private' extends keyof SupabaseDatabase ? true : false;
 
 type RegisterAcceptsStorageKey = 'storage_key' extends keyof RegisterUploadArgs ? true : false;
@@ -67,6 +88,7 @@ describe('generated Supabase database types', () => {
 		expect(generatedTypesSource).toContain('finalize_resource_file_upload');
 		expect(generatedTypesSource).toContain('abort_resource_file_upload');
 		expect(generatedTypesSource).toContain('mark_resource_file_failed');
+		expect(generatedTypesSource).toContain('get_resource_file_read_descriptor');
 	});
 
 	it('exposes the atomic upload RPC signatures without a caller-controlled storage key', () => {
@@ -88,6 +110,23 @@ describe('generated Supabase database types', () => {
 
 		expectTypeOf<keyof AbortUploadArgs>().toEqualTypeOf<'file_id' | 'reason'>();
 		expectTypeOf<RegisterUploadResult>().toEqualTypeOf<string>();
+	});
+
+	it('exposes the safe resource file read descriptor RPC contract', () => {
+		expectTypeOf<HasReadDescriptorRpc>().toEqualTypeOf<true>();
+		expectTypeOf<keyof ReadDescriptorArgs>().toEqualTypeOf<'file_id' | 'resource_id'>();
+		expectTypeOf<keyof ReadDescriptorRow>().toEqualTypeOf<
+			| 'resource_id'
+			| 'file_id'
+			| 'display_filename'
+			| 'file_kind'
+			| 'normalized_extension'
+			| 'content_type'
+			| 'byte_size'
+			| 'sha256'
+			| 'storage_key_version'
+		>();
+		expectTypeOf<ReadDescriptorExposesStorageKey>().toEqualTypeOf<false>();
 	});
 
 	it('exposes identity_kind consistently on profiles', () => {

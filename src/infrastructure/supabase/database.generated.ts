@@ -515,6 +515,16 @@ export type Database = {
 				Args: { comment?: string; file_id: string; sha256: string };
 				Returns: string;
 			};
+			get_resource_file_read_descriptor: {
+				Args: { file_id: string; resource_id: string };
+				Returns: Database['public']['CompositeTypes']['resource_file_read_descriptor'][];
+				SetofOptions: {
+					from: '*';
+					to: 'resource_file_read_descriptor';
+					isOneToOne: false;
+					isSetofReturn: true;
+				};
+			};
 			grant_user_entitlement: {
 				Args: {
 					entitlement: Database['public']['Enums']['app_entitlement'];
@@ -601,7 +611,17 @@ export type Database = {
 			resource_visibility: 'private' | 'restricted' | 'public' | 'privileged';
 		};
 		CompositeTypes: {
-			[_ in never]: never;
+			resource_file_read_descriptor: {
+				resource_id: string | null;
+				file_id: string | null;
+				display_filename: string | null;
+				file_kind: Database['public']['Enums']['resource_file_kind'] | null;
+				normalized_extension: string | null;
+				content_type: string | null;
+				byte_size: number | null;
+				sha256: string | null;
+				storage_key_version: Database['public']['Enums']['resource_storage_key_version'] | null;
+			};
 		};
 	};
 };

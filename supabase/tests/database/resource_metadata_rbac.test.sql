@@ -3,7 +3,7 @@ CREATE EXTENSION IF NOT EXISTS pgtap WITH SCHEMA extensions;
 
 BEGIN;
 
-SELECT plan(78);
+SELECT plan(105);
 
 CREATE OR REPLACE FUNCTION pg_temp.set_request_context(user_id uuid, jwt_role text)
 RETURNS void
@@ -924,6 +924,38 @@ VALUES
 		now()
 	);
 
+
+INSERT INTO public.academic_resources (
+	id,
+	owner_user_id,
+	course_id,
+	academic_term_id,
+	resource_type,
+	title,
+	description,
+	visibility,
+	review_status,
+	rights_status,
+	submitted_at,
+	reviewed_by,
+	reviewed_at
+)
+VALUES (
+	'10000000-0000-0000-0000-000000000039',
+	'00000000-0000-0000-0000-000000000502',
+	'course:storage',
+	'2026-1',
+	'notes',
+	'Failed storage public resource',
+	'Public metadata whose private object failed to store.',
+	'public',
+	'approved',
+	'open-license',
+	now(),
+	'00000000-0000-0000-0000-000000000504',
+	now()
+);
+
 SELECT throws_ok(
 	$$
 		INSERT INTO public.academic_resources (
@@ -958,6 +990,134 @@ SELECT throws_ok(
 	'institutional plus public is structurally rejected'
 );
 SELECT set_config('app.resource_review_transition', '', true);
+
+INSERT INTO public.resource_files (
+	id,
+	resource_id,
+	uploaded_by,
+	display_filename,
+	file_kind,
+	normalized_extension,
+	content_type,
+	byte_size,
+	sha256,
+	storage_key_version
+)
+VALUES
+	(
+		'20000000-0000-0000-0000-000000000030',
+		'10000000-0000-0000-0000-000000000030',
+		'00000000-0000-0000-0000-000000000502',
+		'Public matrix.pdf', 'pdf', '.pdf', 'application/pdf', 1030,
+		'3030303030303030303030303030303030303030303030303030303030303030',
+		'generic_v2'
+	),
+	(
+		'20000000-0000-0000-0000-000000000031',
+		'10000000-0000-0000-0000-000000000031',
+		'00000000-0000-0000-0000-000000000502',
+		'Restricted legacy.pdf', 'pdf', '.pdf', 'application/pdf', 1031,
+		'3131313131313131313131313131313131313131313131313131313131313131',
+		'legacy_pdf_v1'
+	),
+	(
+		'20000000-0000-0000-0000-000000000032',
+		'10000000-0000-0000-0000-000000000032',
+		'00000000-0000-0000-0000-000000000502',
+		'Privileged matrix.pdf', 'pdf', '.pdf', 'application/pdf', 1032,
+		'3232323232323232323232323232323232323232323232323232323232323232',
+		'generic_v2'
+	),
+	(
+		'20000000-0000-0000-0000-000000000033',
+		'10000000-0000-0000-0000-000000000033',
+		'00000000-0000-0000-0000-000000000502',
+		'Draft workflow.pdf', 'pdf', '.pdf', 'application/pdf', 1033,
+		'3333333333333333333333333333333333333333333333333333333333333333',
+		'generic_v2'
+	),
+	(
+		'20000000-0000-0000-0000-000000000034',
+		'10000000-0000-0000-0000-000000000034',
+		'00000000-0000-0000-0000-000000000502',
+		'Pending workflow.pdf', 'pdf', '.pdf', 'application/pdf', 1034,
+		'3434343434343434343434343434343434343434343434343434343434343434',
+		'legacy_pdf_v1'
+	),
+	(
+		'20000000-0000-0000-0000-000000000035',
+		'10000000-0000-0000-0000-000000000035',
+		'00000000-0000-0000-0000-000000000502',
+		'Rejected workflow.pdf', 'pdf', '.pdf', 'application/pdf', 1035,
+		'3535353535353535353535353535353535353535353535353535353535353535',
+		'generic_v2'
+	),
+	(
+		'20000000-0000-0000-0000-000000000036',
+		'10000000-0000-0000-0000-000000000036',
+		'00000000-0000-0000-0000-000000000502',
+		'Uploading public.pdf', 'pdf', '.pdf', 'application/pdf', 1036,
+		'3636363636363636363636363636363636363636363636363636363636363636',
+		'generic_v2'
+	),
+	(
+		'20000000-0000-0000-0000-000000000039',
+		'10000000-0000-0000-0000-000000000039',
+		'00000000-0000-0000-0000-000000000502',
+		'Failed public.pdf', 'pdf', '.pdf', 'application/pdf', 1039,
+		'3939393939393939393939393939393939393939393939393939393939393939',
+		'generic_v2'
+	);
+
+INSERT INTO private.resource_storage_objects (
+	file_id,
+	storage_key,
+	storage_status,
+	failure_reason,
+	stored_at
+)
+VALUES
+	(
+		'20000000-0000-0000-0000-000000000030',
+		'resources/10000000-0000-0000-0000-000000000030/20000000-0000-0000-0000-000000000030',
+		'stored', NULL, now()
+	),
+	(
+		'20000000-0000-0000-0000-000000000031',
+		'resources/10000000-0000-0000-0000-000000000031/20000000-0000-0000-0000-000000000031.pdf',
+		'stored', NULL, now()
+	),
+	(
+		'20000000-0000-0000-0000-000000000032',
+		'resources/10000000-0000-0000-0000-000000000032/20000000-0000-0000-0000-000000000032',
+		'stored', NULL, now()
+	),
+	(
+		'20000000-0000-0000-0000-000000000033',
+		'resources/10000000-0000-0000-0000-000000000033/20000000-0000-0000-0000-000000000033',
+		'stored', NULL, now()
+	),
+	(
+		'20000000-0000-0000-0000-000000000034',
+		'resources/10000000-0000-0000-0000-000000000034/20000000-0000-0000-0000-000000000034.pdf',
+		'stored', NULL, now()
+	),
+	(
+		'20000000-0000-0000-0000-000000000035',
+		'resources/10000000-0000-0000-0000-000000000035/20000000-0000-0000-0000-000000000035',
+		'stored', NULL, now()
+	),
+	(
+		'20000000-0000-0000-0000-000000000036',
+		'resources/10000000-0000-0000-0000-000000000036/20000000-0000-0000-0000-000000000036',
+		'uploading', NULL, NULL
+	),
+	(
+		'20000000-0000-0000-0000-000000000039',
+		'resources/10000000-0000-0000-0000-000000000039/20000000-0000-0000-0000-000000000039',
+		'failed', 'fixture failure', NULL
+	);
+
 
 SELECT ok(
 	EXISTS (
@@ -1209,6 +1369,325 @@ SELECT is(
 	(SELECT count(*)::integer FROM public.academic_resources WHERE id = '10000000-0000-0000-0000-000000000034'),
 	0,
 	'entitlement-only external user cannot inspect pending resources'
+);
+
+
+RESET ROLE;
+SELECT ok(
+	to_regprocedure('public.get_resource_file_read_descriptor(uuid,uuid)') IS NOT NULL
+	AND (
+		SELECT proargnames[1:2] = ARRAY['resource_id', 'file_id']
+		FROM pg_proc
+		WHERE oid = 'public.get_resource_file_read_descriptor(uuid,uuid)'::regprocedure
+	),
+	'resource file read descriptor RPC exists with exact domain-id arguments'
+);
+SELECT ok(
+	ARRAY(
+		SELECT attribute.attname::text
+		FROM pg_attribute AS attribute
+		WHERE attribute.attrelid = 'public.resource_file_read_descriptor'::regclass
+			AND attribute.attnum > 0
+			AND NOT attribute.attisdropped
+		ORDER BY attribute.attnum
+	) = ARRAY[
+		'resource_id', 'file_id', 'display_filename', 'file_kind',
+		'normalized_extension', 'content_type', 'byte_size', 'sha256',
+		'storage_key_version'
+	],
+	'read descriptor exposes exactly the safe metadata columns'
+);
+SELECT ok(
+	NOT EXISTS (
+		SELECT 1
+		FROM pg_attribute AS attribute
+		WHERE attribute.attrelid = 'public.resource_file_read_descriptor'::regclass
+			AND attribute.attname IN ('storage_key', 'storage_status', 'uploaded_by')
+			AND attribute.attnum > 0
+			AND NOT attribute.attisdropped
+	),
+	'read descriptor excludes private storage and uploader details'
+);
+SELECT ok(
+	(
+		SELECT pg_proc.prosecdef
+			AND EXISTS (
+				SELECT 1
+				FROM unnest(COALESCE(pg_proc.proconfig, ARRAY[]::text[])) AS setting(value)
+				WHERE replace(setting.value, 'search_path=', '') IN ('', '""')
+			)
+		FROM pg_proc
+		WHERE oid = 'public.get_resource_file_read_descriptor(uuid,uuid)'::regprocedure
+	),
+	'read descriptor is SECURITY DEFINER with empty search_path'
+);
+SELECT ok(
+	has_function_privilege('anon', 'public.get_resource_file_read_descriptor(uuid,uuid)', 'EXECUTE'),
+	'anon can execute the read descriptor RPC'
+);
+SELECT ok(
+	has_function_privilege('authenticated', 'public.get_resource_file_read_descriptor(uuid,uuid)', 'EXECUTE'),
+	'authenticated can execute the read descriptor RPC'
+);
+SELECT ok(
+	NOT EXISTS (
+		SELECT 1
+		FROM pg_proc
+		CROSS JOIN LATERAL aclexplode(
+			COALESCE(pg_proc.proacl, acldefault('f', pg_proc.proowner))
+		) AS privilege
+		WHERE pg_proc.oid = 'public.get_resource_file_read_descriptor(uuid,uuid)'::regprocedure
+			AND privilege.grantee = 0
+			AND privilege.privilege_type = 'EXECUTE'
+	),
+	'PUBLIC cannot execute the read descriptor RPC'
+);
+
+SET LOCAL ROLE anon;
+SELECT pg_temp.set_request_context(NULL, 'anon');
+SELECT is(
+	(SELECT count(*)::integer FROM public.get_resource_file_read_descriptor(
+		'10000000-0000-0000-0000-000000000030',
+		'20000000-0000-0000-0000-000000000030'
+	)),
+	1,
+	'RA-01 anon receives a stored approved public generic_v2 descriptor'
+);
+SELECT is(
+	(SELECT count(*)::integer FROM public.get_resource_file_read_descriptor(
+		'10000000-0000-0000-0000-000000000031',
+		'20000000-0000-0000-0000-000000000031'
+	)),
+	0,
+	'RA-03 anon cannot receive a restricted descriptor'
+);
+SELECT is(
+	(SELECT count(*)::integer FROM public.get_resource_file_read_descriptor(
+		'90000000-0000-0000-0000-000000000000',
+		'90000000-0000-0000-0000-000000000001'
+	)),
+	0,
+	'RA-11 a missing pair returns no descriptor'
+);
+SELECT is(
+	(SELECT count(*)::integer FROM public.get_resource_file_read_descriptor(
+		'10000000-0000-0000-0000-000000000030',
+		'20000000-0000-0000-0000-000000000031'
+	)),
+	0,
+	'RA-11 a wrong resource id with a real file id returns no descriptor'
+);
+SELECT is(
+	(SELECT count(*)::integer FROM public.get_resource_file_read_descriptor(
+		'10000000-0000-0000-0000-000000000036',
+		'20000000-0000-0000-0000-000000000036'
+	)),
+	0,
+	'an uploading private object returns no descriptor'
+);
+SELECT is(
+	(SELECT count(*)::integer FROM public.get_resource_file_read_descriptor(
+		'10000000-0000-0000-0000-000000000039',
+		'20000000-0000-0000-0000-000000000039'
+	)),
+	0,
+	'a failed private object returns no descriptor'
+);
+
+RESET ROLE;
+SET LOCAL ROLE authenticated;
+SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000507', 'authenticated');
+SELECT is(
+	(SELECT count(*)::integer FROM public.get_resource_file_read_descriptor(
+		'10000000-0000-0000-0000-000000000031',
+		'20000000-0000-0000-0000-000000000031'
+	)),
+	1,
+	'RA-03 active institutional identity receives restricted legacy descriptor'
+);
+SELECT is(
+	(SELECT count(*)::integer FROM public.get_resource_file_read_descriptor(
+		'10000000-0000-0000-0000-000000000032',
+		'20000000-0000-0000-0000-000000000032'
+	)),
+	0,
+	'RA-04 privileged descriptor is hidden without entitlement'
+);
+
+RESET ROLE;
+SET LOCAL ROLE authenticated;
+SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000501', 'authenticated');
+SELECT is(
+	(SELECT count(*)::integer FROM public.get_resource_file_read_descriptor(
+		'10000000-0000-0000-0000-000000000032',
+		'20000000-0000-0000-0000-000000000032'
+	)),
+	1,
+	'RA-04 institutional entitlement holder receives privileged descriptor'
+);
+
+RESET ROLE;
+SET LOCAL ROLE authenticated;
+SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000509', 'authenticated');
+SELECT is(
+	(SELECT count(*)::integer FROM public.get_resource_file_read_descriptor(
+		'10000000-0000-0000-0000-000000000032',
+		'20000000-0000-0000-0000-000000000032'
+	)),
+	1,
+	'RA-04 external entitlement holder receives privileged descriptor'
+);
+SELECT is(
+	(SELECT count(*)::integer FROM public.get_resource_file_read_descriptor(
+		'10000000-0000-0000-0000-000000000031',
+		'20000000-0000-0000-0000-000000000031'
+	)),
+	0,
+	'RA-05 external entitlement holder still cannot receive restricted descriptor'
+);
+
+RESET ROLE;
+SET LOCAL ROLE authenticated;
+SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000506', 'authenticated');
+SELECT is(
+	(
+		SELECT count(*)::integer
+		FROM (
+			SELECT * FROM public.get_resource_file_read_descriptor(
+				'10000000-0000-0000-0000-000000000030',
+				'20000000-0000-0000-0000-000000000030'
+			)
+			UNION ALL
+			SELECT * FROM public.get_resource_file_read_descriptor(
+				'10000000-0000-0000-0000-000000000031',
+				'20000000-0000-0000-0000-000000000031'
+			)
+			UNION ALL
+			SELECT * FROM public.get_resource_file_read_descriptor(
+				'10000000-0000-0000-0000-000000000032',
+				'20000000-0000-0000-0000-000000000032'
+			)
+		) AS descriptors
+	),
+	1,
+	'RA-02 suspended identity receives public descriptor only'
+);
+
+RESET ROLE;
+SET LOCAL ROLE authenticated;
+SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000510', 'authenticated');
+SELECT is(
+	(
+		SELECT count(*)::integer
+		FROM (
+			SELECT * FROM public.get_resource_file_read_descriptor(
+				'10000000-0000-0000-0000-000000000030',
+				'20000000-0000-0000-0000-000000000030'
+			)
+			UNION ALL
+			SELECT * FROM public.get_resource_file_read_descriptor(
+				'10000000-0000-0000-0000-000000000031',
+				'20000000-0000-0000-0000-000000000031'
+			)
+			UNION ALL
+			SELECT * FROM public.get_resource_file_read_descriptor(
+				'10000000-0000-0000-0000-000000000032',
+				'20000000-0000-0000-0000-000000000032'
+			)
+		) AS descriptors
+	),
+	1,
+	'RA-02 disabled identity receives public descriptor only'
+);
+
+RESET ROLE;
+SET LOCAL ROLE authenticated;
+SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000502', 'authenticated');
+SELECT is(
+	(
+		SELECT count(*)::integer
+		FROM (
+			SELECT * FROM public.get_resource_file_read_descriptor('10000000-0000-0000-0000-000000000033', '20000000-0000-0000-0000-000000000033')
+			UNION ALL
+			SELECT * FROM public.get_resource_file_read_descriptor('10000000-0000-0000-0000-000000000034', '20000000-0000-0000-0000-000000000034')
+			UNION ALL
+			SELECT * FROM public.get_resource_file_read_descriptor('10000000-0000-0000-0000-000000000035', '20000000-0000-0000-0000-000000000035')
+		) AS descriptors
+	),
+	3,
+	'RA-06 owner receives draft pending and rejected workflow descriptors'
+);
+
+RESET ROLE;
+SET LOCAL ROLE authenticated;
+SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000503', 'authenticated');
+SELECT is(
+	(SELECT count(*)::integer FROM public.get_resource_file_read_descriptor('10000000-0000-0000-0000-000000000034', '20000000-0000-0000-0000-000000000034')),
+	1,
+	'reviewer receives pending workflow descriptor'
+);
+SELECT is(
+	(
+		SELECT count(*)::integer
+		FROM (
+			SELECT * FROM public.get_resource_file_read_descriptor('10000000-0000-0000-0000-000000000033', '20000000-0000-0000-0000-000000000033')
+			UNION ALL
+			SELECT * FROM public.get_resource_file_read_descriptor('10000000-0000-0000-0000-000000000035', '20000000-0000-0000-0000-000000000035')
+		) AS descriptors
+	),
+	0,
+	'reviewer cannot receive another owner draft or rejected descriptor'
+);
+
+RESET ROLE;
+SET LOCAL ROLE authenticated;
+SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000504', 'authenticated');
+SELECT is(
+	(SELECT count(*)::integer FROM public.get_resource_file_read_descriptor('10000000-0000-0000-0000-000000000034', '20000000-0000-0000-0000-000000000034')),
+	1,
+	'moderator receives pending workflow descriptor'
+);
+SELECT is(
+	(
+		SELECT count(*)::integer
+		FROM (
+			SELECT * FROM public.get_resource_file_read_descriptor('10000000-0000-0000-0000-000000000033', '20000000-0000-0000-0000-000000000033')
+			UNION ALL
+			SELECT * FROM public.get_resource_file_read_descriptor('10000000-0000-0000-0000-000000000035', '20000000-0000-0000-0000-000000000035')
+		) AS descriptors
+	),
+	0,
+	'RA-07 moderator cannot receive another owner draft or rejected descriptor'
+);
+
+RESET ROLE;
+SET LOCAL ROLE authenticated;
+SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000505', 'authenticated');
+SELECT is(
+	(
+		SELECT count(*)::integer
+		FROM (
+			SELECT * FROM public.get_resource_file_read_descriptor('10000000-0000-0000-0000-000000000033', '20000000-0000-0000-0000-000000000033')
+			UNION ALL
+			SELECT * FROM public.get_resource_file_read_descriptor('10000000-0000-0000-0000-000000000034', '20000000-0000-0000-0000-000000000034')
+			UNION ALL
+			SELECT * FROM public.get_resource_file_read_descriptor('10000000-0000-0000-0000-000000000035', '20000000-0000-0000-0000-000000000035')
+		) AS descriptors
+	),
+	3,
+	'RA-08 administrator receives draft pending and rejected descriptors'
+);
+SELECT is(
+	(
+		SELECT count(DISTINCT descriptor.storage_key_version)::integer
+		FROM (
+			SELECT * FROM public.get_resource_file_read_descriptor('10000000-0000-0000-0000-000000000030', '20000000-0000-0000-0000-000000000030')
+			UNION ALL
+			SELECT * FROM public.get_resource_file_read_descriptor('10000000-0000-0000-0000-000000000031', '20000000-0000-0000-0000-000000000031')
+		) AS descriptor
+	),
+	2,
+	'RF-18 authorized stored descriptors preserve legacy_pdf_v1 and generic_v2 layouts'
 );
 
 RESET ROLE;

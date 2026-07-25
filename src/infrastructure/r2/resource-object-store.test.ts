@@ -21,18 +21,29 @@ const makeStoredObject = (): R2Object =>
 		key: STORAGE_KEY,
 	}) as R2Object;
 
+const makeStoredObjectBody = (bytes: Uint8Array): R2ObjectBody =>
+	({
+		key: STORAGE_KEY,
+		arrayBuffer: async () => bytes.buffer.slice(0),
+	}) as R2ObjectBody;
+
 const makeBucket = () => {
 	const put = vi.fn(async (): Promise<R2Object | null> => makeStoredObject());
+	const get = vi.fn(async (): Promise<R2ObjectBody | null> =>
+		makeStoredObjectBody(makeWrite().bytes),
+	);
 	const deleteObject = vi.fn(async (): Promise<void> => undefined);
 
 	const bucket = {
 		put,
+		get,
 		delete: deleteObject,
-	} as unknown as Pick<R2Bucket, 'put' | 'delete'>;
+	} as unknown as Pick<R2Bucket, 'put' | 'get' | 'delete'>;
 
 	return {
 		bucket,
 		put,
+		get,
 		deleteObject,
 	};
 };
@@ -69,6 +80,46 @@ describe('R2 resource object store', () => {
 				contentType: input.contentType,
 			},
 		});
+	});
+
+	it('reads exact bytes from the exact storage key', async () => {
+		const { bucket, get } = makeBucket();
+		const store = createR2ResourceObjectStore(bucket);
+		const expectedBytes = makeWrite().bytes;
+
+		get.mockResolvedValueOnce(makeStoredObjectBody(expectedBytes));
+
+		await expect(store.read(STORAGE_KEY)).resolves.toEqual({ bytes: expectedBytes });
+		expect(get).toHaveBeenCalledTimes(1);
+		expect(get).toHaveBeenCalledWith(STORAGE_KEY);
+	});
+
+	it('returns null when the private object is missing', async () => {
+		const { bucket, get } = makeBucket();
+		const store = createR2ResourceObjectStore(bucket);
+
+		get.mockResolvedValueOnce(null);
+
+		await expect(store.read(STORAGE_KEY)).resolves.toBeNull();
+	});
+
+	it('maps an R2 read exception to a typed error without exposing the storage key', async () => {
+		const { bucket, get } = makeBucket();
+		const store = createR2ResourceObjectStore(bucket);
+
+		get.mockRejectedValueOnce(new Error(`R2 failure for ${STORAGE_KEY}`));
+
+		const operation = store.read(STORAGE_KEY);
+
+		await expect(operation).rejects.toMatchObject({
+			name: 'ResourceObjectStoreError',
+			code: 'READ_FAILED',
+			message: 'Private resource object read failed',
+		});
+		await expect(operation).rejects.not.toHaveProperty(
+			'message',
+			expect.stringContaining(STORAGE_KEY),
+		);
 	});
 
 	it('deletes the exact storage key', async () => {

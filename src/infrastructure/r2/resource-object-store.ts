@@ -1,4 +1,4 @@
-export type ResourceObjectStoreErrorCode = 'WRITE_FAILED' | 'DELETE_FAILED';
+export type ResourceObjectStoreErrorCode = 'WRITE_FAILED' | 'READ_FAILED' | 'DELETE_FAILED';
 
 export class ResourceObjectStoreError extends Error {
 	public readonly code: ResourceObjectStoreErrorCode;
@@ -16,15 +16,23 @@ export interface ResourceObjectWrite {
 	readonly contentType: string;
 }
 
+export interface ResourceObjectRead {
+	readonly bytes: Uint8Array<ArrayBuffer>;
+}
+
 export interface ResourceObjectStore {
 	write(input: ResourceObjectWrite): Promise<void>;
+	read(storageKey: string): Promise<ResourceObjectRead | null>;
 	delete(storageKey: string): Promise<void>;
 }
 
-type ResourceR2Bucket = Pick<R2Bucket, 'put' | 'delete'>;
+type ResourceR2Bucket = Pick<R2Bucket, 'put' | 'get' | 'delete'>;
 
 const writeFailed = (): ResourceObjectStoreError =>
 	new ResourceObjectStoreError('WRITE_FAILED', 'Private resource object write failed');
+
+const readFailed = (): ResourceObjectStoreError =>
+	new ResourceObjectStoreError('READ_FAILED', 'Private resource object read failed');
 
 const deleteFailed = (): ResourceObjectStoreError =>
 	new ResourceObjectStoreError('DELETE_FAILED', 'Private resource object deletion failed');
@@ -46,6 +54,22 @@ export const createR2ResourceObjectStore = (bucket: ResourceR2Bucket): ResourceO
 
 			if (storedObject === null) {
 				throw writeFailed();
+			}
+		},
+
+		async read(storageKey: string): Promise<ResourceObjectRead | null> {
+			try {
+				const storedObject = await bucket.get(storageKey);
+
+				if (storedObject === null) {
+					return null;
+				}
+
+				return Object.freeze({
+					bytes: new Uint8Array(await storedObject.arrayBuffer()),
+				});
+			} catch {
+				throw readFailed();
 			}
 		},
 
