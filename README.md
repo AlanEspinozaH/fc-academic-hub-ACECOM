@@ -18,7 +18,7 @@ El proyecto utiliza:
 * Cloudflare Workers como runtime SSR;
 * Supabase Auth con Google OAuth;
 * PostgreSQL y RLS para identidad, roles, metadatos y autorización;
-* Cloudflare R2 privado para almacenamiento de archivos;
+* integración server-side con Cloudflare R2 privado para almacenamiento de archivos;
 * Content Collections/JSON para el catálogo académico actual.
 
 La infraestructura implementada incluye:
@@ -30,11 +30,13 @@ La infraestructura implementada incluye:
 * RLS y RPC transaccionales;
 * metadatos de recursos académicos;
 * workflow `draft -> pending -> approved | rejected`;
-* almacenamiento privado de archivos;
+* adaptador y binding R2 privado para desarrollo local, incluido el flujo PDF de Stage 4B;
 * endpoint server-side de subida PDF;
 * SHA-256;
 * compensación PostgreSQL/R2;
 * auditoría de operaciones relevantes.
+
+La integración R2 está implementada y probada dentro del entorno local del proyecto. La existencia del adaptador, binding y soporte mediante Miniflare no implica que exista actualmente un bucket R2 remoto productivo ni un despliegue remoto de la aplicación.
 
 El endpoint de subida actual es:
 
@@ -251,6 +253,20 @@ Mientras Stage 4C no esté implementado completamente:
 Las capacidades de 4C deben implementarse en cambios pequeños y verificables.
 
 No debe implementarse todo Stage 4C como un único cambio.
+
+La secuencia prevista es:
+
+```text
+4C.0A  contratos y documentación solamente
+4C.0B  realineación de schema/RLS/auth y storage metadata
+4C.1   lectura, preview y download de PDF
+4C.2   generalización del upload a ResourceFile
+4C.3   PNG/JPEG
+4C.4   Markdown/TeX/TXT/source
+4C.5   interfaces de producto
+```
+
+`4C.0A` no autoriza migraciones ni cambios de comportamiento productivo.
 
 Cada etapa debe mantener alineados:
 

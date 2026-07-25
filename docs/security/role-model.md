@@ -575,28 +575,37 @@ Pero la interfaz y los procesos normales no deben convertir Administrator en el 
 
 ---
 
-# 19. Gobierno institucional de los roles superiores
+# 19. Gobierno de los roles superiores
 
-FC Academic Hub separa gobierno editorial y gobierno técnico/administrativo.
+El modelo de software distingue las responsabilidades:
 
-El Centro de Estudiantes gobierna la política editorial, de contenido y derechos.
+```text
+Moderator
+-> autoridad editorial operativa
 
-Su Presidente vigente puede ejercer directamente o designar a un delegado para la función editorial operativa correspondiente a `moderator`.
+Administrator
+-> autoridad administrativa de la aplicación
 
-ACECOM gobierna el dominio técnico, de seguridad y administración de la plataforma.
+Infrastructure Custodian
+-> custodia de infraestructura externa
+```
 
-Su Presidente vigente puede ejercer directamente o designar a un delegado para la función operativa correspondiente a `administrator`.
+La asignación organizacional concreta de estas responsabilidades no forma parte del modelo de autorización.
 
-Todo delegado debe cumplir:
+El rol `administrator` y la función `Infrastructure Custodian` son conceptos diferentes aunque una misma persona pueda ejercer ambos.
+
+Toda persona que reciba un rol interno debe cumplir:
 
 ```text
 identity_kind = institutional
 account_status = active
 ```
 
-Las autoridades pertenecen a los cargos institucionales y no a personas concretas.
+La designación, transferencia y continuidad institucional de estas responsabilidades se documentan separadamente en:
 
-Los cambios de Presidente o delegado requieren transferencia explícita y auditable de los roles correspondientes.
+```text
+docs/operations/governance.md
+```
 
 ---
 
@@ -1332,13 +1341,15 @@ Una identidad `external_authorized` no puede poseer roles.
 
 ---
 
-## RM-20 — Institutional governance separation
+## RM-20 — Organizational governance is separate
 
-La autoridad editorial operativa corresponde a Moderator bajo el gobierno del Centro de Estudiantes.
+El modelo de roles define responsabilidades técnicas y editoriales, pero no determina qué organización o cargo institucional designa permanentemente a sus titulares.
 
-La autoridad técnica y administrativa operativa corresponde a Administrator bajo el gobierno de ACECOM.
+La política de designación, transferencia y recuperación se define en:
 
-La designación de cualquiera de estas funciones requiere una identidad institucional activa.
+```text
+docs/operations/governance.md
+```
 
 ---
 

@@ -64,6 +64,17 @@ La prioridad no es la escalabilidad masiva, sino:
 
 La vista previa y la descarga de un mismo archivo están sujetas a la misma política de autorización.
 
+En v1, los metadatos generales de un recurso y su archivo principal comparten la misma audiencia final.
+
+Por tanto, un actor que no pueda acceder al recurso tampoco debe conocer mediante las interfaces ordinarias de consumo:
+
+* su existencia;
+* su título;
+* sus metadatos generales;
+* la existencia de su archivo principal.
+
+Una vista mínima destinada al propietario para consultar el estado de su propia submission pertenece al workflow y no constituye exposición de los metadatos generales del recurso.
+
 ### Audiencia `public`
 
 Un recurso `approved + public` puede ser consultado sin autenticación cuando sus derechos permiten publicación pública.
@@ -76,7 +87,7 @@ Un usuario externo con privilegio especial no obtiene acceso a `restricted` úni
 
 ### Audiencia `privileged`
 
-`privileged` representa una audiencia especial de colaboradores expresamente autorizados por la Facultad.
+`privileged` representa una audiencia especial de usuarios expresamente autorizados por el Centro de Estudiantes.
 
 Puede incluir:
 
@@ -90,6 +101,30 @@ El Moderator decide si un recurso aprobado tendrá audiencia `privileged`.
 El Administrator gestiona qué usuarios reciben o pierden el privilegio necesario para acceder a dicha audiencia.
 
 Un privilegio de acceso no convierte automáticamente al usuario en Contributor, Reviewer o Moderator.
+
+En v1, una identidad:
+
+```text
+external_authorized
+```
+
+es exclusivamente lectora.
+
+No puede recibir roles internos:
+
+```text
+student
+contributor
+reviewer
+moderator
+administrator
+```
+
+Puede recibir únicamente los entitlements explícitos admitidos por el producto, actualmente:
+
+```text
+privileged_material.read
+```
 
 ## Archivos
 
@@ -225,7 +260,7 @@ Puede:
 * determinar la audiencia final de publicación;
 * retirar contenido según el procedimiento correspondiente.
 
-El Contributor puede proponer una audiencia, pero el Moderator determina la audiencia final al aprobar el recurso, dentro de lo permitido por `rights_status`.
+El Contributor puede proponer una audiencia, pero el Moderator determina la audiencia final al aprobar el recurso, dentro de los derechos aplicables, incluidas las restricciones estructurales y el alcance de la evidencia documental cuando corresponda.
 
 El Moderator no concede privilegios permanentes a cuentas de usuario.
 
@@ -276,6 +311,8 @@ Reglas:
 * un recurso rechazado puede editarse y reenviarse;
 * toda transición relevante queda auditada;
 * ninguna audiencia de publicación permite saltarse `review_status`.
+* una vez aprobado un recurso, ownership no concede un bypass de la audiencia final; el propietario consume el recurso según las mismas reglas ordinarias de audiencia;
+* Reviewer no conserva acceso editorial general después de la aprobación; su acceso a un recurso `approved` depende de la audiencia final, salvo que posea otra autoridad explícita independiente;
 
 ## Duplicados
 

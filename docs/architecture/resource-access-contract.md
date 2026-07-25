@@ -376,12 +376,12 @@ Un recurso `rejected` puede ser corregido y reenviado posteriormente.
 
 # 5. Matriz de workflow
 
-| Estado     |           Owner |                            Reviewer | Moderator | Administrator |   Usuario final |
-| ---------- | --------------: | ----------------------------------: | --------: | ------------: | --------------: |
-| `draft`    |              Sí |                                  No |        No |            Sí |              No |
-| `pending`  |              Sí |                                  Sí |        Sí |            Sí |              No |
-| `rejected` |              Sí |                                  No |        No |            Sí |              No |
-| `approved` | Según audiencia | Según audiencia o función editorial |        Sí |            Sí | Según audiencia |
+| Estado     |           Owner |          Reviewer | Moderator | Administrator |   Usuario final |
+| ---------- | --------------: | ----------------: | --------: | ------------: | --------------: |
+| `draft`    |              Sí |                No |        No |            Sí |              No |
+| `pending`  |              Sí |                Sí |        Sí |            Sí |              No |
+| `rejected` |              Sí |                No |        No |            Sí |              No |
+| `approved` | Según audiencia | Según audiencia   |        Sí |            Sí | Según audiencia |
 
 ---
 
@@ -570,6 +570,27 @@ rejected
 ajenos únicamente por poseer el rol.
 
 El producto v1 puede no exponer una interfaz independiente para Reviewer aunque el rol continúe existiendo internamente.
+
+Una vez que un recurso alcanza:
+
+```text
+approved
+```
+
+el rol `reviewer` no concede acceso editorial persistente sobre dicho recurso.
+
+Su acceso ordinario pasa a depender exclusivamente de la audiencia final del recurso.
+
+Por tanto:
+
+```text
+Reviewer
++ approved/privileged
++ sin privileged_material.read
+-> deny
+```
+
+El hecho de haber podido revisar el recurso mientras estaba `pending` no constituye un permiso permanente.
 
 ---
 
@@ -1425,6 +1446,49 @@ R2 no debe consultarse para recuperar un objeto antes de que la autorización ha
 
 Preview y descarga requieren exactamente la misma autorización sobre el recurso.
 
+## RA-18 — Ownership does not bypass final audience
+
+Una vez que un recurso está:
+
+```text
+approved
+```
+
+su propietario accede como consumidor según la audiencia final ordinaria.
+
+`ownership` no concede un bypass permanente de:
+
+```text
+restricted
+privileged
+```
+
+Por ejemplo:
+
+```text
+owner
++ institutional active
++ sin privileged_material.read
++ approved/privileged
+-> deny
+```
+
+La autoridad editorial o administrativa excepcional de Moderator y Administrator es independiente de ownership.
+
+---
+
+## RA-19 — Reviewer has no approved-resource bypass
+
+El rol `reviewer` concede acceso editorial al estado:
+
+```text
+pending
+```
+
+pero no concede acceso general a recursos ya aprobados.
+
+Después de aprobación, Reviewer accede únicamente si satisface la audiencia final ordinaria.
+
 ---
 
 # 36. Pruebas normativas requeridas
@@ -1522,7 +1586,59 @@ moderator other -> deny
 administrator -> allow
 ordinary user -> deny
 ```
+## Approved
 
+```text
+owner institutional active
++ approved/restricted
+-> allow
+```
+
+```text
+owner institutional active
++ sin privileged_material.read
++ approved/privileged
+-> deny
+```
+
+```text
+owner institutional active
++ privileged_material.read
++ approved/privileged
+-> allow
+```
+
+```text
+reviewer institutional active
++ approved/restricted
+-> allow
+```
+
+```text
+reviewer institutional active
++ sin privileged_material.read
++ approved/privileged
+-> deny
+```
+
+```text
+reviewer institutional active
++ privileged_material.read
++ approved/privileged
+-> allow
+```
+
+```text
+moderator
++ approved resource
+-> allow by editorial authority
+```
+
+```text
+administrator
++ approved resource
+-> allow when required by administrative authority
+```
 ---
 
 # 38. Pruebas de roles y entitlements

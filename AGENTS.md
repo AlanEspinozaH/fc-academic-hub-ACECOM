@@ -30,6 +30,7 @@ Antes de implementar cambios relacionados con recursos, revisar:
 * `docs/architecture/resource-upload-contract.md`
 * `docs/architecture/authentication-and-authorization.md`
 * `docs/security/role-model.md`
+* `docs/operations/governance.md` cuando el cambio afecte designación, transferencia, continuidad o custodia operativa.
 * ADR aceptados aplicables.
 
 Si implementación y contrato divergen:
@@ -37,6 +38,50 @@ Si implementación y contrato divergen:
 * el código actual describe el estado implementado;
 * los contratos aceptados describen el objetivo de la etapa;
 * el cambio debe hacer converger código, tests y documentación.
+
+## Alcance de Stage 4C
+
+Las etapas de Stage 4C tienen límites distintos.
+
+### `4C.0A`
+
+Es exclusivamente documental.
+
+Si una tarea está identificada como `4C.0A`, no implementar comportamiento nuevo ni modificar con ese propósito:
+
+```text
+src/
+supabase/migrations/
+supabase/tests/
+schema
+RLS
+RPC
+wrangler/R2 runtime configuration
+```
+
+Solo deben alinearse contratos, ADR, documentación operativa y documentación de desarrollo.
+
+### `4C.0B`
+
+Es la primera etapa autorizada para realinear de forma ejecutable:
+
+```text
+schema
+RLS
+auth/identity
+entitlements
+rights
+visibility
+storage_key_version
+RPC
+tests
+```
+
+PDF puede continuar siendo el único formato operativo de upload después de `4C.0B`.
+
+Las etapas posteriores habilitan lectura y formatos progresivamente según los contratos aceptados.
+
+No anticipar trabajo de una etapa posterior para “completar” una etapa anterior.
 
 ## Reglas de producto
 
@@ -64,7 +109,9 @@ No inferir nuevas funcionalidades por conveniencia de implementación.
 * Markdown, TeX y source se presentan como texto plano en v1.
 * No aceptar HTML, SVG, archives ni formatos fuera de la allowlist.
 * No exponer `storage_key` al navegador.
-* Los nuevos objetos deben seguir el layout definido en `resource-file-policy.md`.
+* Hasta que la migración de storage layout de Stage 4C esté implementada y verificada, preservar el layout PDF vigente de 4B.
+* Después de esa migración, todos los nuevos uploads deben utilizar `generic_v2` según `resource-file-policy.md`.
+* No modificar la derivación de storage key únicamente en TypeScript o únicamente en PostgreSQL; el cambio de layout debe mantener alineados schema, metadata, resolución server-side y pruebas.
 
 ## Autorización
 

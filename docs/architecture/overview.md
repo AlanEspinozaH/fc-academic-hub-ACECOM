@@ -10,9 +10,11 @@ Los archivos académicos utilizan almacenamiento privado en Cloudflare R2 median
 
 * `src/content/catalog/`: JSON activos del catálogo académico.
 * `src/domain/`: tipos, consultas, filtros, validaciones de integridad y lógica de dominio.
+* `src/application/`: casos de uso y orquestación de aplicación.
+* `src/infrastructure/`: integración con Supabase, Cloudflare R2 y otros adaptadores externos.
+* `src/http/`: lógica HTTP server-side reutilizable.
 * `src/components/` y `src/pages/`: interfaz y endpoints Astro.
-* `src/lib/` y módulos server-side relacionados: integración con Supabase, autorización, upload y almacenamiento.
-* `docs/`: contratos de producto, arquitectura, seguridad y ADR.
+* `docs/`: contratos de producto, arquitectura, operaciones, seguridad y ADR.
 * `supabase/`: configuración local, migraciones PostgreSQL, RLS, RPC y pruebas pgTAP.
 
 ## Catálogo estático
@@ -78,8 +80,58 @@ docs/architecture/resource-upload-contract.md
 
 ## Estado de infraestructura
 
-El repositorio contiene la integración y configuración necesarias para desarrollar localmente con Supabase y Cloudflare R2.
+El repositorio contiene la integración server-side, adaptadores y bindings necesarios para trabajar con Cloudflare R2 privado.
 
-La existencia de bindings, adaptadores o configuración local no implica por sí sola que exista infraestructura remota productiva desplegada.
+El desarrollo y las pruebas locales pueden utilizar el entorno local correspondiente, incluido Miniflare cuando aplique.
 
-El estado concreto de despliegue remoto debe documentarse separadamente cuando corresponda.
+La existencia de:
+
+```text
+R2 adapter
+binding
+upload orchestration
+local storage emulation
+```
+
+no implica por sí sola que exista:
+
+```text
+remote R2 bucket
+production deployment
+remote infrastructure provisioned
+```
+
+El estado de infraestructura remota debe documentarse separadamente y no inferirse a partir del código versionado.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

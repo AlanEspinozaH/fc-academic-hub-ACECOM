@@ -139,16 +139,50 @@ Para cambios de Stage 4C todavía no implementados:
 
 > los contratos aceptados de Stage 4C representan el objetivo normativo.
 
-Una implementación de 4C debe hacer converger dentro del mismo cambio:
+La convergencia se realiza por etapas y únicamente sobre los artefactos que correspondan al alcance de cada una.
 
-* código;
-* migraciones;
-* RLS;
-* RPC;
-* tests;
-* documentación.
+Stage:
 
-No debe actualizarse la documentación afirmando que una capacidad está implementada antes de que lo esté.
+```text
+4C.0A
+```
+
+es exclusivamente documental.
+
+Durante `4C.0A` no deben modificarse para implementar comportamiento nuevo:
+
+```text
+src/
+supabase/migrations/
+supabase/tests/
+schema PostgreSQL
+RLS
+RPC
+Cloudflare R2 layout operativo
+```
+
+Stage:
+
+```text
+4C.0B
+```
+
+inicia la realineación ejecutable de schema, autorización y almacenamiento necesaria para satisfacer los contratos aceptados.
+
+A partir de `4C.0B`, cada cambio de comportamiento debe mantener alineados, según corresponda:
+
+```text
+código
+migraciones
+RLS
+RPC
+tests
+documentación
+```
+
+La documentación puede describir comportamiento objetivo todavía no implementado únicamente cuando lo identifique explícitamente como pendiente.
+
+No debe presentarse una capacidad de Stage 4C como implementada antes de que su etapa correspondiente haya sido completada y verificada.
 
 ---
 
@@ -1806,55 +1840,141 @@ Los formatos y límites proceden de `resource-file-policy.md`; upload no inventa
 
 # 74. Relación con Stage 4C
 
-La evolución recomendada es incremental.
+La evolución se divide en etapas explícitas para evitar mezclar decisiones normativas con implementación.
 
-## Stage 4C.0
+## Stage 4C.0A — contratos y documentación
 
-Alinear:
+Stage 4C.0A define y alinea exclusivamente el contrato normativo.
 
-* contratos;
-* schema;
-* rights;
-* `file_kind`;
-* storage layout metadata;
-* RLS relacionado.
+Puede modificar documentación como:
 
-El pipeline operativo puede continuar temporalmente aceptando únicamente PDF.
+```text
+docs/product/
+docs/adr/
+docs/architecture/
+docs/security/
+docs/operations/
+AGENTS.md
+README.md
+```
+
+No introduce:
+
+```text
+migraciones PostgreSQL
+cambios RLS
+nuevas RPC
+cambios productivos TypeScript
+cambios operativos del layout R2
+nuevos formatos habilitados
+```
+
+El pipeline operativo al finalizar 4C.0A continúa siendo el baseline PDF de 4B.
 
 ---
 
-## Stage 4C.1
+## Stage 4C.0B — realineación ejecutable
 
-Añadir lectura/preview/download de PDF sin alterar innecesariamente upload.
+Stage 4C.0B implementa la base necesaria para que código y base de datos puedan representar los contratos aceptados.
+
+Incluye, según el diseño final:
+
+```text
+identity_kind
+external preauthorization
+privileged_material.read
+visibility = privileged
+rights_status alignment
+Moderator final audience
+file metadata alignment
+storage_key_version
+generic_v2 migration
+RLS alignment
+RPC alignment
+auditability
+```
+
+Debe incluir las migraciones y pruebas correspondientes.
+
+PDF puede continuar siendo el único formato operativo de upload al finalizar esta etapa.
+
+La migración de storage layout debe realizarse de forma coordinada; no debe cambiarse únicamente TypeScript o únicamente PostgreSQL.
 
 ---
 
-## Stage 4C.2
+## Stage 4C.1 — lectura PDF
 
-Generalizar el pipeline de upload desde:
+Añadir:
+
+```text
+PDF read
+PDF preview
+PDF download
+```
+
+mediante acceso server-side y autorización previa a `R2.get`.
+
+Esta etapa prueba el flujo completo de lectura privada sin generalizar todavía todos los formatos de upload.
+
+---
+
+## Stage 4C.2 — upload genérico
+
+Generalizar el pipeline desde:
 
 ```text
 PDF-only
 ```
 
-hacia:
+hacia el modelo:
 
 ```text
-ResourceFile allowlist
+ResourceFile
 ```
 
-preservando todas las invariantes RU-*.
+preservando todas las invariantes `RU-*`.
+
+La allowlist continúa siendo la definida por:
+
+```text
+docs/architecture/resource-file-policy.md
+```
 
 ---
 
-## Stages posteriores
+## Stage 4C.3 — imágenes
 
-Agregar progresivamente:
+Habilitar operacionalmente:
 
-* PNG/JPEG;
-* text/source;
+```text
+PNG
+JPEG
+```
 
-sin reescribir la arquitectura transaccional.
+con las validaciones ya definidas en la política de archivos.
+
+---
+
+## Stage 4C.4 — texto y source
+
+Habilitar operacionalmente:
+
+```text
+Markdown
+TeX
+TXT
+source code allowlisted
+```
+
+como contenido textual no ejecutable.
+
+---
+
+## Stage 4C.5 — interfaz
+
+Incorporar progresivamente las interfaces de Contributor, revisión, moderación, preview y download necesarias para exponer las capacidades anteriores.
+
+Ninguna etapa posterior debe reinterpretar `4C.0A` como autorización para implementar anticipadamente funcionalidades fuera de su alcance.
 
 ---
 
