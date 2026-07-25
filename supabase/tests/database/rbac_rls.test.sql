@@ -3,7 +3,7 @@ CREATE EXTENSION IF NOT EXISTS pgtap WITH SCHEMA extensions;
 
 BEGIN;
 
-SELECT plan(47);
+SELECT plan(54);
 
 CREATE OR REPLACE FUNCTION pg_temp.set_request_context(user_id uuid, jwt_role text)
 RETURNS void
@@ -121,6 +121,77 @@ SELECT ok(to_regclass('public.allowed_email_domains') IS NOT NULL, 'allowed_emai
 SELECT ok(to_regclass('public.profiles') IS NOT NULL, 'profiles exists');
 SELECT ok(to_regclass('public.user_roles') IS NOT NULL, 'user_roles exists');
 SELECT ok(to_regclass('public.role_audit_log') IS NOT NULL, 'role_audit_log exists');
+SELECT is(
+	(
+		SELECT array_agg(pg_enum.enumlabel ORDER BY pg_enum.enumsortorder)
+		FROM pg_type
+		INNER JOIN pg_namespace
+			ON pg_namespace.oid = pg_type.typnamespace
+		INNER JOIN pg_enum
+			ON pg_enum.enumtypid = pg_type.oid
+		WHERE pg_namespace.nspname = 'public'
+			AND pg_type.typname = 'identity_kind'
+	),
+	ARRAY['institutional', 'external_authorized']::name[],
+	'identity_kind enum has exactly the accepted values'
+);
+SELECT is(
+	(
+		SELECT format('%I.%I', type_namespace.nspname, attribute_type.typname)
+		FROM pg_attribute
+		INNER JOIN pg_type AS attribute_type
+			ON attribute_type.oid = pg_attribute.atttypid
+		INNER JOIN pg_namespace AS type_namespace
+			ON type_namespace.oid = attribute_type.typnamespace
+		WHERE pg_attribute.attrelid = 'public.profiles'::regclass
+			AND pg_attribute.attname = 'identity_kind'
+			AND NOT pg_attribute.attisdropped
+	),
+	'public.identity_kind',
+	'profiles.identity_kind uses public.identity_kind'
+);
+SELECT is(
+	(
+		SELECT pg_attribute.attnotnull
+		FROM pg_attribute
+		WHERE pg_attribute.attrelid = 'public.profiles'::regclass
+			AND pg_attribute.attname = 'identity_kind'
+			AND NOT pg_attribute.attisdropped
+	),
+	true,
+	'profiles.identity_kind is NOT NULL'
+);
+SELECT is(
+	(
+		SELECT pg_get_expr(pg_attrdef.adbin, pg_attrdef.adrelid)
+		FROM pg_attribute
+		INNER JOIN pg_attrdef
+			ON pg_attrdef.adrelid = pg_attribute.attrelid
+			AND pg_attrdef.adnum = pg_attribute.attnum
+		WHERE pg_attribute.attrelid = 'public.profiles'::regclass
+			AND pg_attribute.attname = 'identity_kind'
+			AND NOT pg_attribute.attisdropped
+	),
+	'''institutional''::identity_kind',
+	'profiles.identity_kind defaults to institutional'
+);
+SELECT ok(
+	NOT EXISTS (
+		SELECT 1
+		FROM pg_type
+		CROSS JOIN LATERAL aclexplode(
+			COALESCE(pg_type.typacl, acldefault('T', pg_type.typowner))
+		) AS type_acl
+		WHERE pg_type.oid = 'public.identity_kind'::regtype
+			AND type_acl.grantee = 0::oid
+			AND type_acl.privilege_type = 'USAGE'
+	),
+	'PUBLIC has no USAGE on identity_kind'
+);
+SELECT ok(
+	has_type_privilege('authenticated', 'public.identity_kind', 'USAGE'),
+	'authenticated has USAGE on identity_kind'
+);
 
 SELECT ok((SELECT relrowsecurity FROM pg_class WHERE oid = 'public.allowed_email_domains'::regclass), 'allowed_email_domains has RLS enabled');
 SELECT ok((SELECT relrowsecurity FROM pg_class WHERE oid = 'public.profiles'::regclass), 'profiles has RLS enabled');
@@ -216,6 +287,20 @@ SELECT is(
 	'account_status stays unchanged'
 );
 
+SET LOCAL ROLE authenticated;
+SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000101', 'authenticated');
+SELECT ok(
+	NOT pg_temp.try_sql(
+		format(
+			'update public.profiles set identity_kind = %L::public.identity_kind where user_id = %L::uuid',
+			'external_authorized',
+			'00000000-0000-0000-0000-000000000101'
+		)
+	),
+	'authenticated user cannot change identity_kind'
+);
+
+RESET ROLE;
 SET LOCAL ROLE authenticated;
 SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000101', 'authenticated');
 SELECT is((SELECT count(*)::integer FROM public.user_roles), 1, 'user can query only active own roles');

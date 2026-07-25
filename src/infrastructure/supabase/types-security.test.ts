@@ -20,6 +20,10 @@ type AbortUploadArgs =
 type RegisterUploadResult =
 	SupabaseDatabase['public']['Functions']['register_resource_file_upload']['Returns'];
 
+type IdentityKind = SupabaseDatabase['public']['Enums']['identity_kind'];
+
+type ProfileIdentityKind = SupabaseDatabase['public']['Tables']['profiles']['Row']['identity_kind'];
+
 type HasPrivateSchema = 'private' extends keyof SupabaseDatabase ? true : false;
 
 type RegisterAcceptsStorageKey = 'storage_key' extends keyof RegisterUploadArgs ? true : false;
@@ -48,5 +52,10 @@ describe('generated Supabase database types', () => {
 
 		expectTypeOf<keyof AbortUploadArgs>().toEqualTypeOf<'file_id' | 'reason'>();
 		expectTypeOf<RegisterUploadResult>().toEqualTypeOf<string>();
+	});
+
+	it('exposes identity_kind consistently on profiles', () => {
+		expectTypeOf<IdentityKind>().toEqualTypeOf<'institutional' | 'external_authorized'>();
+		expectTypeOf<ProfileIdentityKind>().toEqualTypeOf<IdentityKind>();
 	});
 });

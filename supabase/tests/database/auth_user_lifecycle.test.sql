@@ -3,7 +3,7 @@ CREATE EXTENSION IF NOT EXISTS pgtap WITH SCHEMA extensions;
 
 BEGIN;
 
-SELECT plan(56);
+SELECT plan(60);
 
 CREATE TEMP TABLE lifecycle_test_user_ids (id uuid PRIMARY KEY);
 
@@ -233,6 +233,15 @@ SELECT is(
 );
 SELECT is(
 	(
+		SELECT identity_kind::text
+		FROM public.profiles
+		WHERE user_id = '00000000-0000-0000-0000-000000000301'
+	),
+	'institutional',
+	'new institutional account defaults to institutional identity_kind'
+);
+SELECT is(
+	(
 		SELECT display_name
 		FROM public.profiles
 		WHERE user_id = '00000000-0000-0000-0000-000000000303'
@@ -456,7 +465,8 @@ VALUES (
 
 UPDATE public.profiles
 SET display_name = 'Nombre preservado',
-	account_status = 'suspended'::public.account_status
+	account_status = 'suspended'::public.account_status,
+	identity_kind = 'external_authorized'::public.identity_kind
 WHERE user_id = '00000000-0000-0000-0000-000000000310';
 
 SELECT lives_ok(
@@ -523,6 +533,15 @@ SELECT is(
 	),
 	'suspended',
 	'email change does not alter account_status'
+);
+SELECT is(
+	(
+		SELECT identity_kind::text
+		FROM public.profiles
+		WHERE user_id = '00000000-0000-0000-0000-000000000310'
+	),
+	'external_authorized',
+	'email change preserves identity_kind'
 );
 
 INSERT INTO auth.users (id, aud, role, email, email_confirmed_at, created_at, updated_at)
@@ -658,6 +677,7 @@ INSERT INTO public.profiles (
 	user_id,
 	email,
 	display_name,
+	identity_kind,
 	account_status,
 	created_at,
 	updated_at
@@ -666,6 +686,7 @@ VALUES (
 	'00000000-0000-0000-0000-000000000332',
 	'reconcile-obsolete@uni.pe',
 	'Perfil reconciliado',
+	'external_authorized'::public.identity_kind,
 	'suspended'::public.account_status,
 	'2026-01-01 00:00:00+00'::timestamptz,
 	'2026-01-02 00:00:00+00'::timestamptz
@@ -753,6 +774,15 @@ SELECT is(
 );
 SELECT is(
 	(
+		SELECT identity_kind::text
+		FROM public.profiles
+		WHERE user_id = '00000000-0000-0000-0000-000000000331'
+	),
+	'institutional',
+	'reconcile_auth_user_profiles defaults a missing profile to institutional'
+);
+SELECT is(
+	(
 		SELECT email
 		FROM public.profiles
 		WHERE user_id = '00000000-0000-0000-0000-000000000332'
@@ -777,6 +807,15 @@ SELECT is(
 	),
 	'suspended',
 	'reconciliation preserves account_status'
+);
+SELECT is(
+	(
+		SELECT identity_kind::text
+		FROM public.profiles
+		WHERE user_id = '00000000-0000-0000-0000-000000000332'
+	),
+	'external_authorized',
+	'reconciliation preserves existing identity_kind'
 );
 SELECT is(
 	(
