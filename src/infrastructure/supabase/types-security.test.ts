@@ -24,6 +24,24 @@ type IdentityKind = SupabaseDatabase['public']['Enums']['identity_kind'];
 
 type ProfileIdentityKind = SupabaseDatabase['public']['Tables']['profiles']['Row']['identity_kind'];
 
+type AppEntitlement = SupabaseDatabase['public']['Enums']['app_entitlement'];
+
+type ResourceVisibility = SupabaseDatabase['public']['Enums']['resource_visibility'];
+
+type ResourceRightsStatus = SupabaseDatabase['public']['Enums']['resource_rights_status'];
+
+type GrantEntitlementArgs =
+	SupabaseDatabase['public']['Functions']['grant_user_entitlement']['Args'];
+
+type RevokeEntitlementArgs =
+	SupabaseDatabase['public']['Functions']['revoke_user_entitlement']['Args'];
+
+type GrantEntitlementResult =
+	SupabaseDatabase['public']['Functions']['grant_user_entitlement']['Returns'];
+
+type RevokeEntitlementResult =
+	SupabaseDatabase['public']['Functions']['revoke_user_entitlement']['Returns'];
+
 type HasPrivateSchema = 'private' extends keyof SupabaseDatabase ? true : false;
 
 type RegisterAcceptsStorageKey = 'storage_key' extends keyof RegisterUploadArgs ? true : false;
@@ -57,5 +75,37 @@ describe('generated Supabase database types', () => {
 	it('exposes identity_kind consistently on profiles', () => {
 		expectTypeOf<IdentityKind>().toEqualTypeOf<'institutional' | 'external_authorized'>();
 		expectTypeOf<ProfileIdentityKind>().toEqualTypeOf<IdentityKind>();
+	});
+
+	it('exposes the v1 entitlement and resource audience contracts', () => {
+		expectTypeOf<AppEntitlement>().toEqualTypeOf<'privileged_material.read'>();
+
+		expectTypeOf<ResourceVisibility>().toEqualTypeOf<
+			'private' | 'restricted' | 'public' | 'privileged'
+		>();
+
+		expectTypeOf<ResourceRightsStatus>().toEqualTypeOf<
+			| 'pending'
+			| 'own-work'
+			| 'authorized'
+			| 'institutional'
+			| 'bibliographic-reference-only'
+			| 'copyright-restricted'
+			| 'open-license'
+			| 'public-domain'
+		>();
+
+		expectTypeOf<keyof GrantEntitlementArgs>().toEqualTypeOf<
+			'entitlement' | 'reason' | 'target_user_id'
+		>();
+		expectTypeOf<keyof RevokeEntitlementArgs>().toEqualTypeOf<
+			'entitlement' | 'reason' | 'target_user_id'
+		>();
+
+		expectTypeOf<GrantEntitlementArgs['entitlement']>().toEqualTypeOf<AppEntitlement>();
+		expectTypeOf<RevokeEntitlementArgs['entitlement']>().toEqualTypeOf<AppEntitlement>();
+
+		expectTypeOf<GrantEntitlementResult>().toEqualTypeOf<number>();
+		expectTypeOf<RevokeEntitlementResult>().toEqualTypeOf<number>();
 	});
 });

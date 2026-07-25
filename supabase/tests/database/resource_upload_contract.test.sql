@@ -3,7 +3,7 @@ CREATE EXTENSION IF NOT EXISTS pgtap WITH SCHEMA extensions;
 
 BEGIN;
 
-SELECT no_plan();
+SELECT plan(66);
 
 SELECT ok(
 	to_regprocedure(
@@ -1188,6 +1188,198 @@ SELECT is(
 	),
 	0,
 	'student reservation denial leaves no metadata'
+);
+
+RESET ROLE;
+INSERT INTO public.academic_resources (
+	id,
+	owner_user_id,
+	course_id,
+	academic_term_id,
+	resource_type,
+	title,
+	description,
+	visibility,
+	rights_status
+)
+VALUES
+	(
+		'20000000-0000-0000-0000-000000000010',
+		'00000000-0000-0000-0000-000000000802',
+		'course:rights',
+		'2026-1',
+		'notes',
+		'Open-license upload',
+		'Open-license existing PDF saga fixture.',
+		'public',
+		'open-license'
+	),
+	(
+		'20000000-0000-0000-0000-000000000011',
+		'00000000-0000-0000-0000-000000000802',
+		'course:rights',
+		'2026-1',
+		'notes',
+		'Public-domain upload',
+		'Public-domain existing PDF saga fixture.',
+		'public',
+		'public-domain'
+	),
+	(
+		'20000000-0000-0000-0000-000000000012',
+		'00000000-0000-0000-0000-000000000802',
+		'course:rights',
+		'2026-1',
+		'book-reference',
+		'Bibliographic upload denial',
+		'Bibliographic reference cannot store a main file.',
+		'restricted',
+		'bibliographic-reference-only'
+	),
+	(
+		'20000000-0000-0000-0000-000000000013',
+		'00000000-0000-0000-0000-000000000802',
+		'course:rights',
+		'2026-1',
+		'notes',
+		'Copyright upload denial',
+		'Copyright-restricted resource cannot store a main file.',
+		'restricted',
+		'copyright-restricted'
+	);
+
+SET LOCAL ROLE authenticated;
+SELECT pg_temp.set_request_context(
+	'00000000-0000-0000-0000-000000000802',
+	'authenticated'
+);
+SELECT lives_ok(
+	$$
+		SELECT public.register_resource_file_upload(
+			'20000000-0000-0000-0000-000000000010',
+			'open-license.pdf',
+			'application/pdf',
+			4096,
+			'1111111111111111111111111111111111111111111111111111111111111111'
+		)
+	$$,
+	'open-license uses the existing PDF reservation path'
+);
+SELECT lives_ok(
+	$$
+		SELECT public.finalize_resource_file_upload(
+			(
+				SELECT id FROM public.resource_files
+				WHERE resource_id = '20000000-0000-0000-0000-000000000010'
+			),
+			'1111111111111111111111111111111111111111111111111111111111111111',
+			'open-license finalization'
+		)
+	$$,
+	'open-license uses the existing atomic PDF finalization path'
+);
+
+RESET ROLE;
+SELECT ok(
+	(
+		SELECT resource_file.content_type = 'application/pdf'
+			AND resource_file.display_filename = 'open-license.pdf'
+			AND resource_file.byte_size = 4096
+			AND resource_file.sha256 = '1111111111111111111111111111111111111111111111111111111111111111'
+			AND storage_object.storage_status = 'stored'
+			AND storage_object.storage_key =
+				'resources/' || resource_file.resource_id::text || '/' || resource_file.id::text || '.pdf'
+			AND academic_resource.review_status = 'pending'
+		FROM public.resource_files AS resource_file
+		INNER JOIN private.resource_storage_objects AS storage_object
+			ON storage_object.file_id = resource_file.id
+		INNER JOIN public.academic_resources AS academic_resource
+			ON academic_resource.id = resource_file.resource_id
+		WHERE resource_file.resource_id = '20000000-0000-0000-0000-000000000010'
+	),
+	'open-license preserves exact PDF metadata hash size private key and pending transition'
+);
+
+SET LOCAL ROLE authenticated;
+SELECT pg_temp.set_request_context(
+	'00000000-0000-0000-0000-000000000802',
+	'authenticated'
+);
+SELECT lives_ok(
+	$$
+		SELECT public.register_resource_file_upload(
+			'20000000-0000-0000-0000-000000000011',
+			'public-domain.pdf',
+			'application/pdf',
+			8192,
+			NULL
+		)
+	$$,
+	'public-domain uses the existing PDF reservation path'
+);
+SELECT lives_ok(
+	$$
+		SELECT public.finalize_resource_file_upload(
+			(
+				SELECT id FROM public.resource_files
+				WHERE resource_id = '20000000-0000-0000-0000-000000000011'
+			),
+			'2222222222222222222222222222222222222222222222222222222222222222',
+			'public-domain finalization'
+		)
+	$$,
+	'public-domain uses the existing atomic PDF finalization path'
+);
+
+RESET ROLE;
+SELECT ok(
+	(
+		SELECT resource_file.content_type = 'application/pdf'
+			AND resource_file.display_filename = 'public-domain.pdf'
+			AND resource_file.byte_size = 8192
+			AND resource_file.sha256 = '2222222222222222222222222222222222222222222222222222222222222222'
+			AND storage_object.storage_status = 'stored'
+			AND storage_object.storage_key =
+				'resources/' || resource_file.resource_id::text || '/' || resource_file.id::text || '.pdf'
+			AND academic_resource.review_status = 'pending'
+		FROM public.resource_files AS resource_file
+		INNER JOIN private.resource_storage_objects AS storage_object
+			ON storage_object.file_id = resource_file.id
+		INNER JOIN public.academic_resources AS academic_resource
+			ON academic_resource.id = resource_file.resource_id
+		WHERE resource_file.resource_id = '20000000-0000-0000-0000-000000000011'
+	),
+	'public-domain preserves exact PDF metadata hash size private key and pending transition'
+);
+
+SET LOCAL ROLE authenticated;
+SELECT pg_temp.set_request_context(
+	'00000000-0000-0000-0000-000000000802',
+	'authenticated'
+);
+SELECT ok(
+	NOT pg_temp.try_sql($$
+		SELECT public.register_resource_file_upload(
+			'20000000-0000-0000-0000-000000000012',
+			'bibliographic.pdf',
+			'application/pdf',
+			512,
+			NULL
+		)
+	$$),
+	'bibliographic-reference-only remains forbidden for stored files'
+);
+SELECT ok(
+	NOT pg_temp.try_sql($$
+		SELECT public.register_resource_file_upload(
+			'20000000-0000-0000-0000-000000000013',
+			'copyright.pdf',
+			'application/pdf',
+			512,
+			NULL
+		)
+	$$),
+	'copyright-restricted remains forbidden for stored files'
 );
 
 SELECT * FROM finish();

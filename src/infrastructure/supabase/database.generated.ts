@@ -105,6 +105,51 @@ export type Database = {
 				};
 				Relationships: [];
 			};
+			entitlement_audit_log: {
+				Row: {
+					action: string;
+					actor_user_id: string;
+					entitlement: Database['public']['Enums']['app_entitlement'];
+					id: number;
+					metadata: Json;
+					occurred_at: string;
+					target_user_id: string;
+				};
+				Insert: {
+					action: string;
+					actor_user_id: string;
+					entitlement: Database['public']['Enums']['app_entitlement'];
+					id?: never;
+					metadata?: Json;
+					occurred_at?: string;
+					target_user_id: string;
+				};
+				Update: {
+					action?: string;
+					actor_user_id?: string;
+					entitlement?: Database['public']['Enums']['app_entitlement'];
+					id?: never;
+					metadata?: Json;
+					occurred_at?: string;
+					target_user_id?: string;
+				};
+				Relationships: [
+					{
+						foreignKeyName: 'entitlement_audit_log_actor_user_id_fkey';
+						columns: ['actor_user_id'];
+						isOneToOne: false;
+						referencedRelation: 'profiles';
+						referencedColumns: ['user_id'];
+					},
+					{
+						foreignKeyName: 'entitlement_audit_log_target_user_id_fkey';
+						columns: ['target_user_id'];
+						isOneToOne: false;
+						referencedRelation: 'profiles';
+						referencedColumns: ['user_id'];
+					},
+				];
+			};
 			external_identity_preauthorizations: {
 				Row: {
 					authorized_at: string;
@@ -330,6 +375,61 @@ export type Database = {
 					},
 				];
 			};
+			user_entitlements: {
+				Row: {
+					entitlement: Database['public']['Enums']['app_entitlement'];
+					granted_at: string;
+					granted_by: string;
+					id: number;
+					reason: string | null;
+					revoked_at: string | null;
+					revoked_by: string | null;
+					user_id: string;
+				};
+				Insert: {
+					entitlement: Database['public']['Enums']['app_entitlement'];
+					granted_at?: string;
+					granted_by: string;
+					id?: never;
+					reason?: string | null;
+					revoked_at?: string | null;
+					revoked_by?: string | null;
+					user_id: string;
+				};
+				Update: {
+					entitlement?: Database['public']['Enums']['app_entitlement'];
+					granted_at?: string;
+					granted_by?: string;
+					id?: never;
+					reason?: string | null;
+					revoked_at?: string | null;
+					revoked_by?: string | null;
+					user_id?: string;
+				};
+				Relationships: [
+					{
+						foreignKeyName: 'user_entitlements_granted_by_fkey';
+						columns: ['granted_by'];
+						isOneToOne: false;
+						referencedRelation: 'profiles';
+						referencedColumns: ['user_id'];
+					},
+					{
+						foreignKeyName: 'user_entitlements_revoked_by_fkey';
+						columns: ['revoked_by'];
+						isOneToOne: false;
+						referencedRelation: 'profiles';
+						referencedColumns: ['user_id'];
+					},
+					{
+						foreignKeyName: 'user_entitlements_user_id_fkey';
+						columns: ['user_id'];
+						isOneToOne: false;
+						referencedRelation: 'profiles';
+						referencedColumns: ['user_id'];
+					},
+				];
+			};
 			user_roles: {
 				Row: {
 					granted_at: string;
@@ -406,6 +506,14 @@ export type Database = {
 				Args: { comment?: string; file_id: string; sha256: string };
 				Returns: string;
 			};
+			grant_user_entitlement: {
+				Args: {
+					entitlement: Database['public']['Enums']['app_entitlement'];
+					reason?: string;
+					target_user_id: string;
+				};
+				Returns: number;
+			};
 			grant_user_role: {
 				Args: {
 					reason?: string;
@@ -440,6 +548,14 @@ export type Database = {
 				Args: { email: string; reason?: string };
 				Returns: number;
 			};
+			revoke_user_entitlement: {
+				Args: {
+					entitlement: Database['public']['Enums']['app_entitlement'];
+					reason?: string;
+					target_user_id: string;
+				};
+				Returns: number;
+			};
 			revoke_user_role: {
 				Args: {
 					reason?: string;
@@ -455,6 +571,7 @@ export type Database = {
 		};
 		Enums: {
 			account_status: 'active' | 'suspended' | 'disabled';
+			app_entitlement: 'privileged_material.read';
 			app_role: 'student' | 'contributor' | 'reviewer' | 'moderator' | 'administrator';
 			identity_kind: 'institutional' | 'external_authorized';
 			resource_review_status: 'draft' | 'pending' | 'approved' | 'rejected';
@@ -464,9 +581,11 @@ export type Database = {
 				| 'authorized'
 				| 'institutional'
 				| 'bibliographic-reference-only'
-				| 'copyright-restricted';
+				| 'copyright-restricted'
+				| 'open-license'
+				| 'public-domain';
 			resource_storage_status: 'uploading' | 'stored' | 'delete_pending' | 'deleted' | 'failed';
-			resource_visibility: 'private' | 'restricted' | 'public';
+			resource_visibility: 'private' | 'restricted' | 'public' | 'privileged';
 		};
 		CompositeTypes: {
 			[_ in never]: never;
@@ -589,6 +708,7 @@ export const Constants = {
 	public: {
 		Enums: {
 			account_status: ['active', 'suspended', 'disabled'],
+			app_entitlement: ['privileged_material.read'],
 			app_role: ['student', 'contributor', 'reviewer', 'moderator', 'administrator'],
 			identity_kind: ['institutional', 'external_authorized'],
 			resource_review_status: ['draft', 'pending', 'approved', 'rejected'],
@@ -599,9 +719,11 @@ export const Constants = {
 				'institutional',
 				'bibliographic-reference-only',
 				'copyright-restricted',
+				'open-license',
+				'public-domain',
 			],
 			resource_storage_status: ['uploading', 'stored', 'delete_pending', 'deleted', 'failed'],
-			resource_visibility: ['private', 'restricted', 'public'],
+			resource_visibility: ['private', 'restricted', 'public', 'privileged'],
 		},
 	},
 } as const;

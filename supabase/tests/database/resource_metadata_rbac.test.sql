@@ -3,7 +3,7 @@ CREATE EXTENSION IF NOT EXISTS pgtap WITH SCHEMA extensions;
 
 BEGIN;
 
-SELECT no_plan();
+SELECT plan(78);
 
 CREATE OR REPLACE FUNCTION pg_temp.set_request_context(user_id uuid, jwt_role text)
 RETURNS void
@@ -118,6 +118,24 @@ SELECT ok(to_regtype('public.resource_review_status') IS NOT NULL, 'resource_rev
 SELECT ok(to_regtype('public.resource_storage_status') IS NOT NULL, 'resource_storage_status enum exists');
 SELECT ok(to_regtype('public.resource_visibility') IS NOT NULL, 'resource_visibility enum exists');
 SELECT ok(to_regtype('public.resource_rights_status') IS NOT NULL, 'resource_rights_status enum exists');
+SELECT ok(
+	EXISTS (
+		SELECT 1
+		FROM pg_enum
+		WHERE enumtypid = 'public.resource_visibility'::regtype
+			AND enumlabel = 'privileged'
+	),
+	'resource_visibility contains privileged'
+);
+SELECT ok(
+	(
+		SELECT count(*)::integer
+		FROM pg_enum
+		WHERE enumtypid = 'public.resource_rights_status'::regtype
+			AND enumlabel IN ('open-license', 'public-domain')
+	) = 2,
+	'resource_rights_status contains open-license and public-domain'
+);
 
 SELECT ok((SELECT relrowsecurity FROM pg_class WHERE oid = 'public.academic_resources'::regclass), 'academic_resources has RLS enabled');
 SELECT ok((SELECT relrowsecurity FROM pg_class WHERE oid = 'public.resource_files'::regclass), 'resource_files has RLS enabled');
@@ -240,8 +258,8 @@ SET LOCAL ROLE authenticated;
 SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000506', 'authenticated');
 SELECT is(
 	(SELECT count(*)::integer FROM public.academic_resources),
-	0,
-	'suspended accounts lose authenticated resource access'
+	1,
+	'suspended accounts retain exactly anonymous public resource access'
 );
 
 RESET ROLE;
@@ -699,6 +717,492 @@ SELECT ok(
 SELECT ok(
 	NOT pg_temp.try_sql('DELETE FROM public.resource_review_events'),
 	'resource review events cannot be deleted'
+);
+
+RESET ROLE;
+INSERT INTO public.external_identity_preauthorizations (
+	normalized_email,
+	authorized_by,
+	reason
+)
+VALUES
+	(
+		'external-reader@example.com',
+		'00000000-0000-0000-0000-000000000505',
+		'resource matrix external reader'
+	),
+	(
+		'external-privileged@example.com',
+		'00000000-0000-0000-0000-000000000505',
+		'resource matrix privileged external reader'
+	);
+
+INSERT INTO auth.users (id, aud, role, email, email_confirmed_at, created_at, updated_at)
+VALUES
+	(
+		'00000000-0000-0000-0000-000000000508',
+		'authenticated',
+		'authenticated',
+		'external-reader@example.com',
+		now(),
+		now(),
+		now()
+	),
+	(
+		'00000000-0000-0000-0000-000000000509',
+		'authenticated',
+		'authenticated',
+		'external-privileged@example.com',
+		now(),
+		now(),
+		now()
+	),
+	(
+		'00000000-0000-0000-0000-000000000510',
+		'authenticated',
+		'authenticated',
+		'stage4a-disabled@uni.pe',
+		now(),
+		now(),
+		now()
+	);
+
+UPDATE public.profiles
+SET account_status = 'disabled'::public.account_status
+WHERE user_id = '00000000-0000-0000-0000-000000000510';
+
+INSERT INTO public.user_entitlements (
+	user_id,
+	entitlement,
+	granted_by,
+	granted_at,
+	reason
+)
+VALUES
+	(
+		'00000000-0000-0000-0000-000000000501',
+		'privileged_material.read',
+		'00000000-0000-0000-0000-000000000505',
+		now(),
+		'institutional access matrix fixture'
+	),
+	(
+		'00000000-0000-0000-0000-000000000509',
+		'privileged_material.read',
+		'00000000-0000-0000-0000-000000000505',
+		now(),
+		'external access matrix fixture'
+	);
+
+SELECT set_config('app.resource_review_transition', 'on', true);
+
+INSERT INTO public.academic_resources (
+	id,
+	owner_user_id,
+	course_id,
+	academic_term_id,
+	resource_type,
+	title,
+	description,
+	visibility,
+	review_status,
+	rights_status,
+	submitted_at,
+	reviewed_by,
+	reviewed_at
+)
+VALUES
+	(
+		'10000000-0000-0000-0000-000000000030',
+		'00000000-0000-0000-0000-000000000502',
+		'course:matrix',
+		'2026-1',
+		'notes',
+		'Matrix public resource',
+		'Approved public access matrix fixture.',
+		'public',
+		'approved',
+		'open-license',
+		now(),
+		'00000000-0000-0000-0000-000000000504',
+		now()
+	),
+	(
+		'10000000-0000-0000-0000-000000000031',
+		'00000000-0000-0000-0000-000000000502',
+		'course:matrix',
+		'2026-1',
+		'exam',
+		'Matrix restricted resource',
+		'Approved restricted access matrix fixture.',
+		'restricted',
+		'approved',
+		'own-work',
+		now(),
+		'00000000-0000-0000-0000-000000000504',
+		now()
+	),
+	(
+		'10000000-0000-0000-0000-000000000032',
+		'00000000-0000-0000-0000-000000000502',
+		'course:matrix',
+		'2026-1',
+		'exam',
+		'Matrix privileged resource',
+		'Approved privileged access matrix fixture.',
+		'privileged',
+		'approved',
+		'institutional',
+		now(),
+		'00000000-0000-0000-0000-000000000504',
+		now()
+	),
+	(
+		'10000000-0000-0000-0000-000000000033',
+		'00000000-0000-0000-0000-000000000502',
+		'course:workflow',
+		'2026-1',
+		'notes',
+		'Workflow draft resource',
+		'Draft isolation fixture.',
+		'private',
+		'draft',
+		'own-work',
+		NULL,
+		NULL,
+		NULL
+	),
+	(
+		'10000000-0000-0000-0000-000000000034',
+		'00000000-0000-0000-0000-000000000502',
+		'course:workflow',
+		'2026-1',
+		'notes',
+		'Workflow pending resource',
+		'Pending review fixture.',
+		'private',
+		'pending',
+		'own-work',
+		now(),
+		NULL,
+		NULL
+	),
+	(
+		'10000000-0000-0000-0000-000000000035',
+		'00000000-0000-0000-0000-000000000502',
+		'course:workflow',
+		'2026-1',
+		'notes',
+		'Workflow rejected resource',
+		'Rejected isolation fixture.',
+		'private',
+		'rejected',
+		'own-work',
+		now(),
+		'00000000-0000-0000-0000-000000000504',
+		now()
+	),
+	(
+		'10000000-0000-0000-0000-000000000036',
+		'00000000-0000-0000-0000-000000000502',
+		'course:rights',
+		'2026-1',
+		'notes',
+		'Public-domain public resource',
+		'Public-domain structural fixture.',
+		'public',
+		'approved',
+		'public-domain',
+		now(),
+		'00000000-0000-0000-0000-000000000504',
+		now()
+	);
+
+SELECT throws_ok(
+	$$
+		INSERT INTO public.academic_resources (
+			id, owner_user_id, course_id, resource_type, title, description,
+			visibility, review_status, rights_status, submitted_at, reviewed_by, reviewed_at
+		) VALUES (
+			'10000000-0000-0000-0000-000000000037',
+			'00000000-0000-0000-0000-000000000502',
+			'course:rights', 'notes', 'Invalid approved private',
+			'Approved private must fail.', 'private', 'approved', 'own-work',
+			now(), '00000000-0000-0000-0000-000000000504', now()
+		)
+	$$,
+	'23514',
+	'approved resources require a final audience',
+	'approved plus private is structurally rejected'
+);
+SELECT throws_ok(
+	$$
+		INSERT INTO public.academic_resources (
+			id, owner_user_id, course_id, resource_type, title, description,
+			visibility, rights_status
+		) VALUES (
+			'10000000-0000-0000-0000-000000000038',
+			'00000000-0000-0000-0000-000000000502',
+			'course:rights', 'notes', 'Invalid institutional public',
+			'Institutional public must fail.', 'public', 'institutional'
+		)
+	$$,
+	'23514',
+	'institutional rights do not allow public visibility',
+	'institutional plus public is structurally rejected'
+);
+SELECT set_config('app.resource_review_transition', '', true);
+
+SELECT ok(
+	EXISTS (
+		SELECT 1 FROM public.academic_resources
+		WHERE id = '10000000-0000-0000-0000-000000000030'
+			AND rights_status = 'open-license'
+			AND visibility = 'public'
+			AND review_status = 'approved'
+	),
+	'open-license plus public is structurally allowed'
+);
+SELECT ok(
+	EXISTS (
+		SELECT 1 FROM public.academic_resources
+		WHERE id = '10000000-0000-0000-0000-000000000036'
+			AND rights_status = 'public-domain'
+			AND visibility = 'public'
+			AND review_status = 'approved'
+	),
+	'public-domain plus public is structurally allowed'
+);
+
+SET LOCAL ROLE anon;
+SELECT pg_temp.set_request_context(NULL, 'anon');
+SELECT is(
+	(
+		SELECT count(*)::integer FROM public.academic_resources
+		WHERE id IN (
+			'10000000-0000-0000-0000-000000000030',
+			'10000000-0000-0000-0000-000000000031',
+			'10000000-0000-0000-0000-000000000032'
+		)
+	),
+	1,
+	'anonymous sees only approved public resources'
+);
+
+RESET ROLE;
+SET LOCAL ROLE authenticated;
+SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000506', 'authenticated');
+SELECT is(
+	(
+		SELECT count(*)::integer FROM public.academic_resources
+		WHERE id IN (
+			'10000000-0000-0000-0000-000000000030',
+			'10000000-0000-0000-0000-000000000031',
+			'10000000-0000-0000-0000-000000000032'
+		)
+	),
+	1,
+	'suspended authenticated user sees exactly anonymous public access'
+);
+
+RESET ROLE;
+SET LOCAL ROLE authenticated;
+SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000510', 'authenticated');
+SELECT is(
+	(
+		SELECT count(*)::integer FROM public.academic_resources
+		WHERE id IN (
+			'10000000-0000-0000-0000-000000000030',
+			'10000000-0000-0000-0000-000000000031',
+			'10000000-0000-0000-0000-000000000032'
+		)
+	),
+	1,
+	'disabled authenticated user sees exactly anonymous public access'
+);
+
+RESET ROLE;
+SET LOCAL ROLE authenticated;
+SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000507', 'authenticated');
+SELECT is(
+	(
+		SELECT count(*)::integer FROM public.academic_resources
+		WHERE id IN (
+			'10000000-0000-0000-0000-000000000030',
+			'10000000-0000-0000-0000-000000000031',
+			'10000000-0000-0000-0000-000000000032'
+		)
+	),
+	2,
+	'active institutional user without role sees public and restricted only'
+);
+
+RESET ROLE;
+SET LOCAL ROLE authenticated;
+SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000501', 'authenticated');
+SELECT is(
+	(
+		SELECT count(*)::integer FROM public.academic_resources
+		WHERE id IN (
+			'10000000-0000-0000-0000-000000000030',
+			'10000000-0000-0000-0000-000000000031',
+			'10000000-0000-0000-0000-000000000032'
+		)
+	),
+	3,
+	'active institutional user with entitlement sees every approved audience'
+);
+
+RESET ROLE;
+SET LOCAL ROLE authenticated;
+SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000508', 'authenticated');
+SELECT is(
+	(
+		SELECT count(*)::integer FROM public.academic_resources
+		WHERE id IN (
+			'10000000-0000-0000-0000-000000000030',
+			'10000000-0000-0000-0000-000000000031',
+			'10000000-0000-0000-0000-000000000032'
+		)
+	),
+	1,
+	'active external user without entitlement sees public only'
+);
+
+RESET ROLE;
+SET LOCAL ROLE authenticated;
+SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000509', 'authenticated');
+SELECT is(
+	(
+		SELECT count(*)::integer FROM public.academic_resources
+		WHERE id IN (
+			'10000000-0000-0000-0000-000000000030',
+			'10000000-0000-0000-0000-000000000031',
+			'10000000-0000-0000-0000-000000000032'
+		)
+	),
+	2,
+	'active external user with entitlement sees public and privileged'
+);
+SELECT is(
+	(
+		SELECT count(*)::integer FROM public.academic_resources
+		WHERE id = '10000000-0000-0000-0000-000000000031'
+	),
+	0,
+	'external entitlement does not grant restricted access'
+);
+
+RESET ROLE;
+UPDATE public.user_entitlements
+SET revoked_by = '00000000-0000-0000-0000-000000000505',
+	revoked_at = now()
+WHERE user_id = '00000000-0000-0000-0000-000000000509'
+	AND entitlement = 'privileged_material.read'
+	AND revoked_at IS NULL;
+SET LOCAL ROLE authenticated;
+SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000509', 'authenticated');
+SELECT is(
+	(
+		SELECT count(*)::integer FROM public.academic_resources
+		WHERE id IN (
+			'10000000-0000-0000-0000-000000000030',
+			'10000000-0000-0000-0000-000000000031',
+			'10000000-0000-0000-0000-000000000032'
+		)
+	),
+	1,
+	'revoking entitlement removes privileged access immediately'
+);
+
+RESET ROLE;
+INSERT INTO public.user_entitlements (user_id, entitlement, granted_by, granted_at, reason)
+VALUES (
+	'00000000-0000-0000-0000-000000000509',
+	'privileged_material.read',
+	'00000000-0000-0000-0000-000000000505',
+	now(),
+	'workflow entitlement-only fixture'
+);
+
+SET LOCAL ROLE authenticated;
+SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000503', 'authenticated');
+SELECT is(
+	(SELECT count(*)::integer FROM public.academic_resources WHERE id = '10000000-0000-0000-0000-000000000032'),
+	0,
+	'reviewer without entitlement has no approved privileged role bypass'
+);
+
+RESET ROLE;
+SET LOCAL ROLE authenticated;
+SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000504', 'authenticated');
+SELECT is(
+	(SELECT count(*)::integer FROM public.academic_resources WHERE id = '10000000-0000-0000-0000-000000000032'),
+	1,
+	'moderator can inspect approved privileged resources editorially'
+);
+SELECT is(
+	(SELECT count(*)::integer FROM public.academic_resources WHERE id = '10000000-0000-0000-0000-000000000034'),
+	1,
+	'moderator can inspect pending resources'
+);
+SELECT is(
+	(SELECT count(*)::integer FROM public.academic_resources WHERE id = '10000000-0000-0000-0000-000000000033'),
+	0,
+	'moderator cannot inspect another owner draft solely by role'
+);
+SELECT is(
+	(SELECT count(*)::integer FROM public.academic_resources WHERE id = '10000000-0000-0000-0000-000000000035'),
+	0,
+	'moderator cannot inspect another owner rejected resource solely by role'
+);
+
+RESET ROLE;
+SET LOCAL ROLE authenticated;
+SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000505', 'authenticated');
+SELECT is(
+	(SELECT count(*)::integer FROM public.academic_resources WHERE id = '10000000-0000-0000-0000-000000000032'),
+	1,
+	'administrator can inspect approved privileged resources administratively'
+);
+SELECT is(
+	(
+		SELECT count(*)::integer FROM public.academic_resources
+		WHERE id IN (
+			'10000000-0000-0000-0000-000000000033',
+			'10000000-0000-0000-0000-000000000034',
+			'10000000-0000-0000-0000-000000000035'
+		)
+	),
+	3,
+	'administrator retains draft pending and rejected workflow access'
+);
+
+RESET ROLE;
+SET LOCAL ROLE authenticated;
+SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000502', 'authenticated');
+SELECT is(
+	(SELECT count(*)::integer FROM public.academic_resources WHERE id = '10000000-0000-0000-0000-000000000032'),
+	0,
+	'owner without entitlement has no approved privileged ownership bypass'
+);
+
+RESET ROLE;
+SET LOCAL ROLE authenticated;
+SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000503', 'authenticated');
+SELECT is(
+	(SELECT count(*)::integer FROM public.academic_resources WHERE id = '10000000-0000-0000-0000-000000000034'),
+	1,
+	'reviewer can inspect pending resources'
+);
+
+RESET ROLE;
+SET LOCAL ROLE authenticated;
+SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000509', 'authenticated');
+SELECT is(
+	(SELECT count(*)::integer FROM public.academic_resources WHERE id = '10000000-0000-0000-0000-000000000034'),
+	0,
+	'entitlement-only external user cannot inspect pending resources'
 );
 
 RESET ROLE;
