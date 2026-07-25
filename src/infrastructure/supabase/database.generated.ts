@@ -111,6 +111,7 @@ export type Database = {
 					created_at: string;
 					display_name: string | null;
 					email: string;
+					identity_kind: Database['public']['Enums']['identity_kind'];
 					updated_at: string;
 					user_id: string;
 				};
@@ -119,6 +120,7 @@ export type Database = {
 					created_at?: string;
 					display_name?: string | null;
 					email: string;
+					identity_kind?: Database['public']['Enums']['identity_kind'];
 					updated_at?: string;
 					user_id: string;
 				};
@@ -127,6 +129,7 @@ export type Database = {
 					created_at?: string;
 					display_name?: string | null;
 					email?: string;
+					identity_kind?: Database['public']['Enums']['identity_kind'];
 					updated_at?: string;
 					user_id?: string;
 				};
@@ -397,6 +400,7 @@ export type Database = {
 		Enums: {
 			account_status: 'active' | 'suspended' | 'disabled';
 			app_role: 'student' | 'contributor' | 'reviewer' | 'moderator' | 'administrator';
+			identity_kind: 'institutional' | 'external_authorized';
 			resource_review_status: 'draft' | 'pending' | 'approved' | 'rejected';
 			resource_rights_status:
 				| 'pending'
@@ -530,6 +534,7 @@ export const Constants = {
 		Enums: {
 			account_status: ['active', 'suspended', 'disabled'],
 			app_role: ['student', 'contributor', 'reviewer', 'moderator', 'administrator'],
+			identity_kind: ['institutional', 'external_authorized'],
 			resource_review_status: ['draft', 'pending', 'approved', 'rejected'],
 			resource_rights_status: [
 				'pending',
