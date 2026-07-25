@@ -3,7 +3,7 @@ CREATE EXTENSION IF NOT EXISTS pgtap WITH SCHEMA extensions;
 
 BEGIN;
 
-SELECT plan(54);
+SELECT plan(62);
 
 CREATE OR REPLACE FUNCTION pg_temp.set_request_context(user_id uuid, jwt_role text)
 RETURNS void
@@ -493,6 +493,110 @@ SELECT ok(
 SELECT ok(
 	NOT pg_temp.try_sql('delete from public.role_audit_log'),
 	'audit log cannot be deleted directly'
+);
+
+RESET ROLE;
+UPDATE public.profiles
+SET identity_kind = 'external_authorized'::public.identity_kind,
+	account_status = 'active'::public.account_status
+WHERE user_id = '00000000-0000-0000-0000-000000000107';
+
+SET LOCAL ROLE authenticated;
+SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000105', 'authenticated');
+SELECT ok(
+	NOT pg_temp.try_sql(
+		format(
+			'select public.grant_user_role(%L::uuid, %L::public.app_role, %L)',
+			'00000000-0000-0000-0000-000000000107',
+			'student',
+			'external authorized target attempt'
+		)
+	),
+	'administrator cannot grant a role to an external_authorized account'
+);
+SELECT is(
+	(
+		SELECT count(*)::integer
+		FROM public.user_roles
+		WHERE user_id = '00000000-0000-0000-0000-000000000107'
+			AND role = 'student'
+			AND revoked_at IS NULL
+	),
+	0,
+	'external_authorized rejection creates no active assignment'
+);
+
+RESET ROLE;
+UPDATE public.profiles
+SET identity_kind = 'institutional'::public.identity_kind,
+	account_status = 'suspended'::public.account_status
+WHERE user_id = '00000000-0000-0000-0000-000000000107';
+
+SET LOCAL ROLE authenticated;
+SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000105', 'authenticated');
+SELECT ok(
+	NOT pg_temp.try_sql(
+		format(
+			'select public.grant_user_role(%L::uuid, %L::public.app_role, %L)',
+			'00000000-0000-0000-0000-000000000107',
+			'student',
+			'suspended target attempt'
+		)
+	),
+	'administrator cannot grant a role to a suspended account'
+);
+SELECT is(
+	(
+		SELECT count(*)::integer
+		FROM public.user_roles
+		WHERE user_id = '00000000-0000-0000-0000-000000000107'
+			AND role = 'student'
+			AND revoked_at IS NULL
+	),
+	0,
+	'suspended rejection creates no active assignment'
+);
+
+SELECT ok(
+	pg_temp.try_sql(
+		format(
+			'select public.grant_user_role(%L::uuid, %L::public.app_role, %L)',
+			'00000000-0000-0000-0000-000000000106',
+			'reviewer',
+			'role eligibility effectiveness test'
+		)
+	),
+	'administrator can grant an eligible institutional active account a role'
+);
+
+RESET ROLE;
+UPDATE public.profiles
+SET identity_kind = 'external_authorized'::public.identity_kind
+WHERE user_id = '00000000-0000-0000-0000-000000000106';
+
+SET LOCAL ROLE authenticated;
+SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000106', 'authenticated');
+SELECT ok(
+	NOT private.has_role('reviewer'::public.app_role),
+	'has_role does not recognize a historical assignment after identity becomes external_authorized'
+);
+SELECT ok(
+	NOT private.has_any_role(ARRAY['reviewer']::public.app_role[]),
+	'has_any_role does not recognize a historical assignment after identity becomes external_authorized'
+);
+
+RESET ROLE;
+UPDATE public.profiles
+SET identity_kind = 'institutional'::public.identity_kind,
+	account_status = 'active'::public.account_status
+WHERE user_id = '00000000-0000-0000-0000-000000000106';
+
+SET LOCAL ROLE authenticated;
+SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000106', 'authenticated');
+SELECT ok(
+	private.has_role('reviewer'::public.app_role)
+	AND private.has_any_role(ARRAY['reviewer']::public.app_role[]),
+	'role checks resume normal behavior after institutional active eligibility is restored'
 );
 
 RESET ROLE;
