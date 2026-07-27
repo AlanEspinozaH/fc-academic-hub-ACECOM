@@ -3,7 +3,7 @@ CREATE EXTENSION IF NOT EXISTS pgtap WITH SCHEMA extensions;
 
 BEGIN;
 
-SELECT plan(107);
+SELECT plan(127);
 
 CREATE OR REPLACE FUNCTION pg_temp.set_request_context(user_id uuid, jwt_role text)
 RETURNS void
@@ -135,6 +135,47 @@ SELECT ok(
 			AND enumlabel IN ('open-license', 'public-domain')
 	) = 2,
 	'resource_rights_status contains open-license and public-domain'
+);
+
+SELECT ok(
+	to_regprocedure(
+		'public.approve_academic_resource(uuid,public.resource_visibility,text)'
+	) IS NOT NULL
+	AND (
+		SELECT pg_proc.proargnames
+		FROM pg_proc
+		WHERE pg_proc.oid =
+			'public.approve_academic_resource(uuid,public.resource_visibility,text)'::regprocedure
+	) = ARRAY['resource_id', 'final_visibility', 'comment'],
+	'approval RPC has the required resource, final visibility, and comment signature'
+);
+SELECT ok(
+	to_regprocedure('public.approve_academic_resource(uuid,text)') IS NULL,
+	'obsolete two-argument approval RPC no longer exists'
+);
+SELECT ok(
+	has_function_privilege(
+		'authenticated',
+		'public.approve_academic_resource(uuid,public.resource_visibility,text)',
+		'EXECUTE'
+	)
+	AND NOT has_function_privilege(
+		'anon',
+		'public.approve_academic_resource(uuid,public.resource_visibility,text)',
+		'EXECUTE'
+	)
+	AND NOT EXISTS (
+		SELECT 1
+		FROM pg_proc
+		CROSS JOIN LATERAL aclexplode(
+			COALESCE(pg_proc.proacl, acldefault('f', pg_proc.proowner))
+		) AS privilege
+		WHERE pg_proc.oid =
+			'public.approve_academic_resource(uuid,public.resource_visibility,text)'::regprocedure
+			AND privilege.grantee = 0
+			AND privilege.privilege_type = 'EXECUTE'
+	),
+	'only authenticated receives approval RPC execution'
 );
 
 SELECT ok((SELECT relrowsecurity FROM pg_class WHERE oid = 'public.academic_resources'::regclass), 'academic_resources has RLS enabled');
@@ -452,7 +493,11 @@ SELECT ok(
 );
 SELECT ok(
 	NOT pg_temp.try_sql($$
-		SELECT public.approve_academic_resource('10000000-0000-0000-0000-000000000010', 'contributor attempt')
+		SELECT public.approve_academic_resource(
+			'10000000-0000-0000-0000-000000000010',
+			'public',
+			'contributor attempt'
+		)
 	$$),
 	'contributor cannot approve resources'
 );
@@ -471,13 +516,29 @@ SELECT is(
 );
 SELECT ok(
 	NOT pg_temp.try_sql($$
-		SELECT public.approve_academic_resource('10000000-0000-0000-0000-000000000010', 'reviewer attempt')
+		SELECT public.approve_academic_resource(
+			'10000000-0000-0000-0000-000000000010',
+			'public',
+			'reviewer attempt'
+		)
 	$$),
 	'reviewer cannot approve or publish resources'
 );
+SELECT throws_ok(
+	$$ SELECT public.reject_academic_resource('10000000-0000-0000-0000-000000000010', '   ') $$,
+	'23514',
+	'rejection comment is required',
+	'whitespace-only rejection comments are rejected by PostgreSQL'
+);
+SELECT throws_ok(
+	$$ SELECT public.reject_academic_resource('10000000-0000-0000-0000-000000000010', NULL) $$,
+	'23514',
+	'rejection comment is required',
+	'NULL rejection comments are rejected by PostgreSQL'
+);
 SELECT lives_ok(
-	$$ SELECT public.reject_academic_resource('10000000-0000-0000-0000-000000000010', 'needs changes') $$,
-	'reviewer can reject pending resources'
+	$$ SELECT public.reject_academic_resource('10000000-0000-0000-0000-000000000010', '  needs changes  ') $$,
+	'reviewer can reject pending resources with a non-empty comment'
 );
 RESET ROLE;
 SELECT is(
@@ -488,6 +549,18 @@ SELECT is(
 	),
 	'rejected',
 	'reviewer rejection moves resource to rejected'
+);
+SELECT is(
+	(
+		SELECT comment
+		FROM public.resource_review_events
+		WHERE resource_id = '10000000-0000-0000-0000-000000000010'
+			AND action = 'reject'
+		ORDER BY id DESC
+		LIMIT 1
+	),
+	'needs changes',
+	'successful reject event stores the normalized non-empty comment'
 );
 
 RESET ROLE;
@@ -500,6 +573,14 @@ SELECT ok(
 		WHERE id = '10000000-0000-0000-0000-000000000010'
 	$$),
 	'owner can edit rejected resources'
+);
+
+SELECT lives_ok(
+	$$ SELECT public.submit_academic_resource(
+		'10000000-0000-0000-0000-000000000010',
+		'resubmitted after review'
+	) $$,
+	'owner can resubmit the rejected stored resource for final-audience review'
 );
 
 INSERT INTO public.academic_resources (
@@ -643,6 +724,99 @@ UPDATE public.academic_resources
 SET rights_status = 'pending'::public.resource_rights_status
 WHERE id = '10000000-0000-0000-0000-000000000023';
 
+SELECT set_config('app.resource_review_transition', 'on', true);
+
+INSERT INTO public.academic_resources (
+	id,
+	owner_user_id,
+	course_id,
+	academic_term_id,
+	resource_type,
+	title,
+	description,
+	visibility,
+	review_status,
+	rights_status,
+	submitted_at,
+	reviewed_by,
+	reviewed_at
+)
+VALUES
+	(
+		'10000000-0000-0000-0000-000000000024',
+		'00000000-0000-0000-0000-000000000504',
+		'course:bma01', '2026-1', 'notes',
+		'Moderator own pending resource',
+		'Own-resource approval must remain forbidden.',
+		'restricted', 'pending', 'own-work', now(), NULL, NULL
+	),
+	(
+		'10000000-0000-0000-0000-000000000025',
+		'00000000-0000-0000-0000-000000000502',
+		'course:bma01', '2026-1', 'notes',
+		'Institutional pending resource',
+		'Institutional rights cannot be published publicly.',
+		'restricted', 'pending', 'institutional', now(), NULL, NULL
+	),
+	(
+		'10000000-0000-0000-0000-000000000026',
+		'00000000-0000-0000-0000-000000000502',
+		'course:bma01', '2026-1', 'notes',
+		'Incomplete storage pending resource',
+		'Uploading storage must continue blocking approval.',
+		'restricted', 'pending', 'own-work', now(), NULL, NULL
+	),
+	(
+		'10000000-0000-0000-0000-000000000027',
+		'00000000-0000-0000-0000-000000000502',
+		'course:bma01', '2026-1', 'notes',
+		'Moderator rejection pending resource',
+		'Moderator rejection authority fixture.',
+		'restricted', 'pending', 'own-work', now(), NULL, NULL
+	);
+
+SELECT set_config('app.resource_review_transition', '', true);
+
+INSERT INTO public.resource_files (
+	id,
+	resource_id,
+	uploaded_by,
+	display_filename,
+	file_kind,
+	normalized_extension,
+	content_type,
+	byte_size,
+	sha256,
+	storage_key_version
+)
+VALUES (
+	'20000000-0000-0000-0000-000000000026',
+	'10000000-0000-0000-0000-000000000026',
+	'00000000-0000-0000-0000-000000000502',
+	'Incomplete.pdf',
+	'pdf',
+	'.pdf',
+	'application/pdf',
+	512,
+	'2626262626262626262626262626262626262626262626262626262626262626',
+	'generic_v2'
+);
+
+INSERT INTO private.resource_storage_objects (
+	file_id,
+	storage_key,
+	storage_status,
+	failure_reason,
+	stored_at
+)
+VALUES (
+	'20000000-0000-0000-0000-000000000026',
+	'resources/10000000-0000-0000-0000-000000000026/20000000-0000-0000-0000-000000000026',
+	'uploading',
+	NULL,
+	NULL
+);
+
 SET LOCAL ROLE authenticated;
 SELECT pg_temp.set_request_context(
 	'00000000-0000-0000-0000-000000000504',
@@ -650,24 +824,105 @@ SELECT pg_temp.set_request_context(
 );
 
 SELECT lives_ok(
-	$$ SELECT public.approve_academic_resource('10000000-0000-0000-0000-000000000020', 'bibliographic metadata approved') $$,
-	'moderator can approve bibliographic-reference-only metadata without files'
+	$$ SELECT public.approve_academic_resource(
+		'10000000-0000-0000-0000-000000000020',
+		'restricted',
+		'bibliographic metadata approved'
+	) $$,
+	'moderator can approve another user resource with restricted visibility'
 );
 SELECT ok(
 	NOT pg_temp.try_sql($$
-		SELECT public.approve_academic_resource('10000000-0000-0000-0000-000000000022', 'copyright attempt')
+		SELECT public.approve_academic_resource(
+			'10000000-0000-0000-0000-000000000022',
+			'restricted',
+			'copyright attempt'
+		)
 	$$),
 	'copyright-restricted resources cannot be approved'
 );
 SELECT ok(
 	NOT pg_temp.try_sql($$
-		SELECT public.approve_academic_resource('10000000-0000-0000-0000-000000000023', 'pending rights attempt')
+		SELECT public.approve_academic_resource(
+			'10000000-0000-0000-0000-000000000023',
+			'restricted',
+			'pending rights attempt'
+		)
 	$$),
 	'pending rights block approval when files are stored'
 );
+SELECT throws_ok(
+	$$ SELECT public.approve_academic_resource(
+		'10000000-0000-0000-0000-000000000010',
+		'private',
+		'private audience attempt'
+	) $$,
+	'23514',
+	'approval requires a final publication audience',
+	'private is not a valid final publication audience'
+);
+SELECT throws_ok(
+	$$ SELECT public.approve_academic_resource(
+		'10000000-0000-0000-0000-000000000010',
+		NULL,
+		'NULL audience attempt'
+	) $$,
+	'23514',
+	'approval requires a final publication audience',
+	'NULL is not a valid final publication audience'
+);
+SELECT ok(
+	NOT pg_temp.try_sql($$
+		SELECT public.approve_academic_resource(
+			'10000000-0000-0000-0000-000000000025',
+			'public',
+			'institutional public attempt'
+		)
+	$$),
+	'institutional rights cannot receive public final visibility'
+);
+SELECT ok(
+	NOT pg_temp.try_sql($$
+		SELECT public.approve_academic_resource(
+			'10000000-0000-0000-0000-000000000024',
+			'restricted',
+			'own-resource attempt'
+		)
+	$$),
+	'moderator cannot approve their own pending resource'
+);
+SELECT ok(
+	NOT pg_temp.try_sql($$
+		SELECT public.approve_academic_resource(
+			'10000000-0000-0000-0000-000000000026',
+			'restricted',
+			'incomplete storage attempt'
+		)
+	$$),
+	'incomplete storage continues to block approval'
+);
 SELECT lives_ok(
-	$$ SELECT public.approve_academic_resource('10000000-0000-0000-0000-000000000003', 'moderator approval') $$,
-	'moderator can approve pending resources'
+	$$ SELECT public.approve_academic_resource(
+		'10000000-0000-0000-0000-000000000010',
+		'privileged',
+		'privileged final audience'
+	) $$,
+	'moderator can approve another user stored resource with privileged visibility'
+);
+SELECT lives_ok(
+	$$ SELECT public.approve_academic_resource(
+		'10000000-0000-0000-0000-000000000003',
+		'public',
+		'moderator public approval'
+	) $$,
+	'moderator can approve another user pending resource with public visibility'
+);
+SELECT lives_ok(
+	$$ SELECT public.reject_academic_resource(
+		'10000000-0000-0000-0000-000000000027',
+		'moderator rejection reason'
+	) $$,
+	'moderator retains rejection authority with a required comment'
 );
 SELECT is(
 	(
@@ -678,13 +933,67 @@ SELECT is(
 	'approved',
 	'moderator approval publishes the resource'
 );
+SELECT is(
+	(SELECT visibility::text FROM public.academic_resources
+	 WHERE id = '10000000-0000-0000-0000-000000000003'),
+	'public',
+	'public final visibility replaces the Contributor restricted proposal'
+);
+SELECT is(
+	(SELECT visibility::text FROM public.academic_resources
+	 WHERE id = '10000000-0000-0000-0000-000000000020'),
+	'restricted',
+	'restricted final visibility replaces the Contributor public proposal'
+);
+SELECT is(
+	(SELECT visibility::text FROM public.academic_resources
+	 WHERE id = '10000000-0000-0000-0000-000000000010'),
+	'privileged',
+	'privileged final visibility is stored atomically with approval'
+);
+SELECT is(
+	(
+		SELECT metadata ->> 'proposed_visibility'
+		FROM public.resource_review_events
+		WHERE resource_id = '10000000-0000-0000-0000-000000000010'
+			AND action = 'approve'
+		ORDER BY id DESC
+		LIMIT 1
+	),
+	'restricted',
+	'approval audit records the Contributor proposed visibility'
+);
+SELECT is(
+	(
+		SELECT metadata ->> 'final_visibility'
+		FROM public.resource_review_events
+		WHERE resource_id = '10000000-0000-0000-0000-000000000010'
+			AND action = 'approve'
+		ORDER BY id DESC
+		LIMIT 1
+	),
+	'privileged',
+	'approval audit records the Moderator final visibility'
+);
+SELECT is(
+	(
+		SELECT metadata ->> 'has_stored_files'
+		FROM public.resource_review_events
+		WHERE resource_id = '10000000-0000-0000-0000-000000000010'
+			AND action = 'approve'
+		ORDER BY id DESC
+		LIMIT 1
+	),
+	'true',
+	'approval audit preserves stored-file state'
+);
 
 RESET ROLE;
 SET LOCAL ROLE authenticated;
 SELECT pg_temp.set_request_context('00000000-0000-0000-0000-000000000505', 'authenticated');
 SELECT is(
 	(SELECT count(*)::integer FROM public.academic_resources),
-	8,
+	12,
 	'administrator can read all academic resources'
 );
 SELECT is(
@@ -693,7 +1002,7 @@ SELECT is(
 		FROM public.resource_review_events
 		WHERE action IN ('submit', 'approve', 'reject', 'storage_stored')
 	),
-	9,
+	12,
 	'review and storage RPCs write audit events'
 );
 SELECT ok(
