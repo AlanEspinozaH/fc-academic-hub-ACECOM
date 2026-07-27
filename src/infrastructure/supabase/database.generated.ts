@@ -504,7 +504,11 @@ export type Database = {
 				Returns: string;
 			};
 			approve_academic_resource: {
-				Args: { comment?: string; resource_id: string };
+				Args: {
+					comment?: string;
+					final_visibility: Database['public']['Enums']['resource_visibility'];
+					resource_id: string;
+				};
 				Returns: number;
 			};
 			authorize_external_identity: {
